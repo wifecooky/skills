@@ -26,6 +26,14 @@ EXAMPLE   = SKILL_DIR/references/example-transcribe.json
 输入: 一个或多个英文单词
 输出: 每个单词一个 HTML（交互式）+ 一个 PNG（截图）
 
+### 选项
+
+| 选项 | 说明 | 默认 |
+|------|------|------|
+| `--sign <署名>` | 在卡片底部显示署名 | 无（不显示） |
+
+示例：`/word-card Resilience --sign 双言双语`
+
 ### Step 1: 读取参考文件
 
 读取以下三个文件，加载到工作记忆：
@@ -81,6 +89,14 @@ EXAMPLE   = SKILL_DIR/references/example-transcribe.json
 | `{{EPIPHANY_ZH}}` | Step 2 中文金句（含 `<span class="hi">`） |
 | `{{D3_PATH}}` | `D3_LOCAL` 的 `file:///` 绝对路径 |
 | `{{CONSTELLATION_DATA}}` | Step 2 星图 JSON（直接内联，不要字符串化） |
+| `{{COLOPHON}}` | 签名区：有 `--sign` 时填入下方 HTML，否则替换为空字符串 |
+
+**`{{COLOPHON}}` 规则**：
+- 无 `--sign`：替换为空字符串（不显示签名）
+- 有 `--sign <名字>`：替换为：
+  ```html
+  <div class="colophon"><div class="who"><span>{名字}</span></div></div>
+  ```
 
 3. 将结果写入 `/tmp/word_card_{word_lowercase}.html`
 

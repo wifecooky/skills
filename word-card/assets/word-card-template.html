@@ -118,6 +118,15 @@
     font-family: var(--sans);
   }
 
+  /* ── Section Labels ── */
+  .section-label {
+    font: 500 20px/1 var(--mono);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0 60px 12px;
+  }
+
   /* ── Scene ── */
   .scene {
     padding: 0 60px 32px;
@@ -226,6 +235,7 @@
     }
     .hanzi-char { font-size: clamp(120px, 40vw, 280px); }
     #constellation { width: 100%; max-width: 420px; }
+    .section-label { padding: 0 24px 8px; font-size: clamp(14px, 3vw, 20px); }
     .scene { padding: 0 24px 24px; font-size: clamp(24px, 5vw, 38px); }
     .example { padding: 0 24px 24px; }
     .example .en { font-size: clamp(22px, 4.5vw, 34px); }
@@ -266,6 +276,7 @@
     <span class="zh">{{ZH_MEANING}}</span>
   </div>
 
+  <div class="section-label">词源</div>
   <div class="roots-line">
     {{ETYMOLOGY_LINE}}
   </div>
@@ -275,23 +286,22 @@
     <div id="constellation"></div>
   </div>
 
+  <div class="section-label">画面</div>
   <p class="scene">{{SCENE_HTML}}</p>
 
+  <div class="section-label">例句</div>
   <div class="example">
     <div class="en">{{EXAMPLE_EN}}</div>
     <div class="zh-note">{{EXAMPLE_ZH}}</div>
   </div>
 
+  <div class="section-label">金句</div>
   <div class="epiphany">
     <div class="line">{{EPIPHANY_EN}}</div>
     <div class="line">{{EPIPHANY_ZH}}</div>
   </div>
 
-  <div class="colophon">
-    <div class="who">
-      <span>word-card</span>
-    </div>
-  </div>
+  {{COLOPHON}}
 </div>
 
 <div id="tooltip"></div>
@@ -347,7 +357,7 @@
     .force('charge', d3.forceManyBody().strength(-180))
     .force('x', d3.forceX(d => d.type === 'hub' ? CX : (familyX[d.family] || CX)).strength(d => d.type === 'hub' ? 1 : 0.35))
     .force('y', d3.forceY(CY).strength(0.06))
-    .force('collide', d3.forceCollide(42))
+    .force('collide', d3.forceCollide(55))
     .alphaDecay(0.015);
 
   // Fix hub at center
@@ -429,13 +439,13 @@
     .attr('r', 5)
     .attr('fill', INK);
 
-  // Labels
+  // Labels — placed below the dot
   const textEls = nodeEls.append('text')
     .attr('text-anchor', 'middle')
-    .attr('dy', '0.32em')
-    .attr('font-size', '18')
+    .attr('dy', '22')
+    .attr('font-size', '14')
     .attr('font-weight', '500')
-    .attr('opacity', 0.7);
+    .attr('opacity', 0.85);
 
   textEls.each(function(d) {
     const t = d3.select(this);
