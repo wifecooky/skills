@@ -1,0 +1,9 @@
+{
+  "name": "word-card",
+  "version": "1.0.0",
+  "description": "Interactive word card generator with D3.js constellation map",
+  "private": true,
+  "dependencies": {
+    "playwright": "^1.52.0"
+  }
+}

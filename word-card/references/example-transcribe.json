@@ -1,0 +1,44 @@
+{
+  "word": "Transcribe",
+  "phonetic": "/trænˈskraɪb/",
+  "zh_meaning": "转录；抄写",
+  "etymology_line": "trans- (穿越) <span class=\"op\">+</span> scribere (书写)",
+  "ref_tag": "语言学 / 词源解构",
+  "tone": "meditative",
+
+  "hanzi": "渡",
+
+  "scene_html": "昏暗的修道院里，抄写员弓着背，将羊皮纸上的文字一笔一画搬到另一页。<strong>不增不减，原样渡过。</strong>",
+
+  "example_en": "The journalist <em>transcribed</em> the entire three-hour interview, word by word.",
+  "example_zh": "记者将三小时的采访逐字逐句转录了下来。",
+
+  "epiphany_en": "To transcribe is to carry meaning across borders without losing a <span class=\"hi\">single grain</span>.",
+  "epiphany_zh": "转录，是把意义一粒不漏地<span class=\"hi\">渡</span>过边界。",
+
+  "word_html": "<span class=\"prefix\">Trans</span><span class=\"root\">·scribe</span>",
+
+  "constellation_data": {
+    "nodes": [
+      { "id": "hub", "type": "hub" },
+      { "id": "transcend",  "zh": "超越",   "family": "trans",  "pre": "trans", "suf": "cend" },
+      { "id": "transform",  "zh": "转变",   "family": "trans",  "pre": "trans", "suf": "form" },
+      { "id": "translate",  "zh": "翻译",   "family": "trans",  "pre": "trans", "suf": "late" },
+      { "id": "transport",  "zh": "运输",   "family": "trans",  "pre": "trans", "suf": "port" },
+      { "id": "describe",   "zh": "描述",   "family": "scribe", "pre": "de",    "suf": "scribe" },
+      { "id": "inscribe",   "zh": "铭刻",   "family": "scribe", "pre": "in",    "suf": "scribe" },
+      { "id": "prescribe",  "zh": "开处方", "family": "scribe", "pre": "pre",   "suf": "scribe" },
+      { "id": "subscribe",  "zh": "订阅",   "family": "scribe", "pre": "sub",   "suf": "scribe" }
+    ],
+    "links": [
+      { "source": "hub", "target": "transcend",  "family": "trans" },
+      { "source": "hub", "target": "transform",  "family": "trans" },
+      { "source": "hub", "target": "translate",  "family": "trans" },
+      { "source": "hub", "target": "transport",  "family": "trans" },
+      { "source": "hub", "target": "describe",   "family": "scribe" },
+      { "source": "hub", "target": "inscribe",   "family": "scribe" },
+      { "source": "hub", "target": "prescribe",  "family": "scribe" },
+      { "source": "hub", "target": "subscribe",  "family": "scribe" }
+    ]
+  }
+}
