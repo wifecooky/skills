@@ -36,16 +36,30 @@ Three requirements only:
 
 Verification of the four criteria is mandatory, woven into the essay. Verification itself is part of the narrative — "what happens to the world if you remove a generator" makes a good story, "using generators to derive an unexpected phenomenon" makes a good ending. No appendix.
 
-## Language
+## Language & Localization
 
-Output language matches user input language:
+Output language matches user input language. Not just translation — full cultural adaptation.
+
+Language switching:
 - Chinese input → Chinese output
 - English input → English output
 - Japanese input → Japanese output
 - Other languages follow the same rule
 
+Localization requirements — the following must match the target language's cultural context:
+- **Metaphors and imagery**: Chinese can say "一锅粥" (a pot of congee), English should use "a tangled web", Japanese should use appropriate idiomatic expressions
+- **Examples**: Chinese context uses WeChat, Taobao, Gaokao; English context uses Google, Amazon, SAT; Japanese context uses LINE, Rakuten, センター試験
+- **People and event references**: Chinese can cite Lu Xun, English cites Feynman, Japanese cites Murakami — use names the target reader recognizes instantly
+- **Data and units**: English uses miles/Fahrenheit (US context) or km/Celsius (international), Japanese uses locally common units
+- **Tone and rhythm**: Chinese prose can use staccato parallel clauses, English prose can build momentum with long subordinate clauses, Japanese should mind 敬体/常体 register shifts
+
+Principle: The reader should never feel the essay was translated from another language. It should read like an original written by a native speaker.
+
 ## Output
 
 1. Get timestamp: `date +%Y%m%dT%H%M%S` and `date "+%Y-%m-%d %a %H:%M"`
-2. Write to `~/Documents/notes/{timestamp}--rank-of-{domain}__rank.md`
+2. Filename is also localized:
+   - Chinese: `~/Documents/notes/{timestamp}--{domain}的秩__rank.md`
+   - English: `~/Documents/notes/{timestamp}--rank-of-{domain}__rank.md`
+   - Japanese: `~/Documents/notes/{timestamp}--{domain}の秩__rank.md`
 3. Report file path to user
