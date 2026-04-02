@@ -49,18 +49,33 @@ grep -rn "hover" src/**/*.css | grep "translateY\|translateX\|scale"
 # 5. Hover-only visual changes (may need tap alternatives)
 grep -c ":hover" src/**/*.css
 
+# === TABLET: Intermediate breakpoint issues ===
+
+# 6. Nav/tab bars with large padding (wrap at iPad width)
+grep -rn "nav-links\|\.tabs\|\.tab-bar" src/**/*.css | grep "padding"
+
+# === CJK: Japanese/Chinese text wrapping ===
+
+# 7. CJK label wrapping risk: min-width: 0 allows flex children to shrink below content
+#    CJK text breaks at EVERY character (unlike English word-based breaks).
+#    Any flex container with min-width: 0 ancestry + small labels = will break mid-word.
+grep -rn "min-width:\s*0" src/**/*.css
+
 # === MODERATE: Typography & flex issues ===
 
-# 6. Flex rows that may need column direction on mobile
+# 8. Flex rows that may need column direction on mobile
 grep -rn "display:\s*flex" src/**/*.css | head -30
 
-# 7. Desktop-only elements that should be hidden
+# 9. Desktop-only elements that should be hidden
 grep -rn "breadcrumb\|\.footer\|\.sidebar\|\.desktop-only\|\.search-bar" src/**/*.css
 
 # === VERIFICATION: Existing mobile support ===
 
-# 8. Count existing 768px breakpoints
+# 10. Count existing 768px breakpoints
 grep -rn "max-width.*768" src/**/*.css
+
+# 11. Count existing 1024px breakpoints (tablet)
+grep -rn "max-width.*1024" src/**/*.css
 ```
 
 **Cross-reference results**: For each `repeat(3+)` grid found in step 1, check if the same selector appears in a `@media (max-width: 768px)` block. Report only UNPROTECTED grids.
@@ -106,6 +121,7 @@ For EACH screenshot, check every item. Mark PASS/FAIL explicitly.
 | B4 | No orphaned text | Section titles stay on one line | Typography |
 | B5 | Text contrast >= 4.5:1 | Normal text against background | WCAG 1.4.3 AA |
 | B6 | Flex containers don't compress text | Text in flex rows remains readable | Layout |
+| B7 | CJK labels don't break mid-character | Short labels (締切, 出荷) stay on one line | CJK Typography |
 
 #### C. Touch Targets
 
@@ -142,12 +158,16 @@ For EACH screenshot, check every item. Mark PASS/FAIL explicitly.
 ### 2.1 Breakpoint Strategy
 
 ```css
+@media (max-width: 1024px) {
+  /* Tablet overrides (iPad portrait) — nav, grid 4→3 col */
+}
+
 @media (max-width: 768px) {
-  /* All mobile overrides consolidated here */
+  /* Mobile overrides — grid 2 col, stack, hide desktop elements */
 }
 ```
 
-**Rule**: ONE `@media` block per CSS file at the bottom. Never scatter.
+**Rule**: Two breakpoints maximum. 1024px for tablet-specific issues (nav overflow, 4→3 col grids). 768px for all mobile overrides.
 
 ### 2.2 Grid → 2-Column or Stack
 
@@ -323,6 +343,58 @@ When a row has quantity controls + action button and compresses too much:
 }
 ```
 
+### 2.13 CJK Label Wrapping Protection
+
+CJK text (Japanese/Chinese) breaks at EVERY character boundary, unlike English which breaks at word boundaries. When a flex container with `min-width: 0` ancestry shrinks, short CJK labels like "締切" (2 chars) split across lines.
+
+```css
+/* Prevent CJK label/date rows from breaking mid-character */
+.date-row,
+.label-row,
+.hero-alert-item-dates {
+  white-space: nowrap;
+}
+```
+
+**Why this happens**: `min-width: 0` on flex parents allows shrinking below intrinsic content width. English "Deadline" stays on one line (word-based break), but Japanese "締切" splits into "締" / "切" (character-based break). `white-space: nowrap` prevents this regardless of container width.
+
+**Where to check**: Every flex container with `min-width: 0` in its ancestry chain that contains CJK text labels. Especially date labels, status labels, and short metadata strings.
+
+### 2.14 Nav/Tab Bar → Tablet Padding Reduction (1024px)
+
+Horizontal nav with 5+ items overflows on iPad (768–1024px). Text wraps to 2 lines.
+
+```css
+@media (max-width: 1024px) {
+  .nav-links a {
+    padding: 10px 12px;    /* from 12px 20px */
+    font-size: 13px;       /* from 14px */
+    gap: 6px;              /* from 8px */
+    white-space: nowrap;
+  }
+}
+```
+
+**Detection**: `grep -rn "nav-links\|\.tabs" *.css | grep "padding.*[1-9][0-9]px"` — padding ≥ 16px on nav items with 5+ siblings = will overflow at iPad width.
+
+### 2.15 Fixed Bottom Elements → Clear Bottom Nav
+
+When a bottom nav exists, fixed elements (`position: fixed; bottom: 0`) must be raised above it.
+
+```css
+@media (max-width: 768px) {
+  .chatbot-button {
+    bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+  .sticky-action-bar,
+  .floating-purchase-bar {
+    bottom: calc(56px + env(safe-area-inset-bottom));
+  }
+}
+```
+
+**Detection**: `grep -rn "position.*fixed" *.css | grep "bottom.*0"` — any `fixed; bottom: 0` that isn't the bottom nav itself.
+
 ---
 
 ## Phase 3: Execution
@@ -373,7 +445,9 @@ Do not attempt these within this skill. Report them as separate tasks.
 | 320px | WCAG reflow minimum |
 | 375px | iPhone SE |
 | 390px | iPhone 14 (primary test) |
-| 768px | Breakpoint threshold |
+| 768px | Mobile breakpoint threshold |
+| 820px | iPad Air (tablet test) |
+| 1024px | Tablet breakpoint threshold |
 
 ## Common Mistakes
 
@@ -388,3 +462,8 @@ Do not attempt these within this skill. Report them as separate tasks.
 | Flex row without `flex-wrap` | Add `flex-wrap: wrap` for titles |
 | `min-width` on flex children | Add `min-width: unset` on mobile |
 | Toolbar in single row | Stack with `flex-direction: column` |
+| Nav padding too wide for iPad | Reduce padding + `white-space: nowrap` at 1024px |
+| Fixed elements behind bottom nav | Raise `bottom` by nav height + safe area |
+| No 1024px breakpoint | Add for nav/tab bars and 4→3 col grids |
+| CJK labels break mid-character | Add `white-space: nowrap` to label/date rows |
+| `min-width: 0` + CJK text | Flex shrink causes char-by-char line breaks |
