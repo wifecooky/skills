@@ -17,6 +17,7 @@ My collection of custom Claude Code skills for productivity and automation.
 | [skill-permissions](./skill-permissions/) | Analyze skill permissions and generate one-time authorization commands |
 | [skill-i18n](./skill-i18n/) | Translate SKILL.md and README.md files into multiple languages for sharing skills internationally |
 | [ceo-skill](./ceo-skill/) | CEO-level project dashboard + COO-level API cost analysis with optimization recommendations |
+| [notebooklm](./notebooklm/) | Full Google NotebookLM automation — multi-source ingestion (URL/PDF/DOCX/EPUB/audio/image/WeChat) + create/chat/generate (podcast/slides/mindmap/quiz/video/report/etc.) |
 
 ## Installation
 

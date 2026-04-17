@@ -18,3 +18,6 @@ temp/
 # Skills with custom endpoints (have their own .git)
 # Add skill names here when they use custom remotes
 # Example: /custom-skill/
+
+# notebooklm auth backup (sensitive Google session cookies)
+.notebooklm-auth-backup/
