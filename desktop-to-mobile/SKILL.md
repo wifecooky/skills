@@ -69,12 +69,22 @@ grep -rn "display:\s*flex" src/**/*.css | head -30
 # 9. Desktop-only elements that should be hidden
 grep -rn "breadcrumb\|\.footer\|\.sidebar\|\.desktop-only\|\.search-bar" src/**/*.css
 
+# === MODAL/OVERLAY: Scroll & z-index issues ===
+
+# 12. Conflicting overflow declarations on same selector
+#    overflow: hidden after overflow-y: auto kills scrolling
+grep -rn "overflow" src/**/*.css | grep -v "overflow-x\|overflow-wrap\|text-overflow"
+
+# 13. Modal/overlay z-index vs bottom nav z-index
+#    Modal overlay must have HIGHER z-index than bottom nav
+grep -rn "z-index" src/**/*.css | grep "modal\|overlay\|bottom-nav\|mobile-nav"
+
 # === VERIFICATION: Existing mobile support ===
 
-# 10. Count existing 768px breakpoints
+# 14. Count existing 768px breakpoints
 grep -rn "max-width.*768" src/**/*.css
 
-# 11. Count existing 1024px breakpoints (tablet)
+# 15. Count existing 1024px breakpoints (tablet)
 grep -rn "max-width.*1024" src/**/*.css
 ```
 
@@ -395,6 +405,41 @@ When a bottom nav exists, fixed elements (`position: fixed; bottom: 0`) must be 
 
 **Detection**: `grep -rn "position.*fixed" *.css | grep "bottom.*0"` — any `fixed; bottom: 0` that isn't the bottom nav itself.
 
+### 2.16 Modal → Mobile Bottom Sheet
+
+Desktop modals centered with `align-items: center` break on mobile: content is clipped behind the bottom nav and can't scroll.
+
+**Three rules for mobile modals:**
+
+1. **z-index > bottom nav** — Modal overlay must be strictly above bottom nav. If bottom nav is `z-index: 1000`, overlay must be `z-index: 1100+`. Same z-index = DOM order wins = nav on top.
+2. **No `overflow: hidden` conflicting with `overflow-y: auto`** — A later `overflow: hidden` declaration on the same selector kills `overflow-y: auto`. The last declaration wins.
+3. **Bottom sheet pattern** — `margin-top: auto` + constrained `max-height` + `overflow-y: auto` on the modal content.
+
+```css
+/* Desktop: centered dialog */
+.modal-overlay {
+  z-index: 1100;  /* MUST be > bottom nav z-index */
+}
+
+/* Mobile: bottom sheet */
+@media (max-width: 768px) {
+  .modal-content {
+    max-height: 90vh;
+    width: 100%;
+    margin-top: auto;
+    border-radius: 12px 12px 0 0;
+    overflow-y: auto;
+    padding-bottom: 24px;
+  }
+}
+```
+
+**Detection**:
+- `grep -rn "z-index" *.css | grep "modal\|overlay"` — compare with bottom nav z-index
+- `grep -A5 "modal" *.css | grep "overflow"` — check for conflicting overflow declarations
+
+**Common trap**: Setting `overflow: hidden` for `border-radius` clipping on the modal container kills `overflow-y: auto` scroll. Use `border-radius` on inner wrapper or remove `overflow: hidden`.
+
 ---
 
 ## Phase 3: Execution
@@ -467,3 +512,6 @@ Do not attempt these within this skill. Report them as separate tasks.
 | No 1024px breakpoint | Add for nav/tab bars and 4→3 col grids |
 | CJK labels break mid-character | Add `white-space: nowrap` to label/date rows |
 | `min-width: 0` + CJK text | Flex shrink causes char-by-char line breaks |
+| `overflow: hidden` after `overflow-y: auto` | Last declaration wins — remove `overflow: hidden` or use on inner wrapper |
+| Modal z-index == bottom nav z-index | Modal overlay must be strictly higher (e.g., 1100 vs 1000) |
+| Modal content not scrollable on mobile | Use bottom sheet: `margin-top: auto` + `max-height: 90vh` + `overflow-y: auto` |

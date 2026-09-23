@@ -21,3 +21,9 @@ temp/
 
 # notebooklm auth backup (sensitive Google session cookies)
 .notebooklm-auth-backup/
+
+# Dependencies
+node_modules/
+
+# Skill runtime logs
+powerpoint-automation/logs/

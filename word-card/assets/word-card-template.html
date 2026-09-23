@@ -94,22 +94,23 @@
 
   /* ── Anchor Zone ── */
   .anchor-zone {
-    padding: 56px 60px;
+    padding: 40px 60px 48px;
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 48px;
-    align-items: start;
+    gap: 40px;
+    align-items: center;
   }
 
   .hanzi-char {
-    font: 400 280px/0.85 var(--serif);
+    font: 400 200px/0.85 var(--serif);
     color: var(--ink);
-    opacity: 0.92;
+    opacity: 0.88;
   }
 
   #constellation {
-    width: 520px;
-    height: 400px;
+    width: 100%;
+    max-width: 620px;
+    height: 460px;
   }
 
   #constellation svg {
@@ -125,11 +126,12 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 0 60px 12px;
+    margin-top: 12px;
   }
 
   /* ── Scene ── */
   .scene {
-    padding: 0 60px 32px;
+    padding: 0 60px 40px;
     font: 400 38px/1.6 var(--sans);
     color: var(--ink-light);
     max-width: 52ch;
@@ -142,7 +144,7 @@
 
   /* ── Example ── */
   .example {
-    padding: 0 60px 32px;
+    padding: 0 60px 40px;
   }
 
   .example .en {
@@ -220,35 +222,31 @@
   @media (max-width: 768px) {
     html, body { width: 100%; }
     .page { width: 100%; }
-    .ref-tag { padding: 36px 24px 0; }
-    .word-title { padding: 24px 24px 0; }
+    .ref-tag { padding: 28px 20px 0; font-size: 14px; }
+    .word-title { padding: 20px 20px 0; }
     .word-title .prefix,
-    .word-title .root { font-size: clamp(60px, 12vw, 152px); }
-    .phonetic-row { padding: 16px 24px 0; gap: 12px; }
-    .phonetic-row .ipa { font-size: clamp(22px, 4vw, 34px); }
-    .phonetic-row .zh { font-size: clamp(24px, 5vw, 36px); }
-    .roots-line { padding: 20px 24px 0; font-size: clamp(20px, 4vw, 30px); }
+    .word-title .root { font-size: clamp(48px, 14vw, 120px); }
+    .phonetic-row { padding: 12px 20px 0; gap: 10px; flex-wrap: wrap; }
+    .phonetic-row .ipa { font-size: clamp(18px, 4.5vw, 28px); }
+    .phonetic-row .zh { font-size: clamp(20px, 5vw, 30px); }
+    .section-label { padding: 0 20px 8px; font-size: 13px; letter-spacing: 0.1em; }
+    .roots-line { padding: 16px 20px 0; font-size: clamp(16px, 4.2vw, 24px); }
     .anchor-zone {
       grid-template-columns: 1fr;
-      gap: 32px;
-      padding: 40px 24px;
+      gap: 20px;
+      padding: 28px 20px;
+      justify-items: center;
     }
-    .hanzi-char { font-size: clamp(120px, 40vw, 280px); }
-    #constellation { width: 100%; max-width: 420px; }
-    .section-label { padding: 0 24px 8px; font-size: clamp(14px, 3vw, 20px); }
-    .scene { padding: 0 24px 24px; font-size: clamp(24px, 5vw, 38px); }
-    .example { padding: 0 24px 24px; }
-    .example .en { font-size: clamp(22px, 4.5vw, 34px); }
-    .example .zh-note { font-size: clamp(20px, 4vw, 30px); }
-    .epiphany { padding: 36px 24px 40px; }
-    .epiphany .line { font-size: clamp(26px, 5.5vw, 42px); }
-    .colophon { padding: 20px 24px; }
-  }
-
-  @media (max-width: 520px) {
-    .anchor-zone { padding: 28px 24px; gap: 24px; }
-    .hanzi-char { text-align: center; }
-    #constellation { margin: 0 auto; height: 320px; }
+    .hanzi-char { font-size: clamp(100px, 32vw, 200px); text-align: center; }
+    #constellation { width: 100%; max-width: 100%; height: 280px; }
+    .scene { padding: 0 20px 20px; font-size: clamp(18px, 4.8vw, 30px); max-width: none; }
+    .example { padding: 0 20px 20px; }
+    .example .en { font-size: clamp(17px, 4.5vw, 28px); }
+    .example .zh-note { font-size: clamp(15px, 4vw, 24px); }
+    .epiphany { padding: 24px 20px 32px; }
+    .epiphany .line { font-size: clamp(20px, 5.5vw, 34px); }
+    .colophon { padding: 16px 20px 24px; }
+    .colophon .who span { font-size: 18px; }
   }
 </style>
 </head>
@@ -357,7 +355,7 @@
     .force('charge', d3.forceManyBody().strength(-180))
     .force('x', d3.forceX(d => d.type === 'hub' ? CX : (familyX[d.family] || CX)).strength(d => d.type === 'hub' ? 1 : 0.35))
     .force('y', d3.forceY(CY).strength(0.06))
-    .force('collide', d3.forceCollide(55))
+    .force('collide', d3.forceCollide(62))
     .alphaDecay(0.015);
 
   // Fix hub at center
@@ -453,6 +451,15 @@
     t.append('tspan').attr('fill', ACCENT).attr('font-weight', 600).text(d.suf);
   });
 
+  // Chinese meaning — always visible (for print)
+  nodeEls.append('text')
+    .attr('text-anchor', 'middle')
+    .attr('dy', '37')
+    .attr('font-size', '12')
+    .attr('fill', INK_L)
+    .attr('opacity', 0.9)
+    .text(d => d.zh);
+
   // ── Flow particles ──
   const flowParticles = [];
   links.forEach(link => {
@@ -547,7 +554,7 @@
     wordNodes.forEach(n => {
       if (n.type !== 'hub') {
         n.x = Math.max(50, Math.min(W - 50, n.x));
-        n.y = Math.max(30, Math.min(H - 30, n.y));
+        n.y = Math.max(40, Math.min(H - 45, n.y));
       }
     });
     linkEls

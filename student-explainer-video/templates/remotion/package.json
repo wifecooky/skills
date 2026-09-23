@@ -1,0 +1,22 @@
+{
+  "name": "student-explainer",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@remotion/cli": "4.0.526",
+    "@remotion/media": "4.0.526",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.526"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render",
+    "srt": "node scripts/make-srt.mjs",
+    "check": "tsc"
+  }
+}

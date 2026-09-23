@@ -1,0 +1,33 @@
+{
+  "id": "Explainer",
+  "title": "片名",
+  "subtitle": "",
+  "author": "thewang.net",
+  "credits": [],
+  "titleSeconds": 2.5,
+  "endSeconds": 4,
+  "width": 1920,
+  "height": 1080,
+  "font": "\"PingFang SC\", \"Hiragino Sans GB\", \"Noto Sans CJK SC\", \"Microsoft YaHei\", sans-serif",
+  "palette": {
+    "bg": "#FAF7F0",
+    "ink": "#1F2A37",
+    "muted": "#6B7280",
+    "line": "#334155",
+    "fill": "#E8EEF6",
+    "objects": {
+      "a": "#E07A1F",
+      "b": "#1E88E5",
+      "c": "#7E57C2"
+    }
+  },
+  "caption": {
+    "fontSize": 46,
+    "bottom": 56
+  },
+  "bgm": {
+    "file": "bgm/pad-loop.mp3",
+    "volume": 0.16,
+    "duck": 0.35
+  }
+}

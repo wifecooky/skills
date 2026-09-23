@@ -1,0 +1,4 @@
+interface:
+  display_name: "学生科普动画"
+  short_description: "制作面向学生的中文教学动画，支持自然配音、男女声试听与字幕同步"
+  default_prompt: "使用 $student-explainer-video，把勾股定理做成面向初中生的中文动画，提供男女声试听，用问题引导学生理解，并交付带字幕的视频。"
