@@ -1,11 +1,11 @@
 ---
 name: "comic-explainer-video"
-description: "Make a 9:16 comic-style Chinese explainer video with voiceover and subtitles: research, script, HTML preview first, choose TTS voice, then render MP4. Phone safe-area layout by default; supports Chinese-English mixed voiceover for English-learning topics and publishing to 小红书/视频号/YouTube via Claude in Chrome."
+description: "Make a 9:16 comic-style (or picture-book style) Chinese explainer video with voiceover and subtitles: research, script, HTML preview first, choose TTS voice, then render MP4. Phone safe-area layout by default, optional 3:4 crop; channel characters with their own voices; supports Chinese-English mixed voiceover for English-learning topics and publishing to 小红书/视频号/YouTube via Claude in Chrome."
 ---
 
 # 漫画风竖屏科普解说视频（comic-explainer-video）
 
-把一个知识点/新闻做成 **9:16 手机竖屏、漫画风、带配音字幕** 的科普解说视频。核心原则：**先交付可拖动的 HTML 预览，用户确认后再渲染 MP4**；配音可选、可换、可用用户自己的录音；生成的配音全部进项目包。
+把一个知识点/新闻做成 **9:16 手机竖屏、漫画风（或绘本风）、带配音字幕** 的科普解说视频，可另出 3:4 版。核心原则：**先交付可拖动的 HTML 预览，用户确认后再渲染 MP4**；配音可选、可换、可用用户自己的录音；生成的配音全部进项目包。
 
 ## 工作流
 
@@ -19,28 +19,37 @@ description: "Make a 9:16 comic-style Chinese explainer video with voiceover and
 6. **生成配音 + 预览**：
    默认配音 = **微软 Edge 晓晓 + 云希**（用户认可；Kokoro/浏览器语音机器感强，不作默认，Kokoro 仅在 Edge 不可用时兜底）：
    `python kit/build.py proj --voice "files:proj/edge_voices/zh-CN-XiaoxiaoNeural=晓晓（微软 Edge）" --voice "files:proj/edge_voices/zh-CN-YunxiNeural=云希（微软 Edge）"`（Edge 逐句音频先生成：云端沙箱可直接跑 `timeout 280 python3 kit/edge_batch.py proj zh-CN-XiaoxiaoNeural zh-CN-YunxiNeural --rate 1.1`，tts.py 会自动改用系统证书过代理；超时就分声音多跑几次，已生成的句子会跳过。英语学习类视频有 `"en": true` 的英文句时改用 `python3 kit/gen_edge_mixed.py proj`：中文句晓晓/云希，英文句 Jenny/Guy 母语声音、稍慢语速。）
+   **角色台词**（带 `"voice"` 的句子，见 script.json 格式）由 edge_batch.py 处理：每条配音轨里这句都换成角色自己的声音，所以要走 edge_batch → `files:` 这条路；直接用 `edge:` 引擎 build 或用 gen_edge_mixed.py 时 `voice` 字段不生效。改了某句的 `voice` 但没改文字时，build 的逐句缓存认不出（缓存键只看文字），要删掉 `proj/build/voices/<id>/meta.json` 里那一句的条目再 build。
    兜底：`python kit/build.py proj --voice "kokoro:4@1.25=离线女声（Kokoro）"`。第一条 --voice 为预览默认配音；`--drop <spec>` 去掉某条。
    产出 `proj/build/preview.html`（音轨内嵌，单文件可离线打开）。逐句缓存：改台词后重跑只重配改动的句子。至少要有一个 --voice。2 核约 1.5 秒/句。
 7. **自检**：`python kit/render.py proj --sheet` → Read `proj/build/sheet.png`（每场景末帧拼图），检查文字溢出、遮挡、字幕挡画面；需要时 `--at 12.3 45.6` 看中间帧；`--cover` 导出 `build/cover.png` 并 Read 检查封面。**手机安全区检查**：`python kit/safe_check.py proj/build/snap/at_XX.png` 把平台遮挡区画成红/橙色叠加层，Read 检查标题、画面、字幕都不在红区内。可选：用 sherpa-onnx paraformer 中文 ASR（GitHub release 的 sherpa-onnx-paraformer-zh-small-2024-03-09）抽查读音。
 8. **先交付预览**：复制 preview.html 和 cover.png（命名 `封面_<标题>.png`）到输出目录并发送，说明可拖动/跳场景/切配音/导出台词和 SRT、页内「● 录制视频」（Chrome/Edge 选“此标签页”共享，实时录下竖屏区域并自动下载 MP4/WebM）与「高清渲染」按钮（复制一句话给 Claude），以及可导入或逐句录制自己的配音（见下方「用户自己的配音」）；请用户确认或提修改。按反馈改 → 重跑 6、7。
 9. **确认后渲染（用户选定配音后主动做，不要等用户找按钮）**：`python kit/render.py proj --voice <id|spec|名称>` → `proj/build/<id>.mp4`（1080×1920，30fps，H.264+AAC，自动把 cover.png 写入文件缩略图）。可 `--start/--end` 先渲一段。2 核约 1 分钟渲染 15 秒视频。**单核或单条命令有时限（如 300 秒）时 render.py 会被杀掉**：先 `render.py proj --cover`，再反复运行 `timeout 290 python3 kit/render_resume.py proj --voice <名称> --budget 250 --upload` 直到打印 DONE（断点续截帧，约 8 帧/秒；帧齐后自动合成 MP4、写入封面缩略图；`--upload` 另出 ≤9.5MB 的 `<id>_upload.mp4`）。
+   **3:4 版**（用户要横宽一些的版本、或平台推荐 3:4 时）：直接从 9:16 成片裁，不用重新渲染：`ffmpeg -i proj/build/<id>.mp4 -vf crop=1080:1440:0:144 -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a copy -movflags +faststart proj/build/<id>_3x4.mp4`（保留舞台 y 72–792：顶栏、场景、字幕、章节条都在，上下水印和页脚被裁掉）。
+   **绘本版 / 漫画版**：同一份 script.json 和配音可以各出一版。改 `theme` 后重跑 build（逐句缓存命中，不会重新配音）→ render，把第一版的 mp4 先改名，避免被覆盖。
 10. **交付项目包（必须含生成的配音）**：`python kit/pack.py proj --out <输出目录>/<标题>_项目包.zip [--mp4 proj/build/<id>.mp4]`。包内含 kit、README、一键生成Edge配音.command、script.json、scenes.html、preview.html、时间轴，以及 **配音/<声音名>/**：完整配音_含音乐.mp3、纯人声.mp3、字幕.srt、逐句/NN_台词.mp3，另有 配音/台词.txt；逐句 mp3 同时充当 build 缓存（解压后重跑 build 不会重新合成）。检查 zip < 30MB（超了就不带 --mp4，视频单独发送）。
 
 ## script.json 格式
 ```json
-{"title":"视频标题","badge":"数学漫画","footer":"本片为科普解说 · 细节已简化","watermark":"@频道名",
+{"title":"视频标题","badge":"数学漫画","footer":"本片为科普解说 · 细节已简化","watermark":"@双言两语",
  "sources":"资料：……（可含 <sup>）",
  "cover":{"title":"其实只会<br>“猜下一个字”","kicker":"你每天用的 ChatGPT","sub":"3 分钟看懂大语言模型","badge":"AI 漫画科普","art":"<div class=\"abs\" …>角色/气泡</div>","dur":1.6},
  "timing":{"pre":0.8,"gap":0.28,"scene_gap":0.7,"tail":3.0},
  "music":{"on":true,"volume":0.10},
  "sfx":[{"type":"shot","line":3,"at":-0.25},{"type":"ding","line":39,"at":"end-0.3"}],
- "lines":[{"scene":"s1","sub":"字幕文字，关键词用“引号”会标红","say":"可选：给 TTS 的念法"}]}
+ "theme":"picturebook",
+ "lines":[{"scene":"s1","sub":"字幕文字，关键词用“引号”会标红","say":"可选：给 TTS 的念法"},
+  {"scene":"s1","sub":"小双：那哥德巴赫猜想被解决了吗？","say":"那哥德巴赫猜想被解决了吗？","voice":"zh-CN-XiaoyiNeural|+25Hz@1.0","role":"kid"}]}
 ```
+`theme`（可选）：`"picturebook"` = 暖色绘本风（奶油纸底、棕色描边、粉彩填充、柔和投影，适合亲子频道），CSS 在 build.py 的 `THEMES` 里，会自动把 SVG 角色的黑描边换成棕色；不写 = 默认粗黑描边漫画风。scenes.html 里自定义的颜色和描边尽量用 `var(--ink,#141414)`、`var(--shadow,…)`，这样两种主题都能跟着变。
+**角色台词**：角色说的话单独成句，`sub` 写成「小双：……」（带角色名，观众知道谁在说话），`say` 去掉角色名只留台词；`"voice":"音色|音调@语速"` 指定角色声音（小双用 `zh-CN-XiaoyiNeural|+25Hz@1.0`，晓伊升调更像小孩）；`"role":"kid"` 让这句字幕换成粉色框（runtime.js 把 role 写到字幕的 class 上，base_head.html 和绘本主题都定义了 `#sub.kid`）。角色台词一片 2–4 句就够，用在提问、质疑、收尾抛问题。
 英语学习类视频：英文例句一行一句，加 `"en": true`（gen_edge_mixed.py 用英语母语声音读），字幕只放英文、下一句给中文翻译；连读演示用 `"sub":"good at → goo-dat","say":"good at. good at.","en":true`。引用原视频/采访时只取词汇和表达，例句自己写，不逐字搬运原台词。
-`watermark`（可选，频道名如 `"@双言两语"`，留空不显示）：顶部留白一处、底部留白一处大号淡水印，外加画面内一枚小水印，每换一个场景在左下/右下角之间换位置，防止被裁掉。首次做视频时问一次频道名，之后沿用。
+`watermark`（可选，留空不显示；用户的视频号叫「双言两语」，默认填 `"@双言两语"`）：顶部留白一处、底部留白一处大号淡水印，外加画面内一枚小水印，每换一个场景在左下/右下角之间换位置，防止被裁掉。默认就用「双言两语」，不用再问；用户说换频道时再改。
 sfx 类型：shot（狙击枪声）、ding（完成音）、pop、whoosh；`line` 为 0 起的行号，`at` 为相对该句开始的秒数，或 `"end±x"`。
 
 **写作规则**：每句字幕 ≤ 28 字（手机两行内）；一句一个意思；用生活类比（贴牌、原子、门的宽窄）替代术语，术语第一次出现时点名并解释；数字写法给 `say`（如 `"4×10¹⁸"` → `"4乘10的18次方"`，`"1＋2"` → `"1加2"`）；英文专名直接写（kokoro 能读 GPT、Astra、AI），melo 引擎读不好时用 `say` 改写；开头 3 句内给悬念，结尾留问题；必须有“冷静一下/局限”场景；整片 50–60 句 ≈ 3.5 分钟。
+
+**讲“弱化版/宽松版”结果时**（如“1＋2”之于哥德巴赫猜想、某定理的特例）：先用一两句讲清原问题卡在哪（为什么做不出来），再把原题和新题并排放（左右两个 panel 或上下两行），点明放宽在哪一处（原题要求什么 → 新题只要求什么），说清两者的关系（新题是原题的必要一步/更弱的结论/不能推出原题）；关键成果要给具体算例（如 100 = 3＋97，或 100 = 素数＋两个素数之积，写出数字），不要只说“证明了某某”。
 
 ## 封面与发布
 - **封面必做**：分发平台需要封面；页内「录制视频」录出的文件浏览器无法写入缩略图，所以封面做成片头卡：`cover` 存在时视频前 `dur` 秒（默认 1.6）显示全屏封面（黄底放射线 + 白框大标题），正片第一句自动顺延，第一帧即封面。
@@ -50,12 +59,14 @@ sfx 类型：shot（狙击枪声）、ding（完成音）、pop、whoosh；`line
 
 ## 发布到小红书 / 视频号 / YouTube（Claude in Chrome）
 - 文案：每个平台单独写标题、简介、话题（小红书标题 ≤20 字；视频号短标题要短，约 6–16 字，长标题放简介首行；YouTube 时长 <3 分钟可发 Shorts，标题加 `#Shorts`）。用户说“你来定”就各给一个，不再列选项。
-- 浏览器：先 `tabs_context_mcp` 确认扩展已连接；连不上就给安装链接 https://chromewebstore.google.com/detail/fcoeoabgfenejglbffodgkkbkcdhcgfn 并请用户在侧边栏用同一账号登录。
+- 浏览器：**用用户已登录的 Chrome，通过 Claude in Chrome 的工具操作**（`tabs_context_mcp` / `navigate` / `computer` 截图点击 / `find` / `form_input`）。桌面级 computer use 操作不了浏览器，不要用。先 `tabs_context_mcp` 确认扩展已连接；连不上就给安装链接 https://chromewebstore.google.com/detail/fcoeoabgfenejglbffodgkkbkcdhcgfn 并请用户在侧边栏用同一账号登录。
 - **登录由用户完成**（视频号助手微信扫码 / 快捷登录、小红书、YouTube），Claude 不输密码、不扫码、不过验证码。
-- **上传文件由用户完成**：视频号助手发表页 `https://channels.weixin.qq.com/platform/post/create` 的表单在独立组件里，find/read_page 找不到文件框，file_upload 用不了；file_upload 单次也只能传 ≤10MB。所以让用户把视频（用高清版即可）和封面（「封面预览」→上传）拖进去，Claude 再接手。
-- 视频号由 Claude 按截图坐标点击并输入：视频描述（简介 + `#话题 ` 空格结尾会变成话题）→ 短标题 → 位置选「不显示位置」→ 合集 → 视频标注选「含AI生成内容」（AI 配音/AI 生成画面时，按国内 AI 生成内容标识要求标注）→ 声明原创。描述框输入后会变高，下面的字段会下移，**每步后重新截图再点**。
-- **必须停下来问用户的点**：声明原创弹窗要勾选同意《原创声明须知》《使用条款》（代用户同意条款，需用户明确说同意）；最后的「发表」按钮（用户明确说“发表”才点；不同平台分别确认）。合集、活动、链接等用户偏好项先问。
-- 视频号发表后不能替换视频，只能删除重发（播放数据清零）——所以发布前先用 safe_check 和手机预览确认版式。发表后截图视频管理列表确认状态（如「原创审核中」）。
+- **视频文件只能由用户拖进去**：视频号助手发表页 `https://channels.weixin.qq.com/platform/post/create` 的表单在独立组件里，find/read_page 找不到文件框，file_upload 用不了（file_upload 单次也只能传 ≤10MB）。封面同理（「封面预览」→ 上传，由用户拖）。
+- **文字字段可以先填**：不用等视频上传完。打开发表页后 Claude 先按截图坐标点击并输入：视频描述（简介 + `#话题 ` 空格结尾会变成话题）→ 短标题 → 位置选「不显示位置」→ 合集 → 视频标注选「含AI生成内容」（AI 配音/AI 生成画面时，按国内 AI 生成内容标识要求标注）；同时请用户把视频拖进上传区，上传和填写并行。描述框输入后会变高，下面的字段会下移，**每步后重新截图再点**。
+- **合集**：点合集下拉 →「推荐合集」里找到目标合集 → 点「添加」。不确定加哪个合集先问用户。
+- **声明原创**：打开「声明原创」后，弹窗里要先勾选同意《原创声明须知》《使用条款》才能确定。这是代用户同意条款，**勾选前要用户在对话里明确说同意**。
+- **必须停下来问用户的点**：上面的同意条款；最后的「发表」按钮（用户明确说“发表”才点；不同平台分别确认）。合集、活动、链接等用户偏好项先问。
+- 视频号发表后不能替换视频，只能删除重发（播放数据清零），所以发布前先用 safe_check 和手机预览确认版式。发表后截图视频管理列表，确认状态（如「原创审核中」）。
 
 ## 画面组件速查（舞台 540×960，渲染时 ×2）
 - **手机安全区版式（默认，已内置于 base_head/base_tail）**：手机竖屏播放时，iPhone 等长屏会把 9:16 放大铺满（左右各裁约 25px），顶部被状态栏和返回/更多按钮盖住（0–86），底部被合集、作者提示、简介和按钮盖住（约 780 以下），小红书/YouTube Shorts 右侧还有点赞评论按钮（x>465、y 470–780）。所以：
@@ -64,7 +75,7 @@ sfx 类型：shot（狙击枪声）、ding（完成音）、pop、whoosh；`line
   - 字幕框 604–736（左右各留 56px，自动）；**章节条** 744–776（自动：由各场景 data-chap「·」后的短标题生成胶囊，当前章节黄色高亮并居中，已播章节变暗，所以 data-chap 短标题控制在 8 字内）；页脚 782–960 只放一行小字和底部水印，**片尾资料来源在手机上会被遮挡**，同时要写进发布简介。
   - 改版式只改 base_head.html 的 CSS（#top/#prog/#safe/#subwrap/#chapbar/#foot/#cover），不要在 scenes.html 里再包一层 #safe。
 - 类：`.panel`（白底粗黑框+投影，加 `.yel/.red/.blue`）、`.abs`、`.hd`（粗体）、`.num`、`.sfx`（黄字黑描边拟声词，如 砰！）、`.stampbox`（红色印章框）、`.bubble`（对话气泡）、`.tag`（黑底白字标签）、`.card`（112×150 卡片）、`.chip`（行内小色块）、`.speed`（放射速度线背景）、`.ok`（绿色）。
-- SVG 符号 `<svg width=W height=H><use href="#id"/></svg>`：`astra`（机器人，200×250 比例，胸口 GPT-6/ASTRA，可改）、`kid`（小孩旁白 160×210）、`wig`（18 世纪假发学者 170×230，用 `style="--coat:#2f6fdb"` 换外套色）、`rifle`（300×70）、`target`（靶）、`cross`（准星）、`burst`（爆炸框）。需要新角色/道具时在 scenes.html 顶部自行加 `<svg><defs><symbol>`，保持粗黑描边+平涂；只画原创角色，不画已知 IP 角色。
+- SVG 符号 `<svg width=W height=H><use href="#id"/></svg>`：`astra`（机器人，200×250 比例，胸口 GPT-6/ASTRA，可改）、`kid`（小孩旁白 160×210）、`wig`（18 世纪假发学者 170×230，用 `style="--coat:#2f6fdb"` 换外套色）、`rifle`（300×70）、`target`（靶）、`cross`（准星）、`burst`（爆炸框）；频道角色 `xiaoi`（小I，蓝色 AI 机器人，200×250，胸口写“小I”）和 `shuang`（小双，双丸子头小女孩，160×210，配音晓伊升调，见“角色台词”）——做频道内容时优先用这两个固定角色出镜、对话。需要新角色/道具时在 scenes.html 顶部自行加 `<svg><defs><symbol>`，保持粗黑描边+平涂；只画原创角色，不画已知 IP 角色。
 - 动画：`data-a="名称@行号±秒 名称@行号±秒"`，行号 0 起；`@s` 表示场景开始。第一个动画决定出场前隐藏状态。名称：pop fade fadeout up down left right stamp stamp0 shake bob spin40 pulse2 flash flip count aim zoomin twinkle hl dim grow draw。叠加 transform 冲突时用外层 div 包一层（如入场 left + 内层 bob）。
 - 示例（第 3–4 句出现靶子、第 4 句“砰”）：
 ```html
@@ -122,6 +133,7 @@ html,body{margin:0;background:#1d1d22}
 #subwrap{position:absolute;left:56px;right:56px;top:604px;height:132px;display:flex;align-items:flex-start;justify-content:center;z-index:15}
 #sub{background:#ffd23f;border:4px solid #141414;box-shadow:6px 6px 0 #141414;padding:10px 14px;font-size:23px;font-weight:900;line-height:1.38;text-align:center;border-radius:4px;max-width:100%;transform-origin:50% 0}
 #sub em{font-style:normal;color:#e8233a}
+#sub.kid{background:#ffd6e0;transform:rotate(-1deg)}   /* 角色台词（lines[].role="kid"）的字幕样式 */
 #chapbar{position:absolute;left:25px;right:25px;top:744px;height:32px;overflow:hidden;z-index:16}
 #chapstrip{position:absolute;left:0;top:2px;display:flex;gap:6px;white-space:nowrap}
 #chapstrip .cb{font-size:14px;font-weight:900;line-height:1;padding:6px 11px;border-radius:14px;border:2px solid #141414;background:#fff;color:#141414}
@@ -260,6 +272,34 @@ svg{overflow:visible}
   <path d="M100 4 V70 M100 130 V196 M4 100 H70 M130 100 H196" stroke="#141414" stroke-width="7"/>
   <circle cx="100" cy="100" r="6" fill="#e8233a"/>
  </symbol>
+<symbol id="xiaoi" viewBox="0 0 200 250">
+  <line x1="100" y1="42" x2="100" y2="14" stroke="#141414" stroke-width="5"/>
+  <circle cx="100" cy="10" r="10" fill="#ff4d5e" stroke="#141414" stroke-width="4"/>
+  <rect x="36" y="40" width="128" height="96" rx="30" fill="#fff" stroke="#141414" stroke-width="5"/>
+  <rect x="26" y="72" width="14" height="32" rx="6" fill="#3a86ff" stroke="#141414" stroke-width="4"/>
+  <rect x="160" y="72" width="14" height="32" rx="6" fill="#3a86ff" stroke="#141414" stroke-width="4"/>
+  <rect x="52" y="60" width="96" height="52" rx="20" fill="#1c2b4d" stroke="#141414" stroke-width="4"/>
+  <ellipse class="eye" cx="80" cy="86" rx="10" ry="12" fill="#5ef2ff"/>
+  <ellipse class="eye" cx="120" cy="86" rx="10" ry="12" fill="#5ef2ff"/>
+  <circle cx="76" cy="81" r="3" fill="#fff"/><circle cx="116" cy="81" r="3" fill="#fff"/>
+  <path d="M86 124 Q100 132 114 124" stroke="#141414" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <rect x="58" y="138" width="84" height="74" rx="20" fill="#3a86ff" stroke="#141414" stroke-width="5"/>
+  <text x="100" y="180" text-anchor="middle" font-size="26" font-weight="900" fill="#fff">小I</text>
+  <rect x="68" y="210" width="22" height="34" rx="8" fill="#fff" stroke="#141414" stroke-width="5"/>
+  <rect x="110" y="210" width="22" height="34" rx="8" fill="#fff" stroke="#141414" stroke-width="5"/>
+ </symbol>
+ <symbol id="shuang" viewBox="0 0 160 210">
+  <circle cx="40" cy="30" r="21" fill="#2b2b2b" stroke="#141414" stroke-width="4"/><circle cx="120" cy="30" r="21" fill="#2b2b2b" stroke="#141414" stroke-width="4"/>
+  <path d="M44 140 Q80 126 116 140 L128 208 H32 Z" fill="#ff4d5e" stroke="#141414" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M66 136 L80 152 L94 136" fill="#fff" stroke="#141414" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="80" cy="88" r="54" fill="#ffe1bf" stroke="#141414" stroke-width="5"/>
+  <path d="M26 86 Q24 36 80 34 Q136 36 134 86 Q126 64 110 60 Q104 72 92 68 Q86 58 80 60 Q74 58 68 68 Q56 72 50 60 Q34 64 26 86 Z" fill="#2b2b2b" stroke="#141414" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="54" cy="44" r="7" fill="#ffd23f" stroke="#141414" stroke-width="3"/><circle cx="106" cy="44" r="7" fill="#ffd23f" stroke="#141414" stroke-width="3"/>
+  <ellipse class="eye" cx="61" cy="94" rx="8" ry="11" fill="#141414"/><ellipse class="eye" cx="99" cy="94" rx="8" ry="11" fill="#141414"/>
+  <circle cx="58" cy="89" r="3" fill="#fff"/><circle cx="96" cy="89" r="3" fill="#fff"/>
+  <circle cx="45" cy="112" r="8" fill="#ffb3b3"/><circle cx="115" cy="112" r="8" fill="#ffb3b3"/>
+  <path d="M68 116 Q80 128 92 116" stroke="#141414" stroke-width="4" fill="none" stroke-linecap="round"/>
+ </symbol>
 </defs></svg>
 <div id="bg"></div>
 <div id="top"><span class="pill">{{BADGE}}</span><span id="chap"></span></div>
@@ -344,7 +384,7 @@ function seek(t){
   let li=-1; for(let i=0;i<lines.length;i++){ if(TL.lines[i].start<=t+0.05) li=i; }
   const show= li>=0 && lines[li].scene===sc.id && (li<lines.length-1 || t<TL.lines[li].end+1.2);
   subW.style.display=show?'flex':'none';
-  if(show){ if(li!==lastSub){subEl.innerHTML=esc(lines[li].sub);lastSub=li;}
+  if(show){ if(li!==lastSub){subEl.innerHTML=esc(lines[li].sub);subEl.className=lines[li].role||'';lastSub=li;}
     const k=Math.min(1,(t-TL.lines[li].start+0.05)/0.18), s=0.85+0.15*(1-Math.pow(1-k,3));
     subEl.style.transform=`scale(${s}) rotate(${li%2?0.6:-0.6}deg)`; subEl.style.opacity=Math.min(1,k*1.6);}
   prog.style.width=(540*Math.min(1,t/TL.total))+'px';
@@ -987,6 +1027,48 @@ def mix(proj, d, cfg, TL, out):
     out_a = out_a / max(1, np.abs(out_a).max()/0.97)
     sf.write(out, out_a, sr)
 
+THEMES = {'picturebook': '''
+/* theme: picturebook — warm picture-book look for parent-child channels (cream paper, brown ink, pastel fills, soft shadows) */
+#stage{background:#fbf3e4;color:#3d2f22}
+#bg{background:radial-gradient(circle,rgba(120,90,60,.07) 1.2px,transparent 1.7px) 0 0/14px 14px,radial-gradient(ellipse at 30% 0%,#fffaf0 0,transparent 70%),#fbf3e4}
+#top{background:#fbf3e4;color:#5a4632;border-bottom:3px dashed #d9c3a0}
+#top .pill{background:#ffb4a2;color:#5a4632;font-weight:800;border-radius:14px;transform:rotate(-2deg)}
+#chap{font-weight:800;color:#5a4632}
+.panel{border:3px solid #5a4632;box-shadow:4px 5px 0 rgba(90,70,50,.18);border-radius:18px;background:#fffdf7}
+.yel{background:#ffe8a3!important}.red{background:#ffb4a2!important;color:#5a4632!important}.blue{background:#bfe3ff!important;color:#3d2f22!important}
+.hd{font-weight:800}
+.bubble{border:3px solid #5a4632;box-shadow:3px 4px 0 rgba(90,70,50,.18);background:#fffdf7;color:#3d2f22;font-weight:800}
+.sfx{color:#ff8a65;-webkit-text-stroke:2.5px #5a4632;text-shadow:3px 4px 0 rgba(90,70,50,.22);font-style:normal}
+.stampbox{border:4px double #e0603f;color:#e0603f;border-radius:16px;background:rgba(255,253,247,.9)}
+.tag{background:#5a4632;border-radius:10px}
+.card,.chip{border-color:#5a4632!important}
+.speed{background:repeating-conic-gradient(rgba(255,190,110,.20) 0 6deg,transparent 6deg 18deg)}
+#sub{background:#fffdf7;border:3px solid #5a4632;box-shadow:4px 5px 0 rgba(90,70,50,.2);border-radius:18px;color:#3d2f22;font-weight:800}
+#sub em{color:#e0603f}
+#foot{background:repeating-linear-gradient(-45deg,rgba(120,90,60,.05) 0 8px,transparent 8px 16px),#f6ead4;border-top:3px dashed #d9c3a0}
+#foot .tip{color:#8a7358}
+#stage [stroke="#141414"]{stroke:#5a4632}
+#stage [fill="#141414"]{fill:#5a4632}
+#cover{background:#fdecc8}
+#cover .cv-rays{background:repeating-conic-gradient(rgba(255,170,90,.16) 0 5deg,transparent 5deg 15deg)}
+#cover .cv-dots{background:radial-gradient(circle,rgba(120,90,60,.08) 1.4px,transparent 1.9px) 0 0/14px 14px}
+#cover .cv-title{border:4px solid #5a4632;box-shadow:6px 8px 0 rgba(90,70,50,.2);border-radius:26px;color:#3d2f22;font-weight:800;background:#fffdf7}
+#cover .cv-title em{color:#e0603f}
+#cover .cv-kicker{color:#5a4632;font-weight:800}
+#cover .cv-sub span{background:#5a4632;border-radius:14px;font-weight:800}
+#cover .cv-badge{border-radius:14px}
+.scene :not(.stampbox):not(.sfx){border-color:#5a4632!important}
+.scene [style*="0 #141414"]{box-shadow:4px 5px 0 rgba(90,70,50,.18)!important}
+#stage{--ink:#5a4632;--shadow:4px 5px 0 rgba(90,70,50,.18)}   /* scene classes: use var(--ink, #141414) / var(--shadow, …) to follow the theme */
+
+#prog{background:#f28c6b}#progbg{background:#eadcc4}
+#chapstrip .cb{border-color:#5a4632;color:#5a4632;background:#fffdf7}#chapstrip .cb.done{background:#5a4632;color:#fff}#chapstrip .cb.on{background:#ffe8a3;box-shadow:2px 2px 0 rgba(90,70,50,.25)}
+#wmtop{color:rgba(90,70,50,.42)}#wmbot{color:rgba(90,70,50,.14)}#wm{color:rgba(90,70,50,.32)}
+#cover{background:#fdecc8}
+#cover .cv-badge{background:#5a4632;color:#ffe8a3}
+#sub.kid{background:#ffe0e6;border-color:#e0603f}
+'''}   # script.json "theme": "picturebook"（暖色绘本风，适合亲子频道）；不写 = 默认粗黑描边漫画风
+
 def cover_html(cv):
     """Title card shown for the first cover.dur seconds (also the video's first frame / thumbnail).
     script.json: "cover": {"title": "AI 只会<br>“猜下一个字”", "kicker": "…", "sub": "…", "badge": "…", "art": "<svg…>", "dur": 1.6}"""
@@ -1004,7 +1086,7 @@ def preview(proj, cfg, tracks, embed=True):
     tail = open(os.path.join(KIT, 'base_tail.html'), encoding='utf-8').read()
     rt = open(os.path.join(KIT, 'runtime.js'), encoding='utf-8').read()
     scenes = open(os.path.join(proj, 'scenes.html'), encoding='utf-8').read()
-    extra = cfg.get('extra_css', '')
+    extra = THEMES.get(cfg.get('theme', ''), '') + cfg.get('extra_css', '')
     P = {'title': cfg.get('title', ''), 'lines': cfg['lines'], 'timing': cfg['timing'], 'tracks': []}
     cv = cfg.get('cover'); P['cover'] = cv.get('dur', 1.6) if cv else 0
     for tr in tracks:
@@ -1223,10 +1305,15 @@ def main():
         print(f'== {v}  语速 {a.rate}  ({len(lines)} 句)', flush=True)
         for i, o in enumerate(lines):
             text = tts.clean(o.get('say') or re.sub(r'<[^>]+>', '', o['sub']))
-            key = hashlib.md5(f'{text}|{a.rate}|{a.pitch}|{a.volume}'.encode()).hexdigest()
+            # 角色台词："voice": "zh-CN-XiaoyiNeural|+25Hz@1.0"（音色|音调@语速）——所有配音轨里这句都用该角色声音
+            rv = o.get('voice'); vname, pitch, rate = v, a.pitch, a.rate
+            if rv:
+                rv, _, r = rv.partition('@'); rate = float(r) if r else rate
+                vname, _, pt = rv.partition('|'); pitch = pt or a.pitch
+            key = hashlib.md5(f'{text}|{rate}|{pitch}|{a.volume}|{vname}'.encode()).hexdigest()
             out = os.path.join(d, f'{i+1:02d}.mp3')
             if done.get(str(i)) == key and os.path.exists(out) and os.path.getsize(out) > 0: continue
-            tts._edge(text, f'{v}|{a.pitch}|{a.volume}', a.rate, out)
+            tts._edge(text, f'{vname}|{pitch}|{a.volume}', rate, out)
             done[str(i)] = key; json.dump(done, open(mf, 'w', encoding='utf-8'), ensure_ascii=False)
             print(f'  {i+1:02d}/{len(lines)} {text[:30]}', flush=True)
     print('\n完成：', os.path.join(proj, 'edge_voices'))

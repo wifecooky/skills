@@ -1,0 +1,88 @@
+{
+  "_doc": "Theme pack for 三国 episodes. Project script.json sets \"theme\": \"sanguo\". head=1: scenes[:1] open the video, the rest close it. Run panels.py / voice.py / bgm.py in THIS dir to (re)make its assets.",
+  "head": 1,
+  "speed": 1.2,
+  "style": "ONE single full-bleed illustration showing ONE camera shot: no comic page, no panel grid, no frames or borders, no insets; each character appears at most once. Japanese gag manga art (Gintama energy) with Chinese ink-wash touches: bold black ink lines, screentone shading, mostly black and white with spot RED accents only, exaggerated comedic faces, speed lines. SETTING: late Eastern Han dynasty, Three Kingdoms era China, location as described in SCENE. ABSOLUTELY NO TEXT, no letters, no calligraphy, no signs, no speech bubbles anywhere in the image.",
+  "cast": {
+    "L": {
+      "name": "刘备",
+      "chip": "ink",
+      "voice": "doubao-official-ICL_uranus_zh_male_youmoshushu_tob",
+      "look": "LIU BEI: gentle kind-faced man ~40, long earlobes, neat short beard, cream-white Eastern Han cross-collar robe with wide sleeves, black jinxian scholar cap; NOT Qing, NOT Japanese.",
+      "persona": "刘备，温厚圆滑的中年男人，男中音"
+    },
+    "G": {
+      "name": "关羽",
+      "chip": "ink",
+      "voice": "doubao-official-zh_male_lengkugege_emo_v2_mars_bigtts",
+      "look": "GUAN YU: tall stern man, deep RED face, very long flowing black beard to the chest, phoenix eyes, green Eastern Han robe over armor, green headscarf.",
+      "persona": "关羽，高冷威严的中年男人，低沉男声，惜字如金"
+    },
+    "Z": {
+      "name": "张飞",
+      "chip": "ink",
+      "voice": "doubao-official-ICL_uranus_zh_male_younidashu_tob",
+      "look": "ZHANG FEI: burly loud man, dark tanned face, huge round leopard eyes, wild bristly black beard, black Eastern Han robe over dark armor, black headscarf.",
+      "persona": "张飞，粗犷莽撞的黑脸大汉，粗哑的男低音"
+    },
+    "C": {
+      "name": "曹操",
+      "chip": "red",
+      "voice": "doubao-official-ICL_uranus_zh_male_shenmifashi_tob",
+      "look": "CAO CAO: sly grinning warlord ~45, chalk-pale face, thin curled mustache and small goatee, narrow scheming eyes, black-and-gold Eastern Han robe, tall black official crown hat.",
+      "persona": "曹操，奸诈爱装的中年男人，油滑的男中音"
+    },
+    "T": {
+      "name": "Owen老师",
+      "chip": "red",
+      "voice": "doubao-official-zh_female_yingyujiaoxue_uranus_bigtts",
+      "look": "",
+      "persona": ""
+    }
+  },
+  "bgm": {
+    "drums": {
+      "vol": 0.9,
+      "sec": 3,
+      "prompt": "huge ancient chinese war drums roll building to one big hit and a gong crash, epic, no melody"
+    },
+    "jingle": {
+      "vol": 0.6,
+      "sec": 6,
+      "prompt": "short cheerful comedic chinese outro jingle, pipa and erhu flourish, ends with a small gong hit"
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "entry": "cut",
+      "title": true,
+      "bgm": "drums",
+      "min": 2.4,
+      "art": "Epic comedic title shot on a windy hill at dawn: LIU BEI, GUAN YU and ZHANG FEI stand back to back in heroic poses, blank red battle banners flapping (NO writing on the banners), dust clouds and radiating speed lines, a huge red sun behind them; CAO CAO peeks sneakily from behind a rock at the right edge. All characters are in the TOP 55% of the image; the lower 45% is only empty ground, dust and screentone."
+    },
+    {
+      "id": "outro",
+      "entry": "push",
+      "bgm": "jingle",
+      "title": [
+        "关注",
+        "不迷路"
+      ],
+      "ep": "桃园英语角 · 下一课见",
+      "lines": [
+        {
+          "who": "T",
+          "text": "学会了吗？我们下一课见！",
+          "speed": 1.0,
+          "lead": 0.5
+        }
+      ],
+      "tail": 1.0,
+      "min": 3.5,
+      "art": "End-of-class shot in a simple study room with bamboo scrolls on shelves: LIU BEI, GUAN YU, ZHANG FEI and CAO CAO stand in a row bowing to the viewer; ZHANG FEI waves a huge hand grinning, CAO CAO forces a fake smile, GUAN YU stays expressionless. All characters are in the TOP half of the image; the lower half is only plain wooden floor and screentone."
+    }
+  ],
+  "watermark": "@双言两语",
+  "series": "桃园英语角"
+}
