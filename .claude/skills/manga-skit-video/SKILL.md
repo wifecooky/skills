@@ -28,7 +28,8 @@ Scripts live in `~/.claude/skills/manga-skit-video/scripts/`. Run them all **fro
 6. `python3 $SK/bgm.py` (slow; run in background). Needs torch and transformers.
 7. `python3 $SK/build.py`. Prints the timing table. Copies fonts and sfx into `assets/` if missing.
 8. `npx hyperframes check`, then `npx hyperframes snapshot --at <one time per scene> --no-end`, then **Read the contact sheet**.
-9. `npx hyperframes preview --background`, then give the user the URL. Render MP4 **only after the user approves**, with `npx hyperframes render --crf 23`. If the project pins a CLI version (e.g. `hyperframes@0.8.82`) and a newer one won't install, keep the pin: `npx --yes hyperframes@<pin> …`. The default `looks` quality is CRF 16, which comes out around 16 Mbps / 140 MB for 73 s; CRF 23 is about 40 MB with no visible loss.
+9. `npx hyperframes preview --background`, then give the user the URL. Render MP4 **only after the user approves**, with `npx hyperframes render --crf 23`. Projects pin the CLI version in `package.json`. Upgrade with `npx hyperframes@latest upgrade --project . --check`, then without `--check`, then `check` and compare a snapshot against the old one. If the latest version won't install, keep the pin: `npx --yes hyperframes@<pin> …`. The default `looks` quality is CRF 16, which comes out around 16 Mbps / 140 MB for 73 s; CRF 23 is about 40 MB with no visible loss.
+10. **Always** write `publish.md` (抖音 / 视频号 / 小红书 / YouTube / X copy) per `publish-copy.md`, check title lengths with Python, and give it to the user along with the MP4.
 
 ## script.json quick reference
 Top level:
