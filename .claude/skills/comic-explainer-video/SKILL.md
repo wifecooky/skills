@@ -1,17 +1,17 @@
 ---
 name: "comic-explainer-video"
-description: "Make a 9:16 switchable comic, clear-diagram, or picture-book style Chinese explainer video with voiceover and subtitles: research, script, HTML preview first, choose TTS voice, then render MP4. Phone safe-area layout by default, optional 3:4 crop; channel characters with their own voices; supports Chinese-English mixed voiceover for English-learning topics and publishing to 小红书/视频号/YouTube via Claude in Chrome."
+description: "Make a 9:16 comic-style (or picture-book style) Chinese explainer video with voiceover and subtitles: research, script, HTML preview first, choose TTS voice, then render MP4. Phone safe-area layout by default, optional 3:4 crop; channel characters with their own voices; supports Chinese-English mixed voiceover for English-learning topics and publishing to 小红书/视频号/YouTube via Claude in Chrome."
 ---
 
 # 漫画风竖屏科普解说视频（comic-explainer-video）
 
-把一个知识点/新闻做成 **9:16 手机竖屏、可切换漫画／清晰图解／绘本风、带配音字幕** 的科普解说视频，可另出 3:4 版。核心原则：**先交付可拖动的 HTML 预览，用户确认后再渲染 MP4**；配音可选、可换、可用用户自己的录音；生成的配音全部进项目包。
+把一个知识点/新闻做成 **9:16 手机竖屏、漫画风（或绘本风）、带配音字幕** 的科普解说视频，可另出 3:4 版。核心原则：**先交付可拖动的 HTML 预览，用户确认后再渲染 MP4**；配音可选、可换、可用用户自己的录音；生成的配音全部进项目包。
 
 ## 工作流
 
-1. **澄清（必要时）**：主题、受众（默认“初等数学/中学水平”）、时长（默认 2–4 分钟）、语言（默认简体中文）。需求清楚就直接做。用户指定画风时沿用；未指定时使用杂志式活力漫画（theme=comic），不把选择画风变成必经确认。
+1. **澄清（必要时）**：主题、受众（默认“初等数学/中学水平”）、时长（默认 2–4 分钟）、语言（默认简体中文）。需求清楚就直接做。
 2. **调研**：WebSearch/WebFetch 核实事实、数字、日期、人名；记下争议与限制（例如“弱化版 ≠ 原问题”“来源待核实”）；整理 3–6 条来源放片尾。不要夸大结论。
-3. **准备工具包**：把本文件末尾「工具包文件」中的 15 个文件原样写入 `<工作目录>/kit/`（base_head.html、base_tail.html、runtime.js、tts.py、build.py、render.py、pack.py、edge_batch.py、gen_edge_mixed.py、render_resume.py、safe_check.py、polyphone_check.py、一键生成Edge配音.command（写入后 chmod +x）、env.example、README.md）。依赖：
+3. **准备工具包**：把本文件末尾「工具包文件」中的 16 个文件原样写入 `<工作目录>/kit/`（base_head.html、base_tail.html、runtime.js、tts.py、build.py、render.py、pack.py、edge_batch.py、gen_edge_mixed.py、render_resume.py、safe_check.py、polyphone_check.py、layout_check.py、一键生成Edge配音.command（写入后 chmod +x）、env.example、README.md）。（**省 token 的捷径**：用户文件夹里有上一期 `<标题>_项目包.zip` 时，可解压其中的 kit/ 复用，但先逐个和本文件末尾的版本比对（取 ```` 代码块与文件内容 strip 后比较），不一致或缺文件的以本文件为准重写；项目包里 env.example 叫 `.env.example`、README.md 和 .command 在包根目录。）依赖：
    `pip install sherpa-onnx soundfile numpy pillow playwright edge-tts pypinyin --break-system-packages`，需要 ffmpeg 和 Chromium（云端沙箱已预装，勿运行 playwright install）。
 4. **写台词** `proj/script.json`（见下方格式与写作规则），**同时写封面** `cover`（见「封面与发布」）。
    **多音字检查（必做）**：`python kit/polyphone_check.py proj` 列出含易错多音字的句子和 pypinyin 猜的读音（猜测也会错，如“教它”应为 jiāo），逐个对照语境；读音不对就给该句加 `say`，把多音字换成同音字（调 tiáo→条、长 zhǎng→掌、行 háng→航、重 chóng→虫、教 jiāo→交 等），字幕 `sub` 不变。用户反馈读错时同样处理，只重配改动的句子。
@@ -22,43 +22,38 @@ description: "Make a 9:16 switchable comic, clear-diagram, or picture-book style
    **角色台词**（带 `"voice"` 的句子，见 script.json 格式）由 edge_batch.py 处理：每条配音轨里这句都换成角色自己的声音，所以要走 edge_batch → `files:` 这条路；直接用 `edge:` 引擎 build 或用 gen_edge_mixed.py 时 `voice` 字段不生效。改了某句的 `voice` 但没改文字时，build 的逐句缓存认不出（缓存键只看文字），要删掉 `proj/build/voices/<id>/meta.json` 里那一句的条目再 build。
    兜底：`python kit/build.py proj --voice "kokoro:4@1.25=离线女声（Kokoro）"`。第一条 --voice 为预览默认配音；`--drop <spec>` 去掉某条。
    产出 `proj/build/preview.html`（音轨内嵌，单文件可离线打开）。逐句缓存：改台词后重跑只重配改动的句子。至少要有一个 --voice。2 核约 1.5 秒/句。
-7. **自检**：`python kit/render.py proj --sheet` → Read `proj/build/sheet.png`（每场景末帧拼图），检查文字溢出、遮挡、字幕挡画面；需要时 `--at 12.3 45.6` 看中间帧；`--cover` 导出 `build/cover.png` 并 Read 检查封面。**手机安全区检查**：`python kit/safe_check.py proj/build/snap/at_XX.png` 把平台遮挡区画成红/橙色叠加层，Read 检查标题、画面、字幕都不在红区内。可选：用 sherpa-onnx paraformer 中文 ASR（GitHub release 的 sherpa-onnx-paraformer-zh-small-2024-03-09）抽查读音。
-8. **先交付预览**：复制 preview.html 和 cover.png（命名 `封面_<标题>.png`）到输出目录并发送，说明可拖动/跳场景/切配音/导出台词和 SRT、可在页内切换“画风”比较，页内「● 录制视频」（Chrome/Edge 选“此标签页”共享，实时录下竖屏区域并自动下载 MP4/WebM）与「高清渲染」按钮（复制一句话给 Claude），以及可导入或逐句录制自己的配音（见下方「用户自己的配音」）；请用户确认或提修改。按反馈改 → 重跑 6、7。
-9. **确认后渲染（用户选定配音后主动做，不要等用户找按钮）**：`python kit/render.py proj --voice <id|spec|名称>` → `proj/build/<id>.mp4`（1080×1920，30fps，H.264+AAC，自动把 cover.png 写入文件缩略图）。可 `--start/--end` 先渲一段。2 核约 1 分钟渲染 15 秒视频。**单核或单条命令有时限（如 300 秒）时 render.py 会被杀掉**：先 `render.py proj --cover`，再反复运行 `timeout 290 python3 kit/render_resume.py proj --voice <名称> --budget 250 --upload` 直到打印 DONE（断点续截帧，约 8 帧/秒；帧齐后自动合成 MP4、写入封面缩略图；`--upload` 另出 ≤9.5MB 的 `<id>_upload.mp4`）。
+7. **自检**：先跑 **`python kit/layout_check.py proj`**（自动逐句检查：元素超出场景区 OUT、拟声词/标签/印章意外折行 WRAP、带字元素互相遮挡 OVERLAP；无输出=通过，报告的“第 N 句”和预览页一致），有问题先改 scenes.html → 重跑 build → 再查到通过。然后 `python kit/render.py proj --sheet` → Read `proj/build/sheet.png`（每场景末帧拼图），检查文字溢出、遮挡、字幕挡画面；需要时 `--at 12.3 45.6` 看中间帧；`--cover` 导出 `build/cover.png` 并 Read 检查封面。**手机安全区检查**：`python kit/safe_check.py proj/build/snap/at_XX.png` 把平台遮挡区画成红/橙色叠加层（只传单帧；要并排看多帧，先逐帧跑 safe_check 再拼 `*_safe.jpg`），Read 检查标题、画面、字幕都不在红区内。可选：用 sherpa-onnx paraformer 中文 ASR（GitHub release 的 sherpa-onnx-paraformer-zh-small-2024-03-09）抽查读音。
+8. **先交付预览**：复制 preview.html 和 cover.png（命名 `封面_<标题>.png`）到输出目录并发送，说明可拖动/跳场景/切配音/导出台词和 SRT、进度条下方实时显示“第 N/总 句”（反馈读错或画面问题时报句号即可）、宽屏电脑上控件自动放到画面右侧、页内「● 录制视频」（Chrome/Edge 选“此标签页”共享，实时录下竖屏区域并自动下载 MP4/WebM）与「高清渲染」按钮（复制一句话给 Claude），以及可导入或逐句录制自己的配音（见下方「用户自己的配音」）；请用户确认或提修改。按反馈改 → 重跑 6、7。
+9. **确认后渲染（用户选定配音后主动做，不要等用户找按钮）**：`python kit/render.py proj --voice <id|spec|名称>` → `proj/build/<id>.mp4`（1080×1920，30fps，H.264+AAC，自动把 cover.png 写入文件缩略图）。可 `--start/--end` 先渲一段。2 核约 1 分钟渲染 15 秒视频。**单核或单条命令有时限（如 300 秒）时 render.py 会被杀掉**：先 `render.py proj --cover`，再反复运行 `timeout 290 python3 kit/render_resume.py proj --voice "<名称>" --budget 170 --upload` 直到打印 DONE（未完成打印 PENDING、退出码 3——**别用 `grep DONE` 判断，会误匹配**；断点续截帧，约 8 帧/秒；帧齐后自动合成 MP4、写入封面缩略图；`--upload` 另出 ≤9.5MB 的 `<id>_upload.mp4`）。云端沙箱单次 Bash 也有时限（约 10 分钟）时，可后台循环、再分几次 sleep 查看日志：`(nohup bash -c 'for i in $(seq 1 15); do timeout 290 python3 kit/render_resume.py proj --voice "晓晓（微软 Edge）" --budget 170 --upload && break; done' > render.log 2>&1 &)`（只有打印 DONE 时退出码为 0）；3 分钟视频 2 核约 13 分钟。**budget 要给合成留时间**：帧齐后还要编码 MP4 + 上传版，3 分钟视频约 100 秒，所以 `timeout 290` 配 `--budget 170`；budget 太大时最后一轮会在合成中途被 timeout 杀掉（退出码 124，帧已齐，再跑一次即可）。**声音名含空格（如“晓晓（微软 Edge）”）必须加引号**，否则 argparse 报 unrecognized arguments。
    **3:4 版**（用户要横宽一些的版本、或平台推荐 3:4 时）：直接从 9:16 成片裁，不用重新渲染：`ffmpeg -i proj/build/<id>.mp4 -vf crop=1080:1440:0:144 -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a copy -movflags +faststart proj/build/<id>_3x4.mp4`（保留舞台 y 72–792：顶栏、场景、字幕、章节条都在，上下水印和页脚被裁掉）。
-   **切换画风**：同一讲稿、场景和配音可分别出 comic／diagram／picturebook 版。使用 `python kit/build.py proj --theme <画风>` 保存选择并重建，配音命中缓存后无需重新合成，再按原流程 render。不同版本交付前分别改名，避免覆盖；预览页切换用于比较与页内录制，高清渲染必须以所选画风重建预览。
+   **绘本版 / 漫画版**：同一份 script.json 和配音可以各出一版。改 `theme` 后重跑 build（逐句缓存命中，不会重新配音）→ render，把第一版的 mp4 先改名，避免被覆盖。
 10. **交付项目包（必须含生成的配音）**：`python kit/pack.py proj --out <输出目录>/<标题>_项目包.zip [--mp4 proj/build/<id>.mp4]`。包内含 kit、README、一键生成Edge配音.command、script.json、scenes.html、preview.html、时间轴，以及 **配音/<声音名>/**：完整配音_含音乐.mp3、纯人声.mp3、字幕.srt、逐句/NN_台词.mp3，另有 配音/台词.txt；逐句 mp3 同时充当 build 缓存（解压后重跑 build 不会重新合成）。检查 zip < 30MB（超了就不带 --mp4，视频单独发送）。
 
 ## script.json 格式
 ```json
-{"title":"视频标题","badge":"数学漫画","footer":"本片为科普解说 · 细节已简化","watermark":"@双言两语",
+{"title":"视频标题","badge":"数学漫画","footer":"本片为科普解说 · 细节已简化","watermark":"@频道名",
  "sources":"资料：……（可含 <sup>）",
  "cover":{"title":"其实只会<br>“猜下一个字”","kicker":"你每天用的 ChatGPT","sub":"3 分钟看懂大语言模型","badge":"AI 漫画科普","art":"<div class=\"abs\" …>角色/气泡</div>","dur":1.6},
  "timing":{"pre":0.8,"gap":0.28,"scene_gap":0.7,"tail":3.0},
  "music":{"on":true,"volume":0.10},
- "sfx":[{"type":"pop","line":1,"at":0},{"type":"ding","line":7,"at":"end-0.3"}],
- "theme":"comic",
+ "sfx":[{"type":"shot","line":3,"at":-0.25},{"type":"ding","line":39,"at":"end-0.3"}],
+ "theme":"picturebook",
  "lines":[{"scene":"s1","sub":"字幕文字，关键词用“引号”会标红","say":"可选：给 TTS 的念法"},
   {"scene":"s1","sub":"小双：那哥德巴赫猜想被解决了吗？","say":"那哥德巴赫猜想被解决了吗？","voice":"zh-CN-XiaoyiNeural|+25Hz@1.0","role":"kid"}]}
 ```
-`theme`（可选，默认 `"comic"`）：
-- `"comic"`：**活力漫画**，儿童科学杂志式的精修原版：暖白纸面、墨蓝标题、细线图解、少量麦黄聚焦，保留原角色、气泡及短促揭晓动作；解释时稳定图形与字幕。
-- `"diagram"`：**清晰图解**，保留暖白纸面、克制配色与安静排版，适合复杂关系、较高年级或成人科普。
-- `"picturebook"`：**温柔绘本**，奶油纸底、棕色轮廓与柔和色彩，适合亲子讲述。
-用户可说“用清晰图解风”或“换成活力漫画风”，对应写入 `theme`。画风没有严格年龄边界，用户选择优先。样式内置在 base_head.html 和 build.py 的 `THEMES` 中，无需 extra_css。场景自定义颜色尽量用 `var(--ink)`、`var(--focus)`、`var(--blue)`、`var(--red)`、`var(--surface)`，同一场景可跟随画风切换。
-预览页有“画风”下拉，切换不重置进度或配音；“高清渲染”提示携带当前画风。预览选择不会自动修改本地 script.json，用 `build.py --theme` 保存后再渲染高清版本。
+`theme`（可选）：`"picturebook"` = 暖色绘本风（奶油纸底、棕色描边、粉彩填充、柔和投影，适合亲子频道），CSS 在 build.py 的 `THEMES` 里，会自动把 SVG 角色的黑描边换成棕色；不写 = 默认粗黑描边漫画风。scenes.html 里自定义的颜色和描边尽量用 `var(--ink,#141414)`、`var(--shadow,…)`，这样两种主题都能跟着变。
 **角色台词**：角色说的话单独成句，`sub` 写成「小双：……」（带角色名，观众知道谁在说话），`say` 去掉角色名只留台词；`"voice":"音色|音调@语速"` 指定角色声音（小双用 `zh-CN-XiaoyiNeural|+25Hz@1.0`，晓伊升调更像小孩）；`"role":"kid"` 让这句字幕换成粉色框（runtime.js 把 role 写到字幕的 class 上，base_head.html 和绘本主题都定义了 `#sub.kid`）。角色台词一片 2–4 句就够，用在提问、质疑、收尾抛问题。
 英语学习类视频：英文例句一行一句，加 `"en": true`（gen_edge_mixed.py 用英语母语声音读），字幕只放英文、下一句给中文翻译；连读演示用 `"sub":"good at → goo-dat","say":"good at. good at.","en":true`。引用原视频/采访时只取词汇和表达，例句自己写，不逐字搬运原台词。
-`watermark`（可选，留空不显示；用户的视频号叫「双言两语」，默认填 `"@双言两语"`）：顶部、底部留白可见淡水印，安全区内保留一枚固定低对比小水印；水印不压住图解与字幕，也不随场景跳动。默认就用「双言两语」，不用再问；用户说换频道时再改。
+`watermark`（可选，频道名如 `"@双言两语"`，留空不显示）：顶部留白一处、底部留白一处大号淡水印，外加画面内一枚小水印，每换一个场景在左下/右下角之间换位置，防止被裁掉。首次做视频时问一次频道名，之后沿用。
 sfx 类型：shot（狙击枪声）、ding（完成音）、pop、whoosh；`line` 为 0 起的行号，`at` 为相对该句开始的秒数，或 `"end±x"`。
 
-**写作规则**：每句字幕尽量 20–26 字，按实际渲染确认最多两行；一句一个意思；用生活类比（贴牌、原子、门的宽窄）替代术语，术语第一次出现时点名并解释；数字写法给 `say`（如 `"4×10¹⁸"` → `"4乘10的18次方"`，`"1＋2"` → `"1加2"`）；英文专名直接写（kokoro 能读 GPT、Astra、AI），melo 引擎读不好时用 `say` 改写；开头 3 句内给悬念，结尾留问题；必须有“冷静一下/局限”场景；整片 50–60 句 ≈ 3.5 分钟。
+**写作规则**：每句字幕 ≤ 28 字（手机两行内）；一句一个意思；用生活类比（贴牌、原子、门的宽窄）替代术语，术语第一次出现时点名并解释；数字写法给 `say`（如 `"4×10¹⁸"` → `"4乘10的18次方"`，`"1＋2"` → `"1加2"`）；英文专名直接写（kokoro 能读 GPT、Astra、AI），melo 引擎读不好时用 `say` 改写；开头 3 句内给悬念，结尾留问题；必须有“冷静一下/局限”场景；整片 50–60 句 ≈ 3.5 分钟。
 
 **讲“弱化版/宽松版”结果时**（如“1＋2”之于哥德巴赫猜想、某定理的特例）：先用一两句讲清原问题卡在哪（为什么做不出来），再把原题和新题并排放（左右两个 panel 或上下两行），点明放宽在哪一处（原题要求什么 → 新题只要求什么），说清两者的关系（新题是原题的必要一步/更弱的结论/不能推出原题）；关键成果要给具体算例（如 100 = 3＋97，或 100 = 素数＋两个素数之积，写出数字），不要只说“证明了某某”。
 
 ## 封面与发布
-- **封面必做**：分发平台需要封面；页内「录制视频」录出的文件浏览器无法写入缩略图，所以封面做成片头卡：`cover` 存在时视频前 `dur` 秒（默认 1.6）显示全屏封面（默认暖白杂志封面，以蓝黄主图聚焦；清晰图解为暖白纸面，绘本为奶油纸底），正片第一句自动顺延，第一帧即封面。
-- 字段：`badge` 左上角标（x=64；comic y=108 / diagram y=110）、`kicker` 一行引题（comic y=164 / diagram y=175）、`title` 两行大标题（comic y=213、50px / diagram y=229、54px，`<br>` 换行，“引号”内标红，建议每行不超过 7 个汉字）、`sub` 副标题（comic y=373，蓝字与黄色短线；diagram y=400，黄底墨字）、`art` 插画区（x=64–454；comic y=438–724 / diagram y=476–748，内部坐标从 0 起，可用已有频道角色 symbol）。避免把标题写成三行，插画与气泡不超出 art 区域；顶部和底部平台遮挡区不放关键信息。
+- **封面必做**：分发平台需要封面；页内「录制视频」录出的文件浏览器无法写入缩略图，所以封面做成片头卡：`cover` 存在时视频前 `dur` 秒（默认 1.6）显示全屏封面（黄底放射线 + 白框大标题），正片第一句自动顺延，第一帧即封面。
+- 字段：`badge` 左上角标、`kicker` 标题上方一行、`title` 主标题（`<br>` 换行，“引号”内标红，≤ 12 字两行最醒目）、`sub` 黑底副标题、`art` 下方插画区（舞台坐标 top 520 起、约 260 高，可用 `#kid` 等 symbol、`.bubble`、`.sfx`；右边缘留 40px 余量）。顶部 0–90、底部 780 以下会被平台界面遮挡，别放关键信息。
 - 标题写法：反差悬念（“其实只会…”）＞ 数字承诺（“3 分钟看懂…”）＞ 痛点提问；与片中第一句呼应。用户要分发时，顺带给 3–4 组标题（悬念 / 干货 / 痛点 / 封面短标题）、一段可直接粘贴的简介（结尾抛问题引评论）和 5–8 个话题标签。
 - 交付：`render.py --cover` 生成的 `cover.png` 单独交付，提醒用户在平台「上传封面」里使用。
 
@@ -73,38 +68,28 @@ sfx 类型：shot（狙击枪声）、ding（完成音）、pop、whoosh；`line
 - **必须停下来问用户的点**：上面的同意条款；最后的「发表」按钮（用户明确说“发表”才点；不同平台分别确认）。合集、活动、链接等用户偏好项先问。
 - 视频号发表后不能替换视频，只能删除重发（播放数据清零），所以发布前先用 safe_check 和手机预览确认版式。发表后截图视频管理列表，确认状态（如「原创审核中」）。
 
-## 画风选择与沉浸式观看
-
-- 精致感来自层级：标题 750、说明 500–650、字幕 600；主图用细线，角色保留原线稿，气泡 1.5px，字幕侧边强调。每场景只有一个高对比焦点。默认不用背景网点、放射线、大面积亮黄和硬投影；亮黄用于问题与结论，不给每块内容加同样的框。
-- 默认 **活力漫画**，清晰图解与温柔绘本作为可切换选项。保留角色、漫画气泡与亮色聚焦，图形/公式/字幕不倾斜或持续弹跳。
-- 开场用一个可猜的问题建立悬念，角色替观众提问。推理时一个视觉变化对应一句讲解，已出现的关键关系留在屏幕上，避免每句话都换场景。
-- 给场景加 `data-mode="question|explain|reveal|reflect"`（缺省 explain）。question 用于提问/练习，explain 用于解释，reveal 用于答案，reflect 用于条件/复习。提问/揭晓允许短促 pop 或有限装饰动作；解释/复习停用循环装饰、隐藏速度线。不要关闭演示所需的语义动画。
-- 结论出现后留阅读时间；提问后通常停 1–2 秒，迁移题按难度留 3–5 秒。静默思考在配音间隔或时间轴中实现，不只把一句话拖长。保留局限与适用条件，不把算例当作一般证明。
-- 每场景只突出一个关系。黄色聚焦当前问题或揭晓，蓝色对应同一关系，红色说明条件/角色；颜色与文字、形状同时使用，映射保持全片一致。
-- 角色不只是装饰：用少量真实质疑、猜测和回应推进讲解。字幕跟随台词，气泡只放问题/短回应，不在画面中再复制一整段旁白。
-- 频道角色优先小双、小I。场景标题建议 44px，正文/气泡 30–32px，主公式 49–59px（均为缩放前字号）。字幕固定为舞台 26px、最多两行，重要条件写进标题或字幕。
-- 音效只配关键动作或揭晓，音量不盖过旁白；不持续加入拟声词，重复装饰动画最多两个周期。保留旧动画名兼容现有分镜。
-- 清晰图解风保留暖白纸面、开放章节头、安静排版；绘本版使用柔和棕色。三种画风共用安全区，可不重做讲稿和配音直接比较。
-
 ## 画面组件速查（舞台 540×960，渲染时 ×2）
-- **手机安全区版式（默认，已内置于 base_head/base_tail）**：采用保守参考区域，平台与设备仍需实机确认：顶部 0–86、底部 y≥780、左右各 25px；右侧操作区 x>465、y=470–780。
-  - 0–86 只放弱水印。顶栏 x=64–454、y=90–140；进度条 y=146、高 3。
-  - **场景区**：所有 `.scene` 自动包在 `#safe`，原画仍为 **540×585**，缩放 0.74 后放在 x=70、y=164。正文建议 30–32px、标题 44px；关键内容留在场景原画 x=28–512 内，元素及气泡底部不超出 585。
-  - 字幕框 x=64–454、y=614–728，最多两行；章节条 x=70–454、y=746–776，短标题不超过 8 字，当前章节高亮。小水印位于 x=70、y=598，不压住主图。底部不放重要条件或资料来源，来源同时写进发布简介；需要片内来源时放进场景安全区。
-  - 3:4 版保留舞台 y=72–792。改版式只改 base_head.html 的 CSS，不要在 scenes.html 里再包 #safe。
-- 类：`.panel`（默认白底细线、无硬投影，加 `.yel/.red/.blue`）、`.abs`、`.hd`（粗体）、`.num`、`.sfx`（黄字黑描边拟声词，如 砰！）、`.stampbox`（浅红条件条）、`.bubble`（对话气泡）、`.tag`（黑底白字标签）、`.card`（112×150 卡片）、`.chip`（行内小色块）、`.speed`（放射速度线背景）、`.ok`（绿色）。
+- **手机安全区版式（默认，已内置于 base_head/base_tail）**：手机竖屏播放时，iPhone 等长屏会把 9:16 放大铺满（左右各裁约 25px），顶部被状态栏和返回/更多按钮盖住（0–86），底部被合集、作者提示、简介和按钮盖住（约 780 以下），小红书/YouTube Shorts 右侧还有点赞评论按钮（x>465、y 470–780）。所以：
+  - 0–88 只放顶部水印（watermark）；顶栏 88–144（自动显示 data-chap）；进度条 144。
+  - **场景区**：所有 `.scene` 自动包在 `#safe` 里，场景内坐标仍是 **0–540 × 0–585**，整体缩放 0.74 显示在 x 70–470、y 156–589。照旧按 540×585 写画面，但字号要比满屏时略大（正文 ≥22px、标题 ≥30px），否则手机上偏小。
+  - 字幕框 604–736（左右各留 56px，自动）；**章节条** 744–776（自动：由各场景 data-chap「·」后的短标题生成胶囊，当前章节黄色高亮并居中，已播章节变暗，所以 data-chap 短标题控制在 8 字内）；页脚 782–960 只放一行小字和底部水印，**片尾资料来源在手机上会被遮挡**，同时要写进发布简介。
+  - 改版式只改 base_head.html 的 CSS（#top/#prog/#safe/#subwrap/#chapbar/#foot/#cover），不要在 scenes.html 里再包一层 #safe。
+- 类：`.panel`（白底粗黑框+投影，加 `.yel/.red/.blue`）、`.abs`、`.hd`（粗体）、`.num`、`.sfx`（黄字黑描边拟声词，如 砰！）、`.stampbox`（红色印章框）、`.bubble`（对话气泡）、`.tag`（黑底白字标签）、`.card`（112×150 卡片）、`.chip`（行内小色块）、`.speed`（放射速度线背景）、`.ok`（绿色）。
 - SVG 符号 `<svg width=W height=H><use href="#id"/></svg>`：`astra`（机器人，200×250 比例，胸口 GPT-6/ASTRA，可改）、`kid`（小孩旁白 160×210）、`wig`（18 世纪假发学者 170×230，用 `style="--coat:#2f6fdb"` 换外套色）、`rifle`（300×70）、`target`（靶）、`cross`（准星）、`burst`（爆炸框）；频道角色 `xiaoi`（小I，蓝色 AI 机器人，200×250，胸口写“小I”）和 `shuang`（小双，双丸子头小女孩，160×210，配音晓伊升调，见“角色台词”）——做频道内容时优先用这两个固定角色出镜、对话。需要新角色/道具时在 scenes.html 顶部自行加 `<svg><defs><symbol>`，保持粗黑描边+平涂；只画原创角色，不画已知 IP 角色。
 - 动画：`data-a="名称@行号±秒 名称@行号±秒"`，行号 0 起；`@s` 表示场景开始。第一个动画决定出场前隐藏状态。名称：pop fade fadeout up down left right stamp stamp0 shake bob spin40 pulse2 flash flip count aim zoomin twinkle hl dim grow draw。叠加 transform 冲突时用外层 div 包一层（如入场 left + 内层 bob）。
-- 示例（角色在第 2 句提问；主图由主题决定）：
+- 示例（第 3–4 句出现靶子、第 4 句“砰”）：
 ```html
-<div class="scene" id="s1" data-chap="第 1 话 · 先猜一猜" data-mode="question">
- <div class="panel" style="left:28px;top:130px;width:484px;height:270px">核心图解</div>
- <svg class="abs" style="left:28px;top:420px" width="116" height="150"><use href="#shuang"/></svg>
- <div class="bubble" style="left:188px;top:440px;width:322px" data-a="pop@1">先猜一猜，<br>会发生什么？</div>
+<div class="scene" id="s1" data-chap="序章 · AI 扛起狙击枪">
+ <div class="speed" data-a="spin40@s"></div>
+ <div class="abs" style="left:318px;top:160px;width:190px;height:190px" data-a="pop@2 shake@3+0.1"><svg width="190" height="190"><use href="#target"/></svg></div>
+ <div class="abs" style="left:10px;top:285px;width:176px;height:220px" data-a="left@0+0.4"><div data-a="bob@s" style="width:100%;height:100%"><svg width="176" height="220"><use href="#astra"/></svg></div></div>
+ <div class="panel yel hd" style="left:292px;top:362px;padding:6px 12px;font-size:27px" data-a="up@2+0.6">哥德巴赫猜想</div>
+ <div class="sfx" style="left:330px;top:200px;font-size:58px;color:#ff4757" data-a="pop@3-0.2 fadeout@4">砰！</div>
 </div>
 ```
 - 场景内可放 `<script>` 生成重复元素（写 data-a 即可，在 runtime 初始化前执行）。
-- 坑：不要用 emoji（渲染字体缺失）；上标用 `<sup>`；长文本给定宽度避免溢出；元素别超出 585 高度；每场景 3–6 个元素逐句出现，不要一次堆满。
+- **手机信息流滚动**（讲短视频/推荐/社交媒体时好用）：手机外框 `.panel` 里放一个 `overflow:hidden` 的屏幕 div，里面一条竖排卡片带 `data-a="count@0"`（3.2 秒向上滚 560px），就是“刷刷刷”的效果；layout_check 会按裁剪后的可见区域判断，不会误报。
+- 坑：`.sfx`/`.tag`/`.stampbox` 默认不换行（base_head 已设 nowrap），要两行写 `<br>`，所以放之前估一下宽度（字号×字数）别超出 540；`↓↓↓`、`→` 这类符号连写也会占很宽，layout_check 能查出遮挡；不要用 emoji（渲染字体缺失）；上标用 `<sup>`；长文本给定宽度避免溢出；元素别超出 585 高度；每场景 3–6 个元素逐句出现，不要一次堆满。
 
 ## 配音引擎（build.py --voice 的写法；`@1.2`=语速，`=名字`=预览下拉里的显示名）
 - `kokoro:<sid>` 离线兜底（云端可用，Edge 不可用时用；模型自动从 GitHub release 下载约 350MB）。4=女声，60=男声；3–57 中文女声，58+ 多为男声。默认语速偏慢，用 @1.2–1.25。
@@ -117,7 +102,8 @@ sfx 类型：shot（狙击枪声）、ding（完成音）、pop、whoosh；`line
 - **首选：云端沙箱直接生成**（见工作流第 6 步；`speech.platform.bing.com` 需在网络白名单内）。
 - **其次：Claude 在用户电脑的 Cowork 本地环境里生成**（需会话已连接用户文件夹、用户已在 Cowork 网络设置放行 `speech.platform.bing.com`）。tts.py 会自动把 HTTPS_PROXY 传给 edge-tts（aiohttp 默认不读代理变量，不传会 DNS 失败）。用 device_bash 在项目文件夹里**前台**逐个声音运行 `timeout 170 python3 kit/edge_batch.py proj zh-CN-XiaoxiaoNeural --rate 1.1`（nohup 后台进程会在调用结束时被杀；本地 VM 缺 edge-tts 就 `pip3 install --user edge-tts`），再在 device_bash 里把 `proj/edge_voices` 打成 zip 放到项目内隐藏目录，用 `device_stage_files` 拉到云端解压，然后按工作流第 6 步 build。
 - 连接不了或域名未放行：让用户双击项目根目录 **`一键生成Edge配音.command`**（macOS；自动建 venv 装 edge-tts，交互选声音/语速），或 `pip install edge-tts` 后 `python kit/edge_batch.py proj zh-CN-XiaoxiaoNeural zh-CN-YunxiNeural --rate 1.1`；完成后同样拉回云端 build。
-- 往用户文件夹写项目包：`device_commit_files` 单文件上限 20MB，超了先 `split -b 15M` 分片提交，再在 device_bash 里 `cat` 合并、python zipfile 解压（覆盖更新）、`chmod +x *.command`；device_bash 默认不能删除文件，临时分片放隐藏目录并告诉用户可删。聊天附件上限 30MB，超了只放文件夹。
+- 往用户文件夹写项目包：`device_commit_files` 单文件上限以工具说明为准（目前 30MB/文件、100MB/次，旧版 20MB），超了先 `split -b 15M` 分片提交，再在 device_bash 里 `cat` 合并、python zipfile 解压（覆盖更新）、`chmod +x *.command`；device_bash 默认不能删除文件，临时分片放隐藏目录并告诉用户可删。聊天附件上限 30MB，超了只放文件夹。
+- **核对写入结果**：device_commit_files 写入 MP4/PNG 时会加一段元数据（MP4 多一个 uuid box，PNG 也会变大几 KB），所以这两类文件 md5/字节数和云端**不会一致**，属正常；用 device_bash 的 `ffprobe`（时长、1080×1920、封面流）和 PIL 尺寸核对。html/md/zip（含分片合并后的 zip）应与云端 md5 完全一致。
 
 ## 用户自己的配音（预览页内置功能，交付时要告诉用户）
 - **导入逐句文件**：“导入我的配音…”多选 `01.mp3、02.m4a…`（编号=台词序号，从 01 起，见“导出台词”），或选本页导出的 zip。自动裁掉首尾静音，时间轴按每句实际长度重排，画面自动对齐。
@@ -133,61 +119,64 @@ sfx 类型：shot（狙击枪声）、ding（完成音）、pop、whoosh；`line
 <!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{TITLE}}</title>
 <style>
-/* 默认：儿童科学杂志式漫画。各画风共用坐标与安全区。 */
-*{box-sizing:border-box;margin:0;padding:0;}
-html{margin:0;background:#1d1d22;}
-body{margin:0;background:#1d1d22;}
-#stage{width:540px;height:960px;overflow:hidden;position:relative;background:var(--paper);font-family:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);transform-origin:0 0;--ink:#24364b;--paper:#f8f5ec;--focus:#f4cb59;--blue:#275d8b;--red:#b34d50;--green:#3d7057;--shadow:none;--surface:#fffefa;--muted:#6d716e;--line:#d9ddda;--pop-from:.96;--pop-peak:1.015;-webkit-font-smoothing:antialiased;}
-#bg{position:absolute;inset:0;background:var(--paper);}
-#top{position:absolute;left:64px;right:86px;top:90px;height:50px;background:transparent;color:var(--ink);display:flex;align-items:center;padding:0;gap:12px;z-index:20;border:0;border-bottom:1px solid var(--line);border-radius:0;}
-#top .pill{background:var(--blue);color:#fffefa;font-weight:650;font-size:16px;padding:5px 9px;border-radius:4px;transform:none;flex:none;}
-#chap{font-weight:650;font-size:20px;letter-spacing:0;}
-#prog{position:absolute;left:64px;top:146px;height:2px;background:var(--blue);z-index:21;max-width:390px;transform-origin:left center;}
-#progbg{position:absolute;left:64px;right:86px;top:146px;height:2px;background:var(--line);z-index:20;}
-#safe{position:absolute;left:70px;top:164px;width:540px;height:585px;transform:scale(.74);transform-origin:0 0;z-index:5;}
-.scene{position:absolute;left:0;top:0;width:540px;height:585px;display:none;overflow:hidden;animation:sceneIn .25s ease-out both;}
-@keyframes sceneIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-#subwrap{position:absolute;left:64px;right:86px;top:614px;height:114px;display:flex;align-items:center;justify-content:center;z-index:15;}
-#sub{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--blue);box-shadow:none;padding:14px 15px;font-size:26px;font-weight:600;line-height:1.45;text-align:left;border-radius:3px 10px 10px 3px;max-width:100%;transform-origin:50% 0;width:100%;max-height:114px;min-height:72px;transform:none!important;}
-#sub em{font-style:normal;color:var(--red);font-weight:800;}
-#sub.kid{background:#fbefed;transform:none!important;border-color:#e5ccc6;border-left-color:var(--red);}
-#chapbar{position:absolute;left:70px;right:86px;top:746px;height:30px;overflow:hidden;z-index:16;}
-#chapstrip{position:absolute;left:0;top:0;display:flex;gap:5px;white-space:nowrap;}
-#chapstrip .cb{font-size:15px;font-weight:550;line-height:18px;padding:5px 9px;border-radius:0;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--muted);box-shadow:none;}
-#chapstrip .cb.done{background:transparent;color:var(--muted);opacity:1;}
-#chapstrip .cb.on{background:transparent;box-shadow:none;color:var(--blue);font-weight:750;border-bottom-color:var(--blue);}
-.wmk:empty{display:none;}
-#wmtop{position:absolute;left:64px;right:86px;top:49px;text-align:left;font-weight:600;font-size:15px;letter-spacing:.08em;color:#7b837e;z-index:3;}
-#wmbot{display:none;}
-#wm{position:absolute;font-weight:900;font-size:15px;color:rgba(20,20,20,.30);z-index:17;pointer-events:none;}
-#wm.c2{right:auto;top:598px;left:70px;font-size:14px;color:#777d77;font-weight:500;}
-#wm.c3{left:70px;top:598px;right:auto;font-size:14px;color:#777d77;font-weight:500;}
-#foot{position:absolute;left:64px;right:86px;bottom:0;height:178px;background:transparent;border-top:1px solid var(--line);}
-#foot .tip{position:absolute;left:0;right:0;text-align:left;top:10px;font-size:13px;font-weight:500;color:var(--muted);}
-.abs{position:absolute;}
-.panel{position:absolute;background:var(--surface);border:1.5px solid var(--line);box-shadow:none;border-radius:14px;}
-.hd{font-weight:750;letter-spacing:-.025em;}
-.sfx{position:absolute;font-weight:900;font-style:italic;color:#ffd23f;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:2px 2px 0 var(--ink);letter-spacing:0;}
-.stampbox{position:absolute;border:0;border-left:4px solid var(--red);color:var(--red);font-weight:700;padding:4px 12px;border-radius:3px 10px 10px 3px;background:#fbefed;font-size:32px;box-shadow:none;}
-.bubble{position:absolute;background:var(--surface);border:1.5px solid var(--blue);border-radius:18px;padding:14px 20px;font-weight:650;font-size:32px;box-shadow:none;line-height:1.42;}
-.tag{position:absolute;background:var(--ink);color:#fffdf7;font-weight:900;padding:6px 12px;font-size:24px;border-radius:4px;}
-.big{font-size:52px;}
-.num{font-family:"Avenir Next","PingFang SC",sans-serif;font-weight:750;font-variant-numeric:tabular-nums;}
-.card{position:absolute;width:112px;height:150px;border:4px solid #141414;border-radius:12px;background:#fff;box-shadow:4px 4px 0 #141414;text-align:center;}
-.red{background:var(--red)!important;color:#fffdf7;}
-.blue{background:var(--blue)!important;color:#fffdf7;}
-.yel{background:var(--focus);}
-.ok{color:var(--green);}
-.speed{position:absolute;left:50%;top:50%;width:1400px;height:1400px;margin:-700px 0 0 -700px;background:repeating-conic-gradient(rgba(20,20,20,.10) 0 3deg,transparent 3deg 9deg);opacity:.12;pointer-events:none;}
-svg{overflow:visible;}
-@keyframes pop{0%{opacity:0;transform:scale(var(--pop-from,.94))}75%{opacity:1;transform:scale(var(--pop-peak,1.025))}100%{opacity:1;transform:none}}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{margin:0;background:#1d1d22}
+#stage{width:540px;height:960px;overflow:hidden;position:relative;background:#fff8e6;font-family:"Noto Sans CJK SC","Noto Sans CJK JP","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#141414;transform-origin:0 0}
+#bg{position:absolute;inset:0;background:
+  radial-gradient(circle,rgba(20,20,20,.09) 1.3px,transparent 1.8px) 0 0/11px 11px,#fff4d6}
+#top{position:absolute;left:0;right:0;top:88px;height:56px;background:#141414;color:#fff;display:flex;align-items:center;padding:0 18px;gap:10px;z-index:20}
+#top .pill{background:#ffd23f;color:#141414;font-weight:900;font-size:15px;padding:4px 10px;border-radius:6px;transform:rotate(-3deg)}
+#chap{font-weight:900;font-size:21px;letter-spacing:1px}
+#prog{position:absolute;left:0;top:144px;height:6px;background:#ff4757;z-index:21}
+#progbg{position:absolute;left:0;right:0;top:144px;height:6px;background:#3a3a3a;z-index:20}
+#safe{position:absolute;left:70px;top:156px;width:540px;height:585px;transform:scale(.74);transform-origin:0 0;z-index:5}
+.scene{position:absolute;left:0;top:0;width:540px;height:585px;display:none;overflow:hidden;animation:sceneIn .45s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes sceneIn{0%{clip-path:polygon(0 0,0 0,0 100%,0 100%);transform:scale(1.04)}100%{clip-path:polygon(0 0,100% 0,100% 100%,0 100%);transform:none}}
+#subwrap{position:absolute;left:56px;right:56px;top:604px;height:132px;display:flex;align-items:flex-start;justify-content:center;z-index:15}
+#sub{background:#ffd23f;border:4px solid #141414;box-shadow:6px 6px 0 #141414;padding:10px 14px;font-size:23px;font-weight:900;line-height:1.38;text-align:center;border-radius:4px;max-width:100%;transform-origin:50% 0}
+#sub em{font-style:normal;color:#e8233a}
+#sub.kid{background:#ffd6e0;transform:rotate(-1deg)}   /* 角色台词（lines[].role="kid"）的字幕样式 */
+#chapbar{position:absolute;left:25px;right:25px;top:744px;height:32px;overflow:hidden;z-index:16}
+#chapstrip{position:absolute;left:0;top:2px;display:flex;gap:6px;white-space:nowrap}
+#chapstrip .cb{font-size:14px;font-weight:900;line-height:1;padding:6px 11px;border-radius:14px;border:2px solid #141414;background:#fff;color:#141414}
+#chapstrip .cb.done{background:#141414;color:#fff;opacity:.45}
+#chapstrip .cb.on{background:#ffd23f;box-shadow:2px 2px 0 #141414}
+/* 水印（script.json "watermark"，留空则不显示）：顶部/底部留白各一处 + 画面内小水印（每换一个场景换一个角，防裁切） */
+.wmk:empty{display:none}
+#wmtop{position:absolute;left:0;right:0;top:34px;text-align:center;font-weight:900;font-size:22px;letter-spacing:2px;color:rgba(20,20,20,.38);z-index:3}
+#wmbot{position:absolute;left:0;right:0;top:838px;text-align:center;font-weight:900;font-size:46px;letter-spacing:3px;color:rgba(20,20,20,.13);transform:rotate(-4deg);z-index:22}
+#wm{position:absolute;font-weight:900;font-size:15px;color:rgba(20,20,20,.30);z-index:17;pointer-events:none}
+#wm.c2{right:84px;top:574px}#wm.c3{left:84px;top:574px}
+#foot{position:absolute;left:0;right:0;bottom:0;height:178px;background:
+  repeating-linear-gradient(-45deg,rgba(20,20,20,.06) 0 8px,transparent 8px 16px);border-top:4px solid #141414}
+#foot .tip{position:absolute;left:0;right:0;text-align:center;top:8px;font-size:13px;font-weight:700;color:#555}
+.abs{position:absolute}
+.panel{position:absolute;background:#fff;border:5px solid #141414;box-shadow:7px 7px 0 #141414}
+.hd{font-weight:900}
+.sfx,.tag,.stampbox{white-space:nowrap}   /* 拟声词/标签/印章不换行：要两行请写 <br> */
+.sfx{position:absolute;font-weight:900;font-style:italic;color:#ffd23f;-webkit-text-stroke:3px #141414;paint-order:stroke fill;text-shadow:5px 5px 0 #141414;letter-spacing:2px}
+.stampbox{position:absolute;border:5px solid #e8233a;color:#e8233a;font-weight:900;padding:4px 12px;border-radius:8px;background:rgba(255,255,255,.85)}
+.bubble{position:absolute;background:#fff;border:4px solid #141414;border-radius:26px;padding:10px 16px;font-weight:900;font-size:22px;box-shadow:4px 4px 0 #141414}
+.tag{position:absolute;background:#141414;color:#fff;font-weight:900;padding:4px 12px;font-size:18px;border-radius:4px}
+.big{font-size:44px}
+.num{font-family:"Noto Sans CJK SC",sans-serif;font-weight:900}
+.card{position:absolute;width:112px;height:150px;border:4px solid #141414;border-radius:12px;background:#fff;box-shadow:4px 4px 0 #141414;text-align:center}
+.red{background:#ff4d5e!important;color:#fff}
+.blue{background:#3a86ff!important;color:#fff}
+.yel{background:#ffd23f}
+.ok{color:#18a558}
+.speed{position:absolute;left:50%;top:50%;width:1400px;height:1400px;margin:-700px 0 0 -700px;background:repeating-conic-gradient(rgba(20,20,20,.10) 0 3deg,transparent 3deg 9deg)}
+svg{overflow:visible}
+
+/* keyframes */
+@keyframes pop{0%{opacity:0;transform:scale(.2) rotate(-8deg)}70%{opacity:1;transform:scale(1.12) rotate(2deg)}100%{opacity:1;transform:none}}
 @keyframes fade{0%{opacity:0}100%{opacity:1}}
 @keyframes fadeout{0%{opacity:1}100%{opacity:0}}
-@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes down{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
-@keyframes left{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
-@keyframes right{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
-@keyframes stamp{0%{opacity:0;transform:scale(1.12)}100%{opacity:1;transform:none}}
+@keyframes up{0%{opacity:0;transform:translateY(60px)}100%{opacity:1;transform:none}}
+@keyframes down{0%{opacity:0;transform:translateY(-80px)}100%{opacity:1;transform:none}}
+@keyframes left{0%{opacity:0;transform:translateX(-340px)}100%{opacity:1;transform:none}}
+@keyframes right{0%{opacity:0;transform:translateX(340px)}100%{opacity:1;transform:none}}
+@keyframes stamp{0%{opacity:0;transform:scale(3.2) rotate(-14deg)}60%{opacity:1;transform:scale(.92) rotate(-6deg)}100%{opacity:1;transform:rotate(-6deg)}}
 @keyframes shake{0%,100%{transform:none}20%{transform:translate(-8px,4px) rotate(-2deg)}40%{transform:translate(7px,-5px) rotate(2deg)}60%{transform:translate(-6px,3px)}80%{transform:translate(5px,-2px)}}
 @keyframes bob{0%{transform:translateY(0)}100%{transform:translateY(-8px)}}
 @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
@@ -195,56 +184,30 @@ svg{overflow:visible;}
 @keyframes flash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
 @keyframes flip{0%{transform:rotateY(90deg);opacity:0}100%{transform:none;opacity:1}}
 @keyframes grow{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
-@keyframes zoomin{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:none}}
+@keyframes zoomin{0%{opacity:0;transform:scale(2.4)}100%{opacity:1;transform:none}}
 @keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
 @keyframes aim{0%{transform:translate(-120px,60px) scale(1.5);opacity:0}60%{opacity:1}100%{transform:none;opacity:1}}
 @keyframes draw{0%{stroke-dashoffset:var(--len,600)}100%{stroke-dashoffset:0}}
 @keyframes dim{0%{opacity:1}100%{opacity:.25}}
-@keyframes hl{from{opacity:.65}to{opacity:1}}
+@keyframes hl{0%{background:#fff;color:#141414}100%{background:#ffd23f;color:#141414;transform:scale(1.08)}}
 @keyframes twinkle{0%{opacity:.3}100%{opacity:1}}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-300px)}}
 @keyframes count{0%{transform:translateY(0)}100%{transform:translateY(-560px)}}
-.chip{display:inline-block;border:2px solid var(--ink);border-radius:6px;padding:0 8px;font-size:28px;line-height:42px;}
-@keyframes stamp0{0%{opacity:0;transform:scale(1.12)}100%{opacity:1;transform:none}}
-.eye{transform-box:fill-box;transform-origin:center;animation:blink 3.2s linear infinite;}
-#cover{position:absolute;inset:0;z-index:40;background:var(--paper);overflow:hidden;display:none;}
-#cover .cv-rays{display:none;}
-#cover .cv-dots{position:absolute;left:64px;right:86px;top:86px;height:4px;background:var(--focus);}
-#cover .cv-badge{position:absolute;left:64px;top:108px;background:transparent;color:var(--blue);font-weight:700;font-size:18px;padding:0;border-radius:0;transform:none;letter-spacing:.025em;}
-#cover .cv-kicker{position:absolute;left:64px;right:86px;top:164px;text-align:left;font-weight:500;font-size:21px;color:var(--muted);}
-#cover .cv-title{position:absolute;left:64px;right:86px;top:213px;background:transparent;border:0;box-shadow:none;padding:0;text-align:left;font-weight:750;font-size:50px;letter-spacing:-.035em;line-height:1.32;color:var(--ink);transform:none;border-radius:0;}
-#cover .cv-title em{font-style:normal;color:var(--red);}
-#cover .cv-sub{position:absolute;left:64px;right:86px;top:373px;text-align:left;}
-#cover .cv-sub span{display:inline-block;background:transparent;color:var(--blue);font-weight:600;font-size:23px;padding:0 0 0 12px;border-left:3px solid var(--focus);border-radius:0;}
-#cover .cv-art{position:absolute;left:64px;right:86px;top:438px;height:286px;}
-.panel>svg{display:block;}
-@media(prefers-reduced-motion:reduce){.scene{animation:none}.eye{animation:none}}
-.bubble:after{content:"";position:absolute;left:-8px;bottom:22px;width:13px;height:13px;background:inherit;border-left:1.5px solid var(--blue);border-bottom:1.5px solid var(--blue);transform:rotate(45deg);}
-.scene-kicker{color:var(--muted);font-weight:550;letter-spacing:.05em;}
-.scene[data-mode="question"] .scene-kicker{color:var(--blue);background:transparent;padding:0 0 0 12px;border-left:4px solid var(--focus);border-radius:0;}
-.scene[data-mode="reveal"] .scene-kicker{color:var(--blue);background:transparent;padding:0 0 0 12px;border-left:4px solid var(--focus);border-radius:0;}
-.answer{background:#f8e6a7;border:0;border-radius:12px;padding:8px 12px;line-height:1.15;}
-#stage[data-mode="explain"]{--pop-from:.985;--pop-peak:1;}
-#stage[data-mode="reflect"]{--pop-from:.985;--pop-peak:1;}
-#stage[data-mode="explain"] .speed{display:none;}
-#stage[data-mode="reflect"] .speed{display:none;}
-
-/* Comic-specific editorial details; other themes retain their existing artwork. */
-.comic-cover-art{display:none;}
-#stage[data-theme="comic"] .legacy-cover-art{display:none;}
-#stage[data-theme="comic"] .comic-cover-art{display:block;position:absolute;inset:0;background:var(--blue);border-radius:18px;overflow:hidden;color:#fffefa;}
-.comic-cover-equation{position:absolute;left:26px;top:24px;font-size:31px;font-weight:600;letter-spacing:-.02em;}
-.comic-cover-number{position:absolute;left:22px;top:66px;font-size:142px;line-height:1;font-weight:600;letter-spacing:-.07em;color:var(--focus);}
-.comic-cover-caption{position:absolute;left:28px;bottom:22px;font-size:16px;font-weight:500;color:#e0e9ed;}
-#stage[data-theme="comic"] .cv-art .legacy-cover-art{display:none;}
-#stage[data-theme="comic"] .scene .panel>svg path[fill="#f1ede2"]{fill:#eff2ee;}
-#stage[data-theme="comic"] symbol [stroke="#141414"]{stroke:#24364b;}
-#stage[data-theme="comic"] symbol [fill="#ff4d5e"]{fill:#dc7273;}
-#stage[data-theme="comic"] symbol [fill="#3a86ff"]{fill:#4e83aa;}
-#stage[data-theme="comic"] symbol [fill="#ffd23f"]{fill:#f4cb59;}
-</style>
-<style id="video-theme">{{THEME_CSS}}</style>
-<style id="project-style">{{EXTRA_CSS}}</style></head><body>
+.chip{display:inline-block;border:3px solid #141414;border-radius:6px;padding:0 8px;font-size:20px;line-height:32px}
+@keyframes stamp0{0%{opacity:0;transform:scale(3)}60%{opacity:1;transform:scale(.92)}100%{opacity:1;transform:none}}
+.eye{transform-box:fill-box;transform-origin:center;animation:blink 3.2s linear infinite}
+#cover{position:absolute;inset:0;z-index:40;background:#ffd23f;overflow:hidden;display:none}
+#cover .cv-rays{position:absolute;left:50%;top:44%;width:1600px;height:1600px;margin:-800px 0 0 -800px;background:repeating-conic-gradient(rgba(20,20,20,.09) 0 4deg,transparent 4deg 12deg)}
+#cover .cv-dots{position:absolute;inset:0;background:radial-gradient(circle,rgba(20,20,20,.10) 1.4px,transparent 1.9px) 0 0/12px 12px}
+#cover .cv-badge{position:absolute;left:28px;top:100px;background:#141414;color:#ffd23f;font-weight:900;font-size:22px;padding:6px 14px;border-radius:6px;transform:rotate(-3deg)}
+#cover .cv-kicker{position:absolute;left:0;right:0;top:170px;text-align:center;font-weight:900;font-size:30px;color:#141414}
+#cover .cv-title{position:absolute;left:24px;right:24px;top:220px;background:#fff;border:6px solid #141414;box-shadow:10px 10px 0 #141414;padding:22px 18px;text-align:center;font-weight:900;font-size:58px;line-height:1.22;color:#141414;transform:rotate(-1.5deg)}
+#cover .cv-title em{font-style:normal;color:#e8233a}
+#cover .cv-sub{position:absolute;left:0;right:0;top:470px;text-align:center}
+#cover .cv-sub span{display:inline-block;background:#141414;color:#fff;font-weight:900;font-size:30px;padding:8px 18px;border-radius:6px}
+#cover .cv-art{position:absolute;left:0;right:0;top:520px;height:260px}
+{{EXTRA_CSS}}
+</style></head><body>
 <div id="stage">
 <svg width="0" height="0" style="position:absolute">
 <defs>
@@ -368,8 +331,8 @@ svg{overflow:visible;}
 (function(){
 const P = window.PROJECT, Q = new URLSearchParams(location.search), RENDER = Q.get('render')==='1';
 const DEF = {
- pop:[.34,'ease-out'], fade:[.32,'ease-out'], fadeout:[.25,'ease-out',0,'forwards'],
- up:[.32,'ease-out'], down:[.32,'ease-out'], left:[.36,'ease-out'], right:[.36,'ease-out'],
+ pop:[.5,'cubic-bezier(.3,1.5,.5,1)'], fade:[.5,'ease'], fadeout:[.4,'ease',0,'forwards'],
+ up:[.55,'cubic-bezier(.2,1.2,.4,1)'], down:[.55,'cubic-bezier(.2,1.2,.4,1)'], left:[.6,'cubic-bezier(.2,1.1,.4,1)'], right:[.6,'cubic-bezier(.2,1.1,.4,1)'],
  stamp:[.45,'ease-out'], stamp0:[.45,'ease-out'], shake:[.5,'linear',0,'none'], bob:[1.1,'ease-in-out',1],
  spin40:[40,'linear',1], pulse2:[.6,'ease-in-out',1,'none'], flash:[.6,'ease-out'], flip:[.5,'cubic-bezier(.3,1.4,.5,1)'],
  count:[3.2,'cubic-bezier(.5,0,.7,1)',0,'forwards'], aim:[1.0,'cubic-bezier(.2,.8,.3,1)'], zoomin:[.5,'cubic-bezier(.2,1.3,.4,1)'],
@@ -380,20 +343,6 @@ const $ = id => document.getElementById(id);
 const stage=$('stage'), subEl=$('sub'), subW=$('subwrap'), chap=$('chap'), prog=$('prog'), src=$('src');
 const cover=$('cover'), COVER=+(P.cover||0);
 const lines = P.lines;
-const themeNames={comic:'活力漫画',diagram:'清晰图解',picturebook:'温柔绘本'};
-const themeStyles=P.themes||{comic:'',diagram:'',picturebook:''};
-let theme='comic', visualTime=0;
-function setTheme(value){
-  theme=Object.prototype.hasOwnProperty.call(themeStyles,value)?value:'comic';
-  let style=$('video-theme');
-  if(!style){style=document.createElement('style');style.id='video-theme';
-    document.head.insertBefore(style,$('project-style')||null);}
-  style.textContent=themeStyles[theme];stage.dataset.theme=theme;
-  if($('tsel'))$('tsel').value=theme;
-  if(TL)seek(visualTime);
-  return theme;
-}
-window.setTheme=setTheme;
 
 /* ---------- estimated timeline (no audio) ---------- */
 function estimate(){ const tm=P.timing||{pre:.8,gap:.28,scene_gap:.7,tail:3};
@@ -414,13 +363,8 @@ function applyTimeline(tl){
     el.dataset.a.trim().split(/\s+/).forEach((tok,k)=>{
       const m=tok.match(/^(\w+)@(s|\d+)([+-][\d.]+)?$/); if(!m){console.error('bad data-a',tok);return;}
       const d=DEF[m[1]]; if(!d){console.error('no anim',m[1]);return;}
-      const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const activeMode=sc.dataset.mode||'explain';
-      // Decorative repeats end quickly and stay still during reasoning.
-      if(d[2] && (reduced||!['question','reveal'].includes(activeMode)))return;
       const base=m[2]==='s'?0:(tl.lines[+m[2]].start-s0); const delay=base+(m[3]?parseFloat(m[3]):0);
-      const name=reduced?(m[1]==='fadeout'?'fadeout':m[1]==='dim'?'dim':'fade'):m[1];
-      parts.push(`${name} ${reduced ? .01 : d[0]}s ${d[1]} ${delay.toFixed(3)}s${d[2]?' 2 alternate':''} ${parts.length===0?'both':(d[3]||'forwards')}`);
+      parts.push(`${m[1]} ${d[0]}s ${d[1]} ${delay.toFixed(3)}s${d[2]?' infinite alternate':''} ${k===0?'both':(d[3]||'forwards')}`);
     });
     el.style.animation='none'; void el.offsetWidth; el.style.animation=parts.join(', ');
   });
@@ -435,20 +379,18 @@ function updChapBar(id){ const st=$('chapstrip'); if(!st) return;   // 画面内
     x=Math.min(0,Math.max(W-st.scrollWidth,x)); st.style.transform=`translateX(${x}px)`; } }
 function esc(s){return s.replace(/“([^”]+)”/g,'<em>“$1”</em>')}
 function seek(t){
-  visualTime=t;
   const sc=TL.scenes.find(s=>t>=s.start&&t<s.end)||TL.scenes[TL.scenes.length-1];
   if(sc!==lastScene){document.querySelectorAll('.scene').forEach(e=>e.style.display=e.id===sc.id?'block':'none');
-    chap.textContent=$(sc.id).dataset.chap||'';stage.dataset.mode=$(sc.id).dataset.mode||'explain';lastScene=sc; updChapBar(sc.id);}
+    chap.textContent=$(sc.id).dataset.chap||''; lastScene=sc; updChapBar(sc.id);}
   const lt=(t-sc.start)*1000;
   $(sc.id).getAnimations({subtree:true}).forEach(a=>{a.pause();a.currentTime=Math.max(0,lt);});
   let li=-1; for(let i=0;i<lines.length;i++){ if(TL.lines[i].start<=t+0.05) li=i; }
   const show= li>=0 && lines[li].scene===sc.id && (li<lines.length-1 || t<TL.lines[li].end+1.2);
   subW.style.display=show?'flex':'none';
   if(show){ if(li!==lastSub){subEl.innerHTML=esc(lines[li].sub);subEl.className=lines[li].role||'';lastSub=li;}
-    const k=Math.min(1,(t-TL.lines[li].start+0.05)/0.15);
-    subEl.style.transform='none';subEl.style.opacity=Math.min(1,k*1.6);}
-  prog.style.width=($('progbg').offsetWidth*Math.min(1,t/TL.total))+'px';
-  prog.style.transform='none';
+    const k=Math.min(1,(t-TL.lines[li].start+0.05)/0.18), s=0.85+0.15*(1-Math.pow(1-k,3));
+    subEl.style.transform=`scale(${s}) rotate(${li%2?0.6:-0.6}deg)`; subEl.style.opacity=Math.min(1,k*1.6);}
+  prog.style.width=(540*Math.min(1,t/TL.total))+'px';
   if(cover&&COVER>0){ cover.style.display=t<COVER?'block':'none'; cover.style.opacity=Math.min(1,Math.max(0,(COVER-t)/0.35)); }
   if(src) src.style.display = t>=TL.lines[lines.length-1].start ? 'block':'none';
   return li;
@@ -456,7 +398,6 @@ function seek(t){
 window.seek=seek;
 const trackOf=id=>(P.tracks||[]).find(t=>t.id===id);
 const baseTL=()=> (P.tracks&&P.tracks.length)?P.tracks[0].timeline:estimate();
-setTheme(Q.get('theme')||P.theme||'comic');
 
 if(RENDER){ applyTimeline((trackOf(Q.get('voice'))||{}).timeline||baseTL()); seek(0); window.TOTAL=TL.total; window.READY=true; return; }
 
@@ -464,9 +405,9 @@ if(RENDER){ applyTimeline((trackOf(Q.get('voice'))||{}).timeline||baseTL()); see
 document.body.classList.add('player');
 const ui=document.createElement('div'); ui.id='ui'; ui.innerHTML=`
 <div class="row"><button id="pp">▶</button><span id="tm">0:00</span><input id="scrub" type="range" min="0" max="1000" value="0"><span id="tt"></span></div>
+<div class="row small" id="lnrow"></div>
 <div class="row" id="chips"></div>
-<div class="row"><label for="tsel">画风</label><select id="tsel"></select><span class="small">切换保留当前进度与配音</span></div>
-<div class="row"><label for="vsel">配音</label><select id="vsel"></select>
+<div class="row"><label>配音</label><select id="vsel"></select>
  <label id="rl" style="display:none">语速<input id="rate" type="range" min="0.7" max="1.5" step="0.05" value="1.05"></label>
  <label id="ol" style="display:none">偏移<input id="off" type="range" min="-5" max="5" step="0.05" value="0"><span id="ov">0.00s</span></label></div>
 <div class="row small" id="hint"></div>
@@ -482,6 +423,8 @@ const css=document.createElement('style'); css.textContent=`
 body.player{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:8px 0 16px;color:#eee;font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif}
 body.player #wrap{position:relative;overflow:hidden;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 #ui{width:min(560px,96vw);margin-top:10px;display:flex;flex-direction:column;gap:8px}
+@media (min-width:900px) and (min-aspect-ratio:1/1){body.player{flex-direction:row;justify-content:center;align-items:flex-start;gap:24px;padding:16px} #ui{width:min(460px,42vw);margin-top:0} #ui #chips{flex-wrap:wrap;overflow:visible}}   /* 宽屏：控件放右侧，画面更大 */
+#ui #lnrow{color:#ffd23f;min-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 #ui .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #ui button{background:#ffd23f;color:#141414;border:0;border-radius:8px;font-weight:800;padding:8px 14px;cursor:pointer;font-size:15px}
 #ui button.sm{background:#3a3a44;color:#eee;font-weight:600;padding:6px 10px;font-size:13px}
@@ -489,7 +432,6 @@ body.player #wrap{position:relative;overflow:hidden;border-radius:10px;box-shado
 #ui #rgo.on{background:#ff4757;color:#fff}
 #ui #scrub{flex:1;min-width:120px;accent-color:#ff4757}
 #ui select{flex:1;min-width:180px;padding:6px;border-radius:6px;background:#2a2a33;color:#eee;border:1px solid #555;font-size:14px}
-#ui button:focus-visible,#ui select:focus-visible,#ui input:focus-visible{outline:2px solid #ffd23f;outline-offset:3px}
 #ui .chip{background:#2a2a33;color:#ddd;border:1px solid #444;border-radius:14px;padding:3px 9px;font-size:12px;cursor:pointer;white-space:nowrap}
 #ui .chip.on{background:#ffd23f;color:#141414;border-color:#ffd23f}
 #ui #chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
@@ -499,7 +441,8 @@ body.player #wrap{position:relative;overflow:hidden;border-radius:10px;box-shado
 #rtext{font-size:20px;font-weight:800;color:#ffd23f;line-height:1.4}`;
 document.head.appendChild(css);
 const wrap=document.createElement('div'); wrap.id='wrap'; stage.parentNode.insertBefore(wrap,stage); wrap.appendChild(stage);
-function fit(){ const s=Math.min((innerHeight-(ui.offsetHeight+40))/960,(innerWidth-16)/540,1.2); const k=Math.max(.3,s);
+const WIDE=matchMedia('(min-width:900px) and (min-aspect-ratio:1/1)');
+function fit(){ const s=WIDE.matches?Math.min((innerHeight-32)/960,(innerWidth-ui.offsetWidth-72)/540,1.2):Math.min((innerHeight-(ui.offsetHeight+40))/960,(innerWidth-16)/540,1.2); const k=Math.max(.3,s);
   stage.style.transform=`scale(${k})`; wrap.style.width=540*k+'px'; wrap.style.height=960*k+'px'; }
 addEventListener('resize',fit);
 
@@ -511,9 +454,6 @@ let master=null, recDest=null, mediaSrc=null;
 const OUT=()=>{ const c=AC(); if(!master){ master=c.createGain(); master.connect(c.destination); } return master; };
 const fmt=x=>{x=Math.max(0,x);return Math.floor(x/60)+':'+String(Math.floor(x%60)).padStart(2,'0')};
 const vsel=$('vsel'), hint=$('hint');
-const tsel=$('tsel');
-Object.keys(themeNames).filter(id=>Object.prototype.hasOwnProperty.call(themeStyles,id)).forEach(id=>tsel.appendChild(new Option(themeNames[id],id)));
-tsel.value=theme;tsel.onchange=()=>setTheme(tsel.value);
 
 /* timeline from per-line durations (same rule as build.py) */
 function tlFrom(durs){ const tm=P.timing||{pre:.8,gap:.28,scene_gap:.7,tail:3}; const est=estimate();
@@ -593,7 +533,9 @@ function jump(x){ t=Math.max(0,Math.min(TL.total,x));
   if(mode==='speech'){stopSpeech(); if(playing){const li=TL.lines.findIndex(l=>t>=l.start-0.05&&t<l.end); if(li>=0)t=TL.lines[li].start; syncSpeechIdx();}}
   render(); }
 $('scrub').oninput=e=>jump(e.target.value/1000*TL.total);
-function render(){ seek(t); $('tm').textContent=fmt(t); $('tt').textContent=fmt(TL.total);
+let lastLn=-2;   // #lnrow 显示“第 N/总 句”：用户反馈“第 N 句读错/画面不对”时直接对应台词序号
+function render(){ const li=seek(t); if(li!==lastLn){ lastLn=li; $('lnrow').textContent=li>=0?`第 ${li+1}/${lines.length} 句 · ${lines[li].sub.replace(/<[^>]+>/g,'')}`:'封面 / 片头'; }
+  $('tm').textContent=fmt(t); $('tt').textContent=fmt(TL.total);
   $('scrub').value=Math.round(t/TL.total*1000);
   document.querySelectorAll('#chips .chip').forEach(c=>c.classList.toggle('on',c.dataset.id===(lastScene&&lastScene.id))); }
 function tick(now){ const dt=(now-last)/1000; last=now;
@@ -684,7 +626,7 @@ function zip(files){ const enc=new TextEncoder(), parts=[], cen=[]; let off=0;
   return new Blob([...parts,...cen,new Uint8Array(e.buffer)],{type:'application/zip'}); }
 $('bexp').onclick=()=>{ const fs=[]; clips.forEach((b,i)=>{ if(b) fs.push({name:String(i+1).padStart(2,'0')+'.wav',data:wav(b)}); });
   const miss=lines.map((_,i)=>i+1).filter(i=>!clips[i-1]);
-  fs.push({name:'说明.txt',data:new TextEncoder().encode(`我的配音（${fs.length}/${lines.length} 句）\n画风：${themeNames[theme]}\n解压到 proj/my_voice/ 后运行：\n  python kit/build.py proj --theme ${theme} --voice "files:proj/my_voice=我的配音"\n  python kit/render.py proj --voice 我的配音\n`+(miss.length?`\n缺少的句子：${miss.join(', ')}（build 前需要补齐）\n`:''))});
+  fs.push({name:'说明.txt',data:new TextEncoder().encode(`我的配音（${fs.length}/${lines.length} 句）\n解压到 proj/my_voice/ 后运行：\n  python kit/build.py proj --voice "files:proj/my_voice=我的配音"\n  python kit/render.py proj --voice 我的配音\n`+(miss.length?`\n缺少的句子：${miss.join(', ')}（build 前需要补齐）\n`:''))});
   const a=document.createElement('a'); a.href=URL.createObjectURL(zip(fs)); a.download=(P.title||'my')+'_我的配音.zip'; a.click(); };
 
 /* ---------- record the preview as a video file (screen capture of the stage + clean audio) ---------- */
@@ -708,7 +650,7 @@ async function recordVideo(){
   vrec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
   vrec.onstop=()=>{ disp.getTracks().forEach(x=>x.stop()); try{OUT().disconnect(recDest)}catch(e){}
     const ext=mime.includes('mp4')?'mp4':'webm'; const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob(chunks,{type:mime||'video/webm'})); a.download=`${P.title||'video'}_${themeNames[theme]}_${currentName()}.${ext}`; a.click();
+    a.href=URL.createObjectURL(new Blob(chunks,{type:mime||'video/webm'})); a.download=`${P.title||'video'}_${currentName()}.${ext}`; a.click();
     vrec=null; document.body.classList.remove('recording'); $('brender').textContent='● 录制视频'; $('rstat').textContent=`已保存 ${ext.toUpperCase()}（录制分辨率 = 画面在屏幕上的实际像素）。`; };
   vt.onended=()=>{ if(vrec) vrec.stop(); };
   document.body.classList.add('recording'); $('brender').textContent='■ 停止录制';
@@ -718,11 +660,11 @@ async function recordVideo(){
 }
 $('brender').onclick=recordVideo;
 $('bhq').onclick=()=>{ const name=vsel.value.startsWith('track:')?(trackOf(vsel.value.slice(6))||{}).name:''; 
-  const msg=name?`请用「${name}」配音、${themeNames[theme]}风格（theme=${theme}）渲染 1080×1920 MP4`:`请用我的配音、${themeNames[theme]}风格（theme=${theme}）渲染 1080×1920 MP4`;
-  const cmd=name?`python kit/build.py proj --theme ${theme}\npython kit/render.py proj --voice "${name}"`:`先导出我的配音 ZIP，再以 --theme ${theme} 构建并渲染`;
+  const msg=name?`请用「${name}」配音渲染 1080×1920 MP4`:'请用我的配音渲染 1080×1920 MP4';
+  const cmd=name?`python kit/render.py proj --voice "${name}"`:'（先导出我的配音 ZIP，见说明）';
   if(navigator.clipboard) navigator.clipboard.writeText(msg).catch(()=>{});
   $('rstat').innerHTML=`高清渲染在 Claude 或本机完成：已复制“${msg}”，粘贴给 Claude 即可；自己渲染：<code>${cmd}</code>`; };
-const rcss=document.createElement('style'); rcss.textContent=`body.recording #wrap{cursor:none;outline:3px solid #ff4757} #ui #brender{background:#ff4757;color:#fff} body.recording #ui .row:not(:first-child):not(#recrow){opacity:.35;pointer-events:none} #ui code{background:#111;padding:2px 6px;border-radius:4px;color:#ffd23f;white-space:pre-wrap}`;
+const rcss=document.createElement('style'); rcss.textContent=`body.recording #wrap{cursor:none;outline:3px solid #ff4757} #ui #brender{background:#ff4757;color:#fff} body.recording #ui .row:not(:first-child):not(#recrow){opacity:.35;pointer-events:none} #ui code{background:#111;padding:2px 6px;border-radius:4px;color:#ffd23f}`;
 document.head.appendChild(rcss);
 
 // chips
@@ -737,7 +679,7 @@ $('xtxt').onclick=()=>dl((P.title||'script')+'_台词.txt', lines.map((l,i)=>`${
 $('xsrt').onclick=()=>dl((P.title||'subs')+'.srt', lines.map((l,i)=>`${i+1}\n${srtT(TL.lines[i].start+(mode==='file'?0:0))} --> ${srtT(i+1<lines.length?Math.min(TL.lines[i+1].start,TL.lines[i].end+0.6):TL.lines[i].end+1)}\n${plain(l.sub)}\n`).join('\n'));
 $('xjson').onclick=()=>dl((P.title||'timeline')+'_timeline.json', JSON.stringify(TL,null,1));
 buildVoiceList(); vsel.value=vsel.options[0].value; setMode(vsel.value); fit(); requestAnimationFrame(t0=>{last=t0;requestAnimationFrame(tick)});
-window.__player={get clips(){return clips}, setMode, get TL(){return TL},get time(){return t},get theme(){return theme},setTheme};
+window.__player={get clips(){return clips}, setMode, get TL(){return TL}};
 window.READY=true;
 })();
 ````
@@ -1094,128 +1036,47 @@ def mix(proj, d, cfg, TL, out):
     out_a = out_a / max(1, np.abs(out_a).max()/0.97)
     sf.write(out, out_a, sr)
 
-# CSS themes are bundled into preview.html; comic inherits the default template.
-THEMES = {
-    'comic': '',
-    'diagram': '''
-#stage[data-theme="diagram"] .comic-cover-art{display:none;}
-#wmbot{display:block;}
-#cover .cv-dots{height:auto;}
-#cover .cv-title,#cover .cv-badge{letter-spacing:0;}
-#cover .cv-sub span{border-left:0;}
-.hd{letter-spacing:0;}
-.scene-kicker{letter-spacing:0;border-left:0;}
-/* 默认视频 UI/UX：低密度漫画、固定字幕、手机安全区。 */
-*{box-sizing:border-box;margin:0;padding:0;}
-html{margin:0;background:#1d1d22;}
-body{margin:0;background:#1d1d22;}
-#stage{width:540px;height:960px;overflow:hidden;position:relative;background:var(--paper);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);transform-origin:0 0;--ink:#292923;--paper:#f7f3e8;--focus:#f4c550;--blue:#285f86;--red:#a63d38;--green:#35624e;--shadow:3px 4px 0 rgba(41,41,35,.12);}
-#bg{position:absolute;inset:0;background:var(--paper);}
-#top{position:absolute;left:64px;right:86px;top:90px;height:50px;background:transparent;color:var(--ink);display:flex;align-items:center;padding:0;gap:12px;z-index:20;border-bottom:1px solid #cfc9bb;}
-#top .pill{background:var(--focus);color:var(--ink);font-weight:900;font-size:16px;padding:5px 8px;border-radius:4px;transform:none;flex:none;}
-#chap{font-weight:700;font-size:21px;letter-spacing:0;}
-#prog{position:absolute;left:64px;top:146px;height:3px;background:var(--blue);z-index:21;max-width:390px;transform:scaleX(.7222222222);transform-origin:left center;}
-#progbg{position:absolute;left:64px;right:86px;top:146px;height:3px;background:#ddd7ca;z-index:20;}
-#safe{position:absolute;left:70px;top:164px;width:540px;height:585px;transform:scale(.74);transform-origin:0 0;z-index:5;}
-.scene{position:absolute;left:0;top:0;width:540px;height:585px;display:none;overflow:hidden;animation:sceneIn .25s ease-out both;}
-@keyframes sceneIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-#subwrap{position:absolute;left:64px;right:86px;top:614px;height:114px;display:flex;align-items:center;justify-content:center;z-index:15;}
-#sub{background:#fffdf7;border:2px solid var(--ink);box-shadow:3px 4px 0 rgba(41,41,35,.12);padding:14px 15px;font-size:26px;font-weight:650;line-height:1.45;text-align:left;border-radius:10px;max-width:100%;transform-origin:50% 0;width:100%;max-height:114px;min-height:72px;transform:none!important;}
-#sub em{font-style:normal;color:var(--red);font-weight:800;}
-#sub.kid{background:#fbe8e6;transform:none!important;border-color:var(--red);}
-#chapbar{position:absolute;left:70px;right:86px;top:746px;height:30px;overflow:hidden;z-index:16;}
-#chapstrip{position:absolute;left:0;top:0;display:flex;gap:5px;white-space:nowrap;}
-#chapstrip .cb{font-size:15px;font-weight:600;line-height:18px;padding:5px 9px;border-radius:4px;border:0;background:transparent;color:#625c51;box-shadow:none;}
-#chapstrip .cb.done{background:transparent;color:#625c51;opacity:1;}
-#chapstrip .cb.on{background:var(--focus);box-shadow:none;color:var(--ink);font-weight:800;}
-.wmk:empty{display:none;}
-#wmtop{position:absolute;left:0;right:0;top:42px;text-align:center;font-weight:900;font-size:17px;letter-spacing:0;color:rgba(41,41,35,.22);z-index:3;}
-#wmbot{position:absolute;left:0;right:0;top:838px;text-align:center;font-weight:900;font-size:29px;letter-spacing:0;color:rgba(41,41,35,.08);transform:none;z-index:22;}
-#wm{position:absolute;font-weight:900;font-size:15px;color:rgba(20,20,20,.30);z-index:17;pointer-events:none;}
-#wm.c2{right:auto;top:598px;left:70px;font-size:14px;color:#625c51;}
-#wm.c3{left:70px;top:598px;right:auto;font-size:14px;color:#625c51;}
-#foot{position:absolute;left:0;right:0;bottom:0;height:178px;background:transparent;border-top:1px solid #ddd7ca;}
-#foot .tip{position:absolute;left:0;right:0;text-align:center;top:8px;font-size:13px;font-weight:700;color:#625c51;}
-.abs{position:absolute;}
-.panel{position:absolute;background:#fffdf7;border:3px solid var(--ink);box-shadow:var(--shadow);border-radius:10px;}
-.hd{font-weight:800;}
-.sfx{position:absolute;font-weight:900;font-style:italic;color:#ffd23f;-webkit-text-stroke:3px #141414;paint-order:stroke fill;text-shadow:5px 5px 0 #141414;letter-spacing:2px;}
-.stampbox{position:absolute;border:3px solid var(--red);color:var(--red);font-weight:900;padding:4px 12px;border-radius:6px;background:#fffdf7;font-size:32px;box-shadow:none;}
-.bubble{position:absolute;background:#fffdf7;border:3px solid var(--ink);border-radius:22px;padding:14px 20px;font-weight:700;font-size:32px;box-shadow:var(--shadow);line-height:1.5;}
-.tag{position:absolute;background:var(--ink);color:#fffdf7;font-weight:900;padding:6px 12px;font-size:24px;border-radius:4px;}
-.big{font-size:52px;}
-.num{font-family:inherit;font-weight:800;}
-.card{position:absolute;width:112px;height:150px;border:4px solid #141414;border-radius:12px;background:#fff;box-shadow:4px 4px 0 #141414;text-align:center;}
-.red{background:var(--red)!important;color:#fffdf7;}
-.blue{background:var(--blue)!important;color:#fffdf7;}
-.yel{background:var(--focus);}
-.ok{color:var(--green);}
-.speed{position:absolute;left:50%;top:50%;width:1400px;height:1400px;margin:-700px 0 0 -700px;background:repeating-conic-gradient(rgba(20,20,20,.10) 0 3deg,transparent 3deg 9deg);}
-svg{overflow:visible;}
-@keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
-@keyframes fade{0%{opacity:0}100%{opacity:1}}
-@keyframes fadeout{0%{opacity:1}100%{opacity:0}}
-@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes down{0%{opacity:0;transform:translateY(-80px)}100%{opacity:1;transform:none}}
-@keyframes left{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
-@keyframes right{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
-@keyframes stamp{0%{opacity:0;transform:scale(3.2) rotate(-14deg)}60%{opacity:1;transform:scale(.92) rotate(-6deg)}100%{opacity:1;transform:rotate(-6deg)}}
-@keyframes shake{0%,100%{transform:none}20%{transform:translate(-8px,4px) rotate(-2deg)}40%{transform:translate(7px,-5px) rotate(2deg)}60%{transform:translate(-6px,3px)}80%{transform:translate(5px,-2px)}}
-@keyframes bob{0%{transform:translateY(0)}100%{transform:translateY(-8px)}}
-@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-@keyframes pulse{0%{transform:scale(1)}100%{transform:scale(1.08)}}
-@keyframes flash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
-@keyframes flip{0%{transform:rotateY(90deg);opacity:0}100%{transform:none;opacity:1}}
-@keyframes grow{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
-@keyframes zoomin{0%{opacity:0;transform:scale(2.4)}100%{opacity:1;transform:none}}
-@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
-@keyframes aim{0%{transform:translate(-120px,60px) scale(1.5);opacity:0}60%{opacity:1}100%{transform:none;opacity:1}}
-@keyframes draw{0%{stroke-dashoffset:var(--len,600)}100%{stroke-dashoffset:0}}
-@keyframes dim{0%{opacity:1}100%{opacity:.25}}
-@keyframes hl{from{opacity:.65}to{opacity:1}}
-@keyframes twinkle{0%{opacity:.3}100%{opacity:1}}
-@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-300px)}}
-@keyframes count{0%{transform:translateY(0)}100%{transform:translateY(-560px)}}
-.chip{display:inline-block;border:2px solid var(--ink);border-radius:6px;padding:0 8px;font-size:28px;line-height:42px;}
-@keyframes stamp0{0%{opacity:0;transform:scale(3)}60%{opacity:1;transform:scale(.92)}100%{opacity:1;transform:none}}
-.eye{transform-box:fill-box;transform-origin:center;animation:blink 3.2s linear infinite;}
-#cover{position:absolute;inset:0;z-index:40;background:var(--paper);overflow:hidden;display:none;}
-#cover .cv-rays{position:absolute;left:50%;top:44%;width:1600px;height:1600px;margin:-800px 0 0 -800px;background:repeating-conic-gradient(rgba(20,20,20,.09) 0 4deg,transparent 4deg 12deg);display:none;}
-#cover .cv-dots{position:absolute;inset:0;background:radial-gradient(circle,rgba(20,20,20,.10) 1.4px,transparent 1.9px) 0 0/12px 12px;opacity:.12;}
-#cover .cv-badge{position:absolute;left:64px;top:110px;background:var(--ink);color:var(--focus);font-weight:900;font-size:20px;padding:6px 14px;border-radius:4px;transform:none;}
-#cover .cv-kicker{position:absolute;left:64px;right:86px;top:175px;text-align:left;font-weight:900;font-size:25px;color:var(--ink);}
-#cover .cv-title{position:absolute;left:64px;right:86px;top:229px;background:transparent;border:0;box-shadow:none;padding:0;text-align:left;font-weight:900;font-size:54px;line-height:1.3;color:var(--ink);transform:none;}
-#cover .cv-title em{font-style:normal;color:var(--red);}
-#cover .cv-sub{position:absolute;left:64px;right:86px;top:400px;text-align:left;}
-#cover .cv-sub span{display:inline-block;background:var(--focus);color:var(--ink);font-weight:700;font-size:25px;padding:8px 12px;border-radius:4px;}
-#cover .cv-art{position:absolute;left:64px;right:86px;top:476px;height:272px;}
-.panel>svg{display:block;}
-@media(prefers-reduced-motion:reduce){.scene{animation:none}.eye{animation:none}}
-/* 保留上一版清晰图解风。 */
-#stage{--surface:#fffdf7;--muted:#625c51;--pop-from:.96;--pop-peak:1}
-.bubble:after{display:none}
-.answer{background:transparent;border:0;padding:0;line-height:normal}
-.scene[data-mode="question"] .scene-kicker,.scene[data-mode="reveal"] .scene-kicker{background:transparent;color:#625c51;padding:0;font-weight:600;border-left:0;}
-''',
-    'picturebook': '''
-#stage[data-theme="picturebook"] .comic-cover-art{display:none;}
-/* 温柔绘本：继承安全区和固定字幕，降低轮廓与色彩力度。 */
-#stage{--ink:#5a4632;--paper:#fbf3e4;--surface:#fffdf7;--focus:#ffe8a3;--blue:#285f86;--red:#a24c35;--muted:#6b5846;--shadow:3px 4px 0 rgba(90,70,50,.15);--pop-from:.97;--pop-peak:1}
-#bg{background:var(--paper)}
-#top{background:#f0e3ce;color:var(--ink);border-bottom:1px solid #d9c3a0;border-radius:8px}
-#top .pill{background:var(--focus);color:var(--ink)}
-#stage [stroke="#141414"]{stroke:var(--ink)}
-#stage [fill="#141414"]{fill:var(--ink)}
-.panel{border-radius:18px}.bubble{border-radius:24px;font-weight:750}
-.panel,.bubble{box-shadow:var(--shadow);border-color:var(--ink)}
-#sub{border-color:var(--ink);background:var(--surface);color:var(--ink);box-shadow:var(--shadow);font-weight:700;border-radius:12px}
-#sub.kid{background:#ffe6e0;border-color:var(--red)}
-#cover{background:var(--paper)}#cover .cv-rays{display:none}
-#cover .cv-title{border-color:var(--ink);border-radius:18px;box-shadow:var(--shadow)}
-#cover .cv-sub span{background:var(--focus);color:var(--ink)}
-.answer{border-color:var(--ink);border-radius:12px}
-'''
-}
+THEMES = {'picturebook': '''
+/* theme: picturebook — warm picture-book look for parent-child channels (cream paper, brown ink, pastel fills, soft shadows) */
+#stage{background:#fbf3e4;color:#3d2f22}
+#bg{background:radial-gradient(circle,rgba(120,90,60,.07) 1.2px,transparent 1.7px) 0 0/14px 14px,radial-gradient(ellipse at 30% 0%,#fffaf0 0,transparent 70%),#fbf3e4}
+#top{background:#fbf3e4;color:#5a4632;border-bottom:3px dashed #d9c3a0}
+#top .pill{background:#ffb4a2;color:#5a4632;font-weight:800;border-radius:14px;transform:rotate(-2deg)}
+#chap{font-weight:800;color:#5a4632}
+.panel{border:3px solid #5a4632;box-shadow:4px 5px 0 rgba(90,70,50,.18);border-radius:18px;background:#fffdf7}
+.yel{background:#ffe8a3!important}.red{background:#ffb4a2!important;color:#5a4632!important}.blue{background:#bfe3ff!important;color:#3d2f22!important}
+.hd{font-weight:800}
+.bubble{border:3px solid #5a4632;box-shadow:3px 4px 0 rgba(90,70,50,.18);background:#fffdf7;color:#3d2f22;font-weight:800}
+.sfx{color:#ff8a65;-webkit-text-stroke:2.5px #5a4632;text-shadow:3px 4px 0 rgba(90,70,50,.22);font-style:normal}
+.stampbox{border:4px double #e0603f;color:#e0603f;border-radius:16px;background:rgba(255,253,247,.9)}
+.tag{background:#5a4632;border-radius:10px}
+.card,.chip{border-color:#5a4632!important}
+.speed{background:repeating-conic-gradient(rgba(255,190,110,.20) 0 6deg,transparent 6deg 18deg)}
+#sub{background:#fffdf7;border:3px solid #5a4632;box-shadow:4px 5px 0 rgba(90,70,50,.2);border-radius:18px;color:#3d2f22;font-weight:800}
+#sub em{color:#e0603f}
+#foot{background:repeating-linear-gradient(-45deg,rgba(120,90,60,.05) 0 8px,transparent 8px 16px),#f6ead4;border-top:3px dashed #d9c3a0}
+#foot .tip{color:#8a7358}
+#stage [stroke="#141414"]{stroke:#5a4632}
+#stage [fill="#141414"]{fill:#5a4632}
+#cover{background:#fdecc8}
+#cover .cv-rays{background:repeating-conic-gradient(rgba(255,170,90,.16) 0 5deg,transparent 5deg 15deg)}
+#cover .cv-dots{background:radial-gradient(circle,rgba(120,90,60,.08) 1.4px,transparent 1.9px) 0 0/14px 14px}
+#cover .cv-title{border:4px solid #5a4632;box-shadow:6px 8px 0 rgba(90,70,50,.2);border-radius:26px;color:#3d2f22;font-weight:800;background:#fffdf7}
+#cover .cv-title em{color:#e0603f}
+#cover .cv-kicker{color:#5a4632;font-weight:800}
+#cover .cv-sub span{background:#5a4632;border-radius:14px;font-weight:800}
+#cover .cv-badge{border-radius:14px}
+.scene :not(.stampbox):not(.sfx){border-color:#5a4632!important}
+.scene [style*="0 #141414"]{box-shadow:4px 5px 0 rgba(90,70,50,.18)!important}
+#stage{--ink:#5a4632;--shadow:4px 5px 0 rgba(90,70,50,.18)}   /* scene classes: use var(--ink, #141414) / var(--shadow, …) to follow the theme */
+
+#prog{background:#f28c6b}#progbg{background:#eadcc4}
+#chapstrip .cb{border-color:#5a4632;color:#5a4632;background:#fffdf7}#chapstrip .cb.done{background:#5a4632;color:#fff}#chapstrip .cb.on{background:#ffe8a3;box-shadow:2px 2px 0 rgba(90,70,50,.25)}
+#wmtop{color:rgba(90,70,50,.42)}#wmbot{color:rgba(90,70,50,.14)}#wm{color:rgba(90,70,50,.32)}
+#cover{background:#fdecc8}
+#cover .cv-badge{background:#5a4632;color:#ffe8a3}
+#sub.kid{background:#ffe0e6;border-color:#e0603f}
+'''}   # script.json "theme": "picturebook"（暖色绘本风，适合亲子频道）；不写 = 默认粗黑描边漫画风
 
 def cover_html(cv):
     """Title card shown for the first cover.dur seconds (also the video's first frame / thumbnail).
@@ -1234,33 +1095,23 @@ def preview(proj, cfg, tracks, embed=True):
     tail = open(os.path.join(KIT, 'base_tail.html'), encoding='utf-8').read()
     rt = open(os.path.join(KIT, 'runtime.js'), encoding='utf-8').read()
     scenes = open(os.path.join(proj, 'scenes.html'), encoding='utf-8').read()
-    theme = cfg.get('theme') or 'comic'
-    if theme not in THEMES:
-        raise ValueError(f'Unknown theme: {theme}. Choose comic, diagram, or picturebook.')
-    extra = cfg.get('extra_css', '')
-    P = {'title': cfg.get('title', ''), 'lines': cfg['lines'], 'timing': cfg['timing'], 'tracks': [],
-         'theme': theme, 'themes': THEMES}
+    extra = THEMES.get(cfg.get('theme', ''), '') + cfg.get('extra_css', '')
+    P = {'title': cfg.get('title', ''), 'lines': cfg['lines'], 'timing': cfg['timing'], 'tracks': []}
     cv = cfg.get('cover'); P['cover'] = cv.get('dur', 1.6) if cv else 0
     for tr in tracks:
         mp3 = os.path.join(proj, 'build', tr['id'] + '.mp3')
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', os.path.join(proj, 'build', tr['id'] + '.wav'), '-ac', '1', '-b:a', '96k', mp3], check=True)
         audio = ('data:audio/mpeg;base64,' + base64.b64encode(open(mp3, 'rb').read()).decode()) if embed else tr['id'] + '.mp3'
         P['tracks'].append({'id': tr['id'], 'name': tr['name'], 'audio': audio, 'timeline': tr['timeline']})
-    html = (head.replace('{{TITLE}}', cfg.get('title', '')).replace('{{BADGE}}', cfg.get('badge', '漫画科普'))
-            .replace('{{THEME_CSS}}', THEMES[theme]).replace('{{EXTRA_CSS}}', extra)
+    html = (head.replace('{{TITLE}}', cfg.get('title', '')).replace('{{BADGE}}', cfg.get('badge', '漫画科普')).replace('{{EXTRA_CSS}}', extra)
             + scenes + tail.replace('{{COVER}}', cover_html(cv)).replace('{{FOOTER}}', cfg.get('footer', '')).replace('{{SOURCES}}', cfg.get('sources', '')).replace('{{WATERMARK}}', cfg.get('watermark', ''))
             + '<script>window.PROJECT=' + json.dumps(P, ensure_ascii=False) + ';</script>\n<script>' + rt + '</script>\n</body></html>')
     out = os.path.join(proj, 'build', 'preview.html'); open(out, 'w', encoding='utf-8').write(html); return out
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument('proj'); ap.add_argument('--voice', action='append', default=[])
-    ap.add_argument('--theme', choices=['comic', 'diagram', 'picturebook'], help='Save the visual style and rebuild using cached audio')
     ap.add_argument('--no-embed', action='store_true'); ap.add_argument('--drop', action='append', default=[]); a = ap.parse_args()
     proj = os.path.abspath(a.proj); cfg = json.load(open(os.path.join(proj, 'script.json'), encoding='utf-8'))
-    if a.theme:
-        cfg['theme'] = a.theme
-        with open(os.path.join(proj, 'script.json'), 'w', encoding='utf-8') as f:
-            json.dump(cfg, f, ensure_ascii=False, indent=2)
     cfg.setdefault('timing', {'pre': .8, 'gap': .28, 'scene_gap': .7, 'tail': 3.0})
     if cfg.get('cover'): cfg['timing']['pre'] = max(cfg['timing']['pre'], cfg['cover'].get('dur', 1.6) + 0.5)   # first line starts after the cover
     os.makedirs(os.path.join(proj, 'build'), exist_ok=True)
@@ -1509,7 +1360,7 @@ for zh, en in pairs:
 ````python
 """可断点续跑的渲染（单核/有单次命令时限的环境用；render.py 一口气渲染可能被杀掉）。
 usage: python kit/render_resume.py proj --voice <id|名称> [--budget 250] [--upload]
-每次运行最多截帧 budget 秒，已截的帧会跳过；反复运行直到打印 DONE（帧齐后自动合成 MP4 并写入封面缩略图）。
+每次运行最多截帧 budget 秒，已截的帧会跳过；反复运行直到打印 DONE（未完成时打印 PENDING、退出码 3；帧齐后自动合成 MP4 并写入封面缩略图）。
 先跑 render.py --cover 生成 build/cover.png（会写入缩略图）。输出 proj/build/<id>.mp4；--upload 另出 <id>_upload.mp4（≤9.5MB，给 Claude in Chrome 上传工具用，单次上限 10MB）。"""
 import os, sys, json, asyncio, time, argparse, subprocess, shutil
 ap = argparse.ArgumentParser(); ap.add_argument('proj'); ap.add_argument('--voice', required=True)
@@ -1535,7 +1386,7 @@ async def grab():
         await b.close()
     print('grabbed', n, 'in', round(time.time() - t0), 's', flush=True)
 if todo: asyncio.run(grab())
-if any(not os.path.exists(f'{fd}/{f:06d}.jpg') for f in range(N)): sys.exit(print('NOT DONE — run again'))
+if any(not os.path.exists(f'{fd}/{f:06d}.jpg') for f in range(N)): print('PENDING — run again'); sys.exit(3)   # 退出码 3 = 未完成；不要用 grep DONE 判断
 def ff(*args): subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', *args], check=True)
 end = f'{N / fps:.3f}'; out = f'{bd}/{tr["id"]}.mp4'; tmp = f'{bd}/_tmp.mp4'; cover = f'{bd}/cover.png'
 ff('-framerate', str(fps), '-i', f'{fd}/%06d.jpg', '-i', f'{bd}/{tr["id"]}.wav', '-af', f'apad,atrim=start=0:end={end},asetpts=PTS-STARTPTS',
@@ -1557,16 +1408,16 @@ with_cover(tmp, out); shutil.rmtree(fd); print('DONE', out)
 ### kit/safe_check.py
 ````python
 """把手机平台的遮挡区画到截图上，检查关键内容有没有被挡（舞台坐标 540×960）。
-usage: python kit/safe_check.py proj/build/snap/at_0030.00.png [out.jpg]
+usage: python kit/safe_check.py proj/build/snap/at_0030.00.png [out.jpg]   （只用于单帧，不要传拼图）
 红：状态栏/顶部按钮(0–86)、底部简介与按钮(780+)、iPhone 等长屏左右裁切(各25)；橙：小红书/Shorts 右侧按钮(x>465, y 470–780)。"""
 import sys
 from PIL import Image, ImageDraw
 src = sys.argv[1]; out = sys.argv[2] if len(sys.argv) > 2 else src.rsplit('.', 1)[0] + '_safe.jpg'
-im = Image.open(src).convert('RGBA'); W, H = im.size; s = W / 540
+im = Image.open(src).convert('RGBA'); W, H = im.size; s = W / 540; sy = H / 960   # 单帧（540×960 或 1080×1920）
 ov = Image.new('RGBA', im.size, (0, 0, 0, 0)); d = ImageDraw.Draw(ov); red = (255, 0, 0, 70)
-d.rectangle([0, 0, W, 86 * s], fill=red); d.rectangle([0, 780 * s, W, H], fill=red)
+d.rectangle([0, 0, W, 86 * sy], fill=red); d.rectangle([0, 780 * sy, W, H], fill=red)
 d.rectangle([0, 0, 25 * s, H], fill=red); d.rectangle([W - 25 * s, 0, W, H], fill=red)
-d.rectangle([W - 75 * s, 470 * s, W, 780 * s], fill=(255, 120, 0, 70))
+d.rectangle([W - 75 * s, 470 * sy, W, 780 * sy], fill=(255, 120, 0, 70))
 Image.alpha_composite(im, ov).convert('RGB').save(out, quality=88); print(out)
 ````
 
@@ -1592,6 +1443,50 @@ for i, o in enumerate(L):
     ctx = '  '.join(f"{c}={flat[j] if j < len(flat) else '?'}" for j, c in hits)
     print(f'{i+1:02d}  {ctx}\n    {t}'); n += 1
 print(f'— {n} 句含易错多音字；逐个对照语境，读音不对的句子加 "say"。')
+````
+
+### kit/layout_check.py
+````python
+"""画面版式自检（自动）：逐句检查每句结束时的画面，报告
+  OUT      元素（裁剪后可见部分）超出场景区 540×585
+  WRAP     .sfx / .tag / .stampbox 文字意外折行（要两行请写 <br>）
+  OVERLAP  两个带文字的元素互相遮挡（重叠面积 > 较小者的 12%）
+usage: python kit/layout_check.py proj [--voice <id|名称>]
+没有输出 = 通过。报告的是“第 N 句结束时”的状态（N 从 1 起，和预览页“第 N 句”一致）；
+同一问题只报第一次出现。修完 scenes.html 重跑 build.py 再查。--sheet 拼图仍要看一眼（颜色、构图这类它查不了）。"""
+import asyncio, json, os, sys, argparse
+from playwright.async_api import async_playwright
+JS='''(t)=>{seek(t);const sc=[...document.querySelectorAll('.scene')].find(e=>e.style.display!=='none');
+const R=sc.getBoundingClientRect(),k=R.width/540;const out=[];
+const els=[...sc.querySelectorAll('.panel,.bubble,.sfx,.stampbox,.tag,.abs,.card')].filter(e=>{const cs=getComputedStyle(e);return +cs.opacity>0.5&&cs.visibility!=='hidden'&&e.getBoundingClientRect().width>0&&!e.classList.contains('speed')});
+const clip=e=>{let r=e.getBoundingClientRect(),L=r.left,T=r.top,Rr=r.right,B=r.bottom;for(let a=e.parentElement;a&&a!==sc;a=a.parentElement){if(getComputedStyle(a).overflow!=='visible'){const q=a.getBoundingClientRect();L=Math.max(L,q.left);T=Math.max(T,q.top);Rr=Math.min(Rr,q.right);B=Math.min(B,q.bottom)}}return {x:(L-R.left)/k,y:(T-R.top)/k,w:Math.max(0,Rr-L)/k,h:Math.max(0,B-T)/k}};
+const box=clip;
+const nlines=e=>{const rg=document.createRange();rg.selectNodeContents(e);const tops=new Set([...rg.getClientRects()].filter(r=>r.width>2).map(r=>Math.round(r.top/4)));return tops.size};
+const txt=e=>e.innerText.trim().replace(/\\s+/g,' ').slice(0,18);
+els.forEach(e=>{const b=box(e);if(b.w*b.h<1)return;if(b.x<-2||b.y<-2||b.x+b.w>542||b.y+b.h>587)out.push(['OUT',sc.id,txt(e)||e.className,b.x|0,b.y|0,(b.x+b.w)|0,(b.y+b.h)|0]);
+ if(e.classList.contains('sfx')||e.classList.contains('tag')||e.classList.contains('stampbox')){if(nlines(e)>1&&!e.innerHTML.includes('<br'))out.push(['WRAP',sc.id,txt(e)])}});
+const T=els.filter(e=>{const q=box(e);return q.w*q.h>1}).filter(e=>txt(e)&&!e.querySelector('.panel,.bubble,.sfx,.stampbox,.tag'));
+for(let i=0;i<T.length;i++)for(let j=i+1;j<T.length;j++){const a=T[i],c=T[j];if(a.contains(c)||c.contains(a))continue;const A=box(a),B=box(c);
+ const ox=Math.min(A.x+A.w,B.x+B.w)-Math.max(A.x,B.x),oy=Math.min(A.y+A.h,B.y+B.h)-Math.max(A.y,B.y);
+ if(ox>6&&oy>6&&ox*oy>0.12*Math.min(A.w*A.h,B.w*B.h))out.push(['OVERLAP',sc.id,txt(a),txt(c),Math.round(ox*oy/Math.min(A.w*A.h,B.w*B.h)*100)+'%'])}
+return out}'''
+async def main(bd, vid):
+    TL = json.load(open(f'{bd}/{vid}.timeline.json'))
+    async with async_playwright() as p:
+        b = await p.chromium.launch(); pg = await b.new_page(viewport={'width': 540, 'height': 960})
+        await pg.goto(f'file://{bd}/preview.html?render=1&voice={vid}'); await pg.wait_for_function('window.READY===true')
+        await pg.evaluate('document.fonts.ready'); seen = set(); n = 0
+        for i, l in enumerate(TL['lines']):
+            for r in await pg.evaluate(JS, l['end'] - 0.05):
+                k = json.dumps(r, ensure_ascii=False)
+                if k not in seen: seen.add(k); n += 1; print(f'第{i+1:02d}句', k)
+        await b.close()
+    print(f'— {n} 处问题' if n else '— 版式检查通过')
+if __name__ == '__main__':
+    ap = argparse.ArgumentParser(); ap.add_argument('proj'); ap.add_argument('--voice'); a = ap.parse_args()
+    bd = os.path.abspath(os.path.join(a.proj, 'build')); reg = json.load(open(f'{bd}/voices.json', encoding='utf-8'))
+    tr = next((r for r in reg if a.voice in (r['id'], r['name'], r['spec'])), reg[0]) if a.voice else reg[0]
+    asyncio.run(main(bd, tr['id']))
 ````
 
 ### kit/一键生成Edge配音.command
@@ -1655,22 +1550,7 @@ Claude 的云端环境连不上微软语音服务。若在 Cowork 网络设置�
    已装齐依赖时也可以直接：`python kit/build.py proj --voice "edge:zh-CN-XiaoxiaoNeural@1.1=晓晓"`。
 > 首次双击若提示“无法验证开发者”：右键 → 打开；或终端里 `chmod +x 一键生成Edge配音.command`。
 
-## 切换画风
-
-默认是活力漫画（comic）；清晰图解（diagram）保留暖白纸面与安静排版；温柔绘本（picturebook）适合亲子讲述。调用技能时说“用清晰图解风”，或在 script.json 中设置 theme。
-
-预览页“画风”下拉可以即时比较，保持当前进度和配音。预览选择不自动写入本地配置；高清渲染提示会带上所选画风。要保存并构建，可用：
-
-```bash
-python kit/build.py proj --theme diagram
-python kit/render.py proj --voice 云希
-```
-
-画风改变不改台词或时间轴，已有配音命中缓存后无需重新合成。不同风格的高清 MP4 请分别命名，避免覆盖。
-
-场景可加 data-mode="question|explain|reveal|reflect"，缺省 explain。解释/复习阶段停用循环装饰，提问/揭晓阶段的重复装饰最多两个周期；数学演示与逐句出现仍按配音时间轴执行。
-
-## 封面样式
+## 封面
 `script.json` 里加 `"cover": {"title": "其实只会<br>“猜下一个字”", "kicker": "你每天用的 ChatGPT", "sub": "3 分钟看懂大语言模型", "badge": "AI 漫画科普", "art": "<div …>可放角色/气泡</div>", "dur": 1.6}`：
 视频开头先显示 1.6 秒封面（第一帧就是封面，页内录制的视频也一样），正片自动顺延。
 `python kit/render.py proj --cover` 导出 `build/cover.png`（1080×1920，发布时上传为封面）；高清渲染的 MP4 会自动把封面写进文件缩略图。
@@ -1724,7 +1604,8 @@ LISTENHUB_API_KEY=...
 
 ## 手机安全区 / 断点渲染 / 中英配音
 - 版式默认避开手机平台遮挡（顶部状态栏、底部简介、右侧按钮）；检查：`python kit/safe_check.py proj/build/snap/at_0030.00.png`。
-- 电脑配置低或渲染中途被打断：反复运行 `python kit/render_resume.py proj --voice 晓晓（微软 Edge） --upload` 直到显示 DONE。
+- 电脑配置低或渲染中途被打断：反复运行 `python kit/render_resume.py proj --voice "晓晓（微软 Edge）" --upload` 直到显示 DONE（声音名有空格要加引号）。
+- 版式自检：`python kit/layout_check.py proj`，自动找出超出画面、文字折行、互相遮挡的元素（报告“第 N 句”，与预览页一致）。
 - 多音字读错：`python kit/polyphone_check.py proj` 找出来，在那一句加 `"say"`（同音字替换，字幕不变），再重新生成配音。
 - 英语学习类视频（台词里有 `"en": true` 的句子）：`python kit/gen_edge_mixed.py proj` 生成中英混合配音。
 ````
