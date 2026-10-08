@@ -30,6 +30,11 @@ Scripts live in `~/.claude/skills/manga-skit-video/scripts/`. Run them all **fro
 8. `npx hyperframes check`, then `npx hyperframes snapshot --at <one time per scene> --no-end`, then **Read the contact sheet**.
 9. `npx hyperframes preview --background`, then give the user the URL. Render MP4 **only after the user approves**, with `npx hyperframes render --crf 23`. Projects pin the CLI version in `package.json`. Upgrade with `npx hyperframes@latest upgrade --project . --check`, then without `--check`, then `check` and compare a snapshot against the old one. If the latest version won't install, keep the pin: `npx --yes hyperframes@<pin> …`. The default `looks` quality is CRF 16, which comes out around 16 Mbps / 140 MB for 73 s; CRF 23 is about 40 MB with no visible loss.
 10. **Always** write `publish.md` (抖音 / 视频号 / 小红书 / YouTube / X copy) per `publish-copy.md`, check title lengths with Python, and give it to the user along with the MP4.
+11. **Publish (only when the user says so).** Drive the user's **own logged-in Chrome** with Claude in Chrome (`mcp__claude-in-chrome__*`; load them all in one ToolSearch). This overrides the global "use gstack-browse" rule: gstack's Chromium is an empty profile with no logins, and cookie import is blocked by the sandbox.
+   - One platform per tab, one at a time. Order: YouTube first (X needs the Shorts link) → 抖音 → 视频号 → 小红书 → X.
+   - X: post the `publish.md` X text with the real Shorts link (no `?si=`). Don't use YouTube's Share → X button: it only sends the title + link, so the hashtags and the expression line are lost.
+   - Upload the MP4 + 3:4 cover with `file_upload` on the page's `<input type=file>` (never click the upload button: it opens a native picker). **Read `publish-platforms.md` first**: the 10 MB upload cap, the 抖音 cover input, the 视频号 shadow DOM (`scripts/cors_serve.py`), and 小红书 topic picking.
+   - Fill title / copy / tags from `publish.md`, then **show the user the exact title and copy and wait for a yes before clicking 发布** on each platform.
 
 ## script.json quick reference
 Top level:
