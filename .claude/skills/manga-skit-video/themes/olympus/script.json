@@ -1,0 +1,81 @@
+{
+  "_doc": "Theme pack for Gods Learn Chinese (Greek gods learn Chinese). Project script.json sets \"theme\": \"olympus\". head=1: scenes[:1] open the video, the rest close it. Run panels.py / voice.py / bgm.py in THIS dir to (re)make its assets.",
+  "head": 1,
+  "speed": 1.15,
+  "style": "ONE single full-bleed illustration showing ONE camera shot: no comic page, no panel grid, no frames or borders, no insets; each character appears at most once. Japanese gag manga art (Gintama energy) with ancient Greek black-figure pottery touches (meander key borders on clothing, terracotta textures): bold black ink lines, screentone shading, mostly black and white with spot terracotta-RED accents only, exaggerated comedic faces, speed lines. Classical Greek mythology as seen in ancient statues and vase paintings, NOT any movie or cartoon version. SETTING: Mount Olympus above the clouds with white marble columns, and an ancient Greek running track, location as described in SCENE. ABSOLUTELY NO TEXT, no letters, no Greek letters, no inscriptions, no signs, no writing on jars or banners, no speech bubbles anywhere in the image.",
+  "cast": {
+    "Z": {
+      "name": "Zeus",
+      "chip": "ink",
+      "voice": "minimax-official-charming-santa-60a9eae3f7",
+      "look": "ZEUS: big jolly broad-chested old god ~60, wild curly white hair and a huge curly white beard, bushy white eyebrows, beaming grin, white himation draped over one shoulder with a red meander-pattern border, gold laurel wreath, holding a small zigzag lightning bolt like a pointer.",
+      "persona": "宙斯，爱笑着给人派活的大老板，浑厚和气的老年男声"
+    },
+    "E": {
+      "name": "Hermes",
+      "chip": "ink",
+      "voice": "doubao-official-en_male_sylus_emo_v2_mars_bigtts",
+      "look": "HERMES: slim young god ~25, sharp narrow face, half-lidded bored eyes, short neat dark curls, winged petasos traveller's hat with small white wings, short grey chlamys cloak pinned at the shoulder over a short tunic, small winged sandals, holds a caduceus staff.",
+      "persona": "赫尔墨斯，冷面毒舌的翻译之神，平静低沉的年轻男声，惜字如金"
+    },
+    "H": {
+      "name": "Hercules",
+      "chip": "ink",
+      "voice": "minimax-official-arnold-3ccea6fa62",
+      "look": "HERCULES: enormous muscular young man ~28, huge biceps, square jaw, short curly black hair, thick black brows, small earnest eyes, a lion-skin pelt worn over one shoulder with the lion head pushed back like a hood, short brown tunic, leather sandals; comically dim but eager.",
+      "persona": "赫拉克勒斯，肌肉比脑子发达的莽撞大块头，粗哑的大嗓门男声"
+    },
+    "A": {
+      "name": "Athena",
+      "chip": "red",
+      "voice": "doubao-official-zh_female_yingyujiaoxue_uranus_bigtts",
+      "look": "",
+      "persona": ""
+    }
+  },
+  "bgm": {
+    "fanfare": {
+      "vol": 0.9,
+      "sec": 4,
+      "prompt": "triumphant ancient greek brass fanfare, trumpets and big drums, loud thunder crash at the end, epic comedic movie trailer opening, no vocals"
+    },
+    "outrojingle": {
+      "vol": 0.6,
+      "sec": 6,
+      "prompt": "short cheerful comedic ancient greek outro jingle, lyre and pan flute flourish, ends with a small cymbal hit, no vocals"
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "entry": "cut",
+      "title": true,
+      "bgm": "fanfare",
+      "min": 2.4,
+      "art": "Epic comedic title shot high on Mount Olympus above the clouds at sunrise: ZEUS in the middle raises his zigzag lightning bolt with a huge grin, HERCULES flexes both arms proudly on the left, HERMES stands on the right with arms crossed and a bored deadpan face, white marble columns behind them, a lightning flash and radiating speed lines, a huge red sun. All characters are in the TOP 55% of the image; the lower 45% is only empty clouds and screentone."
+    },
+    {
+      "id": "outro",
+      "entry": "push",
+      "bgm": "outrojingle",
+      "title": [
+        "Follow for",
+        "more Chinese!"
+      ],
+      "ep": "Gods Learn Chinese",
+      "lines": [
+        {
+          "who": "A",
+          "text": "See you! 下次见！",
+          "say": "Got it? See you next time! 下次见！",
+          "sub": "xiàcì jiàn",
+          "lead": 0.5
+        }
+      ],
+      "tail": 1.0,
+      "min": 3.5,
+      "art": "End-of-class shot on a sunny marble terrace of Mount Olympus: ZEUS, HERCULES and HERMES stand in a row waving goodbye to the viewer; HERCULES waves a huge hand grinning, ZEUS laughs with both arms open, HERMES gives one tiny reluctant wave with a deadpan face. All characters are in the TOP half of the image; the lower half is only plain marble floor and screentone."
+    }
+  ],
+  "series": "Gods Learn Chinese"
+}

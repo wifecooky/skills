@@ -19,6 +19,9 @@ Load `/hyperframes` + `/hyperframes-core` before writing composition HTML. This 
 5. **Hook + landing.**
    - Open with a misconception struck through: 「AI 在~~思考~~？」→「其实它只会一件事」→ big accent statement.
    - End with a pull-back, title mask-rise, then fade. Never start or end on a hard frame: ~0.6s lead-in before VO, BGM fade-in 1.5s / fade-out 2.5–3s.
+   - **Intro breath (1.5s)**: fade from black + HUD brand slides in before the first VO. Without it the video starts mid-sentence and feels cut off.
+   - **End card (4s)**: after the final fade, a channel sign-off: 「关注视频号」/ big serif **双言两语** (per-char stagger) / accent rule / `WECHAT CHANNELS`. Every published video gets one.
+   - Build both as offsets, not by retiming scenes: `INTRO`/`OUTRO` constants, `tl.shiftChildren(INTRO)`, audio `data-start += INTRO`, root/BGM duration = `S.end + INTRO + OUTRO`. Code: `references/pipeline.md` § Intro & end card.
 6. **Real numbers for credibility.** Vocab 100,277, layer 01/96, 4096 dims, top-1 0.72. Fake-precise numbers read as cheap; real ones read as expert.
 
 Write this as BRIEF.md + STORYBOARD.md (frame per scene with time range and the morph that links it to the next).
@@ -46,9 +49,10 @@ See `references/design-system.md` for CSS. Rules:
 8. npx hyperframes check .                  → 0 errors
 9. snapshot contact sheets at scene midpoints → look at them yourself, fix overlaps
 10. render -q high, then web encode         → ffprobe duration matches
+11. publish to 视频号 (only on user's go)    → verify: list page shows the right 发表 time
 ```
 
-Commands, mix levels, and gotchas: `references/pipeline.md`.
+Commands, mix levels, and gotchas: `references/pipeline.md`. Publishing (copy template + browser gotchas): `references/publish-channels.md`.
 
 ## 4. Variants
 

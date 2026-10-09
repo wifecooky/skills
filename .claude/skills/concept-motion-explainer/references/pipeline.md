@@ -66,6 +66,41 @@ Re-run after any text change, or new glyphs fall back to system fonts.
 - Panels over the background need opaque backgrounds or the grid/moon bleeds through.
 - `check` "Navigation timeout" under load is transient → retry.
 
+## Intro & end card
+
+Scene times `S` stay VO-derived (0 = first scene). Intro and outro are pure offsets on top:
+
+```js
+const INTRO = 1.5, OUTRO = 4.0;
+const clock = { t: -INTRO };                       // render() sees negative t during intro
+// ... build all scene tweens at S times ...
+tl.shiftChildren(INTRO, false, 0);                 // push every scene tween back by INTRO
+tl.fromTo("#fade", { opacity: 1 }, { opacity: 0, duration: 1.4, ease: "power2.inOut" }, 0);
+tl.fromTo("#hud-brand", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.8, ease: "power3.out", immediateRender: false }, 0.5);
+tl.fromTo(clock, { t: -INTRO }, { t: S.end, duration: S.end + INTRO, ease: "none", onUpdate: render }, 0);
+
+const EC = S.end + INTRO;                          // end card starts after the final fade
+tl.set(["#cam", "#title", "#hud" /* ...everything on screen */], { opacity: 0 }, EC);
+tl.to("#endcard", { opacity: 1, duration: 0.7, ease: "power2.out" }, EC);
+tl.to("#ec-k", { opacity: 1, duration: 0.6 }, EC + 0.3);
+tl.to("#ec-name span", { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.09 }, EC + 0.45);
+tl.to("#ec-rule", { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, EC + 1.0);
+tl.to("#ec-sub", { opacity: 1, duration: 0.6 }, EC + 1.25);
+tl.to("#endcard", { opacity: 0, duration: 0.8, ease: "power2.in" }, EC + OUTRO - 0.9);
+```
+
+```html
+<div id="endcard">  <!-- inset:0, flex column centered, radial ink→black bg, last child of the scene -->
+  <div id="ec-k">关注视频号</div>                <!-- serif 30px, letter-spacing .5em, dim -->
+  <div id="ec-name"><span>双</span><span>言</span><span>两</span><span>语</span></div>  <!-- Noto Serif SC 900, 168px -->
+  <div id="ec-rule"></div>                       <!-- 300×3 accent -->
+  <div id="ec-sub">WECHAT CHANNELS</div>         <!-- mono, dim -->
+</div>
+```
+
+- Every `<audio>` `data-start` += INTRO (vo0 at 0.6 → 2.1); root, scene and BGM `data-duration` = `S.end + INTRO + OUTRO`.
+- Timecode must count from the real frame: `f = round((t + INTRO) * FPS)`.
+
 ## Check, snapshot, render
 
 ```bash

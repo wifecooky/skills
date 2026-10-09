@@ -50,7 +50,7 @@ Top level:
   - `build.py` splices its scenes around the episode. Its cast and bgm fill gaps; the project wins on clashes.
   - Missing `assets/*` files are copied from the pack.
   - The intro carries `title: true`, so **don't put `title` on scene 01**. The outro's `title` is its own `[line1, line2]` plus `ep`.
-  - Available packs: `sanguo` (刘关张曹 + Owen老师, war-drum intro, jingle outro, watermark `@桃园英语角`).
+  - Available packs: `sanguo` (刘关张曹 + Owen老师, war-drum intro, jingle outro, watermark `@桃园英语角`); `olympus` (Zeus/Hermes/Hercules + Athena, for English speakers learning Chinese: brass-fanfare intro, lyre jingle outro, no watermark yet).
   - New series: copy a pack, edit its `script.json` (`style`, `cast`, `bgm`, `scenes`), and rerun the three scripts in the pack dir.
 
 Scene fields:
