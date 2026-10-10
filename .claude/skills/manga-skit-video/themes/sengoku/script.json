@@ -1,0 +1,88 @@
+{
+  "_doc": "Theme pack for 戦国武将、中国語を学ぶ (Sengoku warlords learn Chinese, for Japanese viewers). Project script.json sets \"theme\": \"sengoku\". head=1: scenes[:1] open the video, the rest close it. Run panels.py / voice.py / bgm.py in THIS dir to (re)make its assets.",
+  "head": 1,
+  "speed": 1.15,
+  "style": "ONE single full-bleed illustration showing ONE camera shot: no comic page, no panel grid, no frames or borders, no insets; each character appears at most once. Japanese gag manga art (Gintama energy) with yamato-e and ukiyo-e touches (gold-leaf cloud bands, Kano-school painted screens): bold black ink lines, screentone shading, mostly black and white with spot vermilion-RED and a little GOLD accent only, exaggerated comedic faces, speed lines. Sengoku-period Japan, 1570s, historically plausible costume and architecture. SETTING: the great audience hall of Azuchi Castle: tatami floor, gold-leaf fusuma sliding doors painted with pine trees and tigers, a raised dais for the lord, location as described in SCENE. ABSOLUTELY NO TEXT, no letters, no kanji, no kana, no calligraphy scrolls with writing, no seals, no signs, no speech bubbles anywhere in the image.",
+  "cast": {
+    "N": {
+      "name": "信長",
+      "chip": "red",
+      "voice": "doubao-official-multi_male_wanqudashu_moon_bigtts",
+      "look": "NOBUNAGA: lean sharp-featured warlord ~40, fierce narrow eyes, thin upturned moustache and small chin beard, chonmage topknot with shaved pate, black kataginu vest with gold paulownia crest over a red kosode, a crimson European velvet cape on his shoulders (he loves foreign goods), always holds a closed folding fan.",
+      "persona": "织田信长，性急霸道、自以为是的战国大名，低沉有威压的中年男声，说日语"
+    },
+    "H": {
+      "name": "秀吉",
+      "chip": "ink",
+      "voice": "doubao-official-multi_male_jingqiangkanye_moon_bigtts",
+      "look": "HIDEYOSHI: small wiry man ~35, monkey-like face with big ears, huge eager grin, thin moustache, chonmage topknot with shaved pate, flashy gold kataginu vest with gourd pattern over a brown kosode and hakama.",
+      "persona": "丰臣秀吉，机灵爱拍马屁、过度自信的家臣，油滑的男声，说日语"
+    },
+    "I": {
+      "name": "家康",
+      "chip": "ink",
+      "voice": "minimax-official-japanese-intellectualsenior-c19002d3b8",
+      "look": "IEYASU: plump round-faced man ~30, small sleepy half-closed eyes, completely expressionless, chonmage topknot with shaved pate, plain dark-green kamishimo with stiff shoulder wings, usually holding a tea bowl.",
+      "persona": "德川家康，慢条斯理、惜字如金的冷面男声，说日语"
+    },
+    "T": {
+      "name": "老師",
+      "chip": "red",
+      "voice": "doubao-official-multi_female_shuangkuaisisi_moon_bigtts",
+      "look": "",
+      "persona": ""
+    }
+  },
+  "bgm": {
+    "fanfare": {
+      "vol": 0.9,
+      "sec": 4,
+      "prompt": "epic comedic samurai movie opening, thundering taiko drum roll and shamisen flourish, ends with a big taiko hit, no vocals"
+    },
+    "outrojingle": {
+      "vol": 0.6,
+      "sec": 6,
+      "prompt": "short cheerful comedic Japanese outro jingle, shamisen and koto flourish, ends with a small taiko hit, no vocals"
+    }
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "entry": "cut",
+      "title": true,
+      "bgm": "fanfare",
+      "min": 2.4,
+      "art": "Epic comedic title shot in front of Azuchi Castle's gold-leaf screens: NOBUNAGA in the middle strikes a proud pose with his fan raised and his crimson cape flaring, HIDEYOSHI on the left gives an eager thumbs-up with a huge grin, IEYASU on the right sits sipping tea with a sleepy deadpan face, radiating speed lines and a huge red sun behind them. All characters are in the TOP 55% of the image; the lower 45% is only plain tatami and screentone."
+    },
+    {
+      "id": "outro",
+      "entry": "push",
+      "bgm": "outrojingle",
+      "title": [
+        "フォロー",
+        "してね！"
+      ],
+      "ep": "戦国武将、中国語を学ぶ",
+      "lines": [
+        {
+          "who": "I",
+          "text": "……フォロー、<br>してくだされ。",
+          "say": "……フォロー、してくだされ。",
+          "speed": 0.95,
+          "lead": 0.5
+        },
+        {
+          "who": "T",
+          "text": "再见！",
+          "sub": "zàijiàn",
+          "say": "再见。　再见！",
+          "speed": 0.9
+        }
+      ],
+      "tail": 1.0,
+      "min": 3.5,
+      "art": "End-of-class shot on the wooden veranda of Azuchi Castle with a garden behind: NOBUNAGA, HIDEYOSHI and IEYASU sit in a row waving goodbye to the viewer; HIDEYOSHI waves both arms wildly, NOBUNAGA gives a lordly wave of his fan, IEYASU gives one tiny reluctant wave with a deadpan face. All characters are in the TOP half of the image; the lower half is only plain wooden floor and screentone."
+    }
+  ],
+  "series": "戦国武将、中国語を学ぶ"
+}

@@ -57,7 +57,7 @@ import { parseStoryboard } from "./lib/storyboard.mjs";
 import { parseFormat } from "./lib/dimensions.mjs";
 import { stageAssets } from "./lib/assets.mjs";
 import { parseColors, semanticColors } from "./lib/tokens.mjs";
-import { bgmDefaultVolume } from "../../media-use/audio/scripts/lib/bgm.mjs";
+import { bgmDefaultVolume } from "./lib/bgm-volume.mjs";
 
 // ---------- argv ----------
 const argv = process.argv.slice(2);
@@ -185,7 +185,7 @@ function escapeHtmlAttr(value) {
 
 function approvedVideoAttrs(attrs) {
   const forwarded = [];
-  for (const name of ["id", "src", "poster", "preload", "aria-label", "data-media-start", "data-playback-rate"]) {
+  for (const name of ["id", "src", "poster", "preload", "aria-label", "data-media-start"]) {
     const value = attrValueFrom(attrs, name);
     if (value !== null) forwarded.push(`${name}="${escapeHtmlAttr(value)}"`);
   }

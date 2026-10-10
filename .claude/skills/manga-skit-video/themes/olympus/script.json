@@ -41,8 +41,9 @@
     },
     "outrojingle": {
       "vol": 0.6,
-      "sec": 6,
-      "prompt": "short cheerful comedic ancient greek outro jingle, lyre and pan flute flourish, ends with a small cymbal hit, no vocals"
+      "src": "Freesound 610703 'Good answer harp glissando' by oggraphics, CC0 (preview mp3, +14dB, 6s). Old MusicGen take: outrojingle-musicgen.wav",
+      "prompt": "short cheerful comedic ancient greek outro jingle, lyre and pan flute flourish, ends with a small cymbal hit, no vocals",
+      "sec": 6
     }
   },
   "scenes": [
@@ -66,10 +67,17 @@
       "lines": [
         {
           "who": "A",
-          "text": "See you! 下次见！",
-          "say": "Got it? See you next time! 下次见！",
-          "sub": "xiàcì jiàn",
+          "text": "Follow for<br>more Chinese!",
+          "say": "Got it? Follow for more Chinese!",
+          "speed": 1.0,
           "lead": 0.5
+        },
+        {
+          "who": "A",
+          "text": "下次见！",
+          "sub": "xiàcì jiàn",
+          "say": "下次见。",
+          "speed": 0.9
         }
       ],
       "tail": 1.0,

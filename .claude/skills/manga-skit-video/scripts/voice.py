@@ -2,7 +2,7 @@
 # Run in the project dir:  python3 voice.py [--force] [--local] [line ids like 12-0 ...]   (--local = redo trim/speed from cached raw mp3, no API)
 # A line with "emo" (acting note, e.g. "嚎啕大哭地喊") uses the generative listenhub-voice model instead of plain TTS.
 # Existing wavs are skipped unless --force or named explicitly. Prints each line's duration.
-import json, os, sys, time, subprocess, concurrent.futures as cf
+import json, os, re, sys, time, subprocess, concurrent.futures as cf
 
 def key():
     if os.environ.get("LISTENHUB_API_KEY"):
@@ -22,6 +22,9 @@ def lines():
 
 API = "https://api.marswave.ai/openapi/v1"
 
+def spoken(l):  # TTS text: "say", else the bubble text without its <br> tags
+    return l.get("say") or re.sub(r"<[^>]+>", "", l["text"])
+
 def curl(*args):
     return subprocess.run(["curl", "-s", "--max-time", "120", "-H", f"Authorization: Bearer {KEY}", *args],
                           capture_output=True, text=True).stdout
@@ -31,7 +34,7 @@ def acted(l, mp3):
     (Plain /tts reads any bracketed note out loud.)"""
     c = S["cast"][l["who"]]
     note = "，".join(x for x in (c.get("persona"), l["emo"]) if x)  # persona tells the acted model who is speaking (meant to curb mid-line speaker drift; not proven)
-    body = {"text": f'{note}：{l.get("say", l["text"])}',
+    body = {"text": f'{note}：{spoken(l)}',
             "voices": [{"type": "speaker", "id": S["cast"][l["who"]]["voice"]}]}
     for _ in range(20):  # submit is rate-limited to 5/min (code 29998): wait and retry
         r = json.loads(curl("-X", "POST", f"{API}/listenhub-voice/generate", "-H", "Content-Type: application/json",
@@ -63,7 +66,7 @@ def run(item):
         if err:
             return lid, 0, err
     else:
-        body = {"input": l.get("say", l["text"]), "voice": S["cast"][l["who"]]["voice"],
+        body = {"input": spoken(l), "voice": S["cast"][l["who"]]["voice"],
                 "response_format": "mp3", "speed": sp}
         ct = curl("-o", mp3, "-w", "%{content_type}", "-X", "POST", f"{API}/tts",
                   "-H", "Content-Type: application/json", "--data-binary", json.dumps(body, ensure_ascii=False))
