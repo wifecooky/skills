@@ -49,6 +49,7 @@ See `references/design-system.md` for CSS. Rules:
 8. npx hyperframes check .                  → 0 errors
 9. snapshot contact sheets at scene midpoints → look at them yourself, fix overlaps
 10. render -q high, then web encode         → ffprobe duration matches
+10b. watermarked copy (scripts/watermark.py) → preview frames approved first; diff confirms mark mid-window, none on end card
 11. publish to 视频号 (only on user's go)    → verify: list page shows the right 发表 time
 ```
 
@@ -68,3 +69,9 @@ Commands, mix levels, and gotchas: `references/pipeline.md`. Publishing (copy te
 - [ ] Accent color only on the current focal element?
 - [ ] No text overlapping (check snapshots, not just lint)?
 - [ ] Soft open, soft close, no audio clipping?
+- [ ] Every chapter boundary where an element continues: pixel-diff of the frames either side ≈ 0 (no fade-out/fade-in dip, same IDs/values)?
+- [ ] SFX loudness-normalized; nothing noisy under the VO?
+
+## 6. Feedback loop
+
+Every problem the user finds in a rendered video becomes a rule here or in `references/pipeline.md`, written as cause → fix → how to verify. Do it in the same session, right after the fix is verified, so the next video doesn't repeat it.

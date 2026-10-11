@@ -44,6 +44,7 @@ Read before step 11. Everything here was hit for real (第四课 yellowstone, 20
   Check that every tag became a real `[话题]` link, not plain text.
 - Cover: click the cover thumbnail → 编辑封面 → `file_upload` to the 上传封面图片 input → 完成. It should pass 「封面效果评估通过」.
 - Before confirming, re-check 原创声明, 可见范围, 定时发布, and any auto-linked 活动.
+- 定时发布 is **Beijing time (GMT+8)**: the saved value is read as Beijing time, and 笔记管理 shows `(GMT+8:00 北京时间)`. The picker's 1-hour minimum is computed in browser local time, so don't infer the zone from it. For JST 18:00, enter **17:00**.
 
 ## Confirm step
 When asking for the yes, offer three options: **I click 发布 / you click it yourself / 定时**. The user sometimes publishes themselves or schedules a post for the next day (小红书 第四课 was scheduled by the user).

@@ -11,6 +11,7 @@ description: Use when making, voicing, publishing or exporting an episode of 「
 - Audience: Japanese adults learning Chinese. Dialogue is Japanese; only the taught Chinese is Chinese.
 - Theme pack `sengoku` (head=1). Recurring cast: N 信長 (impatient boss), H 秀吉 (overconfident flatterer, makes the mistake), I 家康 (deadpan, explains the misunderstanding in one line), T 老師 (teaches the word). Guests (明の商人 etc.) go in the episode's own `cast`.
 - Default acting (keep per character, never mix emo and plain for one person): N `emo`; H plain; I plain, `speed` 0.95, `lead` 0.5; T plain, `speed` 0.9 on Chinese words.
+- 秀吉's voice is `minimax-official-japanese-generousizakayaowner-98b84089f8` from ep2 on (ep1, rendered and scheduled 2026-10-11, used the Chinese-accented `multi_male_jingqiangkanye`; leave it). Pick voices for Japanese-speaking characters among native `japanese-*` ones: audition on a real line in `samples/`.
 - Glyphs: title line 1 = the Japanese word as the hook (手紙); `episode`, card and `stamp` = simplified Chinese (手纸; stamp = the char that differs, 纸).
 - `panels.py`/`voice.py` read only the project `script.json` (only `build.py` merges the pack): copy the pack's full `cast` and `style` into the project, edit only the SETTING, add guests to `cast`.
 - Project dir: `~/git/manga-chinese-sites/videos/sengoku-NN-<slug>` (slug = romanized word, e.g. `sengoku-02-shouzhi`).

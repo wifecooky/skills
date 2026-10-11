@@ -43,6 +43,11 @@ SFX vocabulary (Pixabay, keep CREDITS.md): whoosh-cinematic (opening), whoosh-sh
 Generate SFX `<audio>` tags from a list `[time, file, vol]` with a script that assigns track 3/4 greedily to avoid overlap.
 Verify mix: `ffmpeg -i renders/video.mp4 -af volumedetect -f null -` → max_volume between -1.5 and -5 dB.
 
+**Loudness-normalize SFX before mixing** (user heard "开头好多噪音"): the library files differ by >15 dB in mean loudness, so the same `vol` is inaudible for one and louder than the VO for another (impact-bass was +8 dB over VO; glitch-2 is a 3.5 s noise bed that sits under speech). Fix:
+- `gain = min(1, 10**((-35 - mean_dB)/20) * vol/0.3)` with `mean_dB` from `volumedetect` per file, cap `vol` at 0.5.
+- Never put long glitch/noise files under VO — swap glitch-* for `click`.
+- Target result: VO ≥ 6 dB over BGM (BGM ~0.13 for a −23 dB VO), integrated ≈ −18 LUFS, peak ≈ −4 dBFS.
+
 ## Fonts (CJK subset — full fonts are huge)
 
 ```bash
@@ -65,6 +70,27 @@ Re-run after any text change, or new glyphs fall back to system fonts.
 - `content_overlap` warnings are real — move the element, don't ignore.
 - Panels over the background need opaque backgrounds or the grid/moon bleeds through.
 - `check` "Navigation timeout" under load is transient → retry.
+- Vendor GSAP locally (`assets/vendor/gsap.min.js`); a CDN fetch can fail mid-render on a long piece.
+- Two `fromTo` on the same element + property: the later one's from-state wins at seek 0 (immediateRender). Any fromTo that is not the first on that property needs `immediateRender: false`, or the opening frame shows the wrong state.
+
+## Long form: chapter sub-compositions and seamless boundaries
+
+For anything over ~2 min, split into one sub-composition per chapter (`compositions/chNN-*.html`, ids prefixed `chNN-`, hosts alternate tracks 2/3). Shared bg/HUD/subtitles/audio stay in root. Hand each chapter to an agent with a written contract (geometry of shared elements, local cue times, safe area, verification steps).
+
+**Boundary rule** (user saw "同一帧闪了一下" at 1:48 and 2:13):
+- *Scene change* (different content on both sides): each chapter fades its content out over its last 0.5 s and in over its first 0.5 s. That is fine.
+- *Continuous element across the cut* (the carrier ribbon, vector columns): **no exit fade in chapter N and no enter fade in chapter N+1.** Chapter N+1's frame 0 must equal chapter N's last frame. Fading both makes the same picture dip to black and come back, which reads as a flash.
+  - **Same data**: one constant for IDs/values across all chapters. ch03 used different token IDs from ch02, so the numbers visibly jumped.
+  - **Same geometry**: same box model, font, letter-spacing, line-height, color.
+  - If chapter N+1's style differs, start it in chapter N's style and tween to its own over ~0.5 s (e.g. border 0.55→0.22, accent "?" crossfades to a dashed slot).
+  - Remove only chapter-N-only labels with a short local fade before the cut.
+  - No yoyo or breathe tweens on the shared elements in the last ~1.5 s: a residual offset of a few px shows as a jump.
+  - Verify with a pixel diff, not by eye: snapshot `boundary−0.04` and `boundary+0.04`, crop out the HUD (y 130–860), then run `ImageChops.difference`. Max ≲ 20/255 = seamless.
+
+```bash
+npx hyperframes snapshot . --at "108.9,108.97" --describe false
+python3 -c "from PIL import Image,ImageChops as C;import glob;f=sorted(glob.glob('snapshots/frame-*.png'));print(C.difference(*(Image.open(x).convert('L').crop((80,130,1840,860)) for x in f[:2])).getextrema())"
+```
 
 ## Intro & end card
 
@@ -112,3 +138,19 @@ ffmpeg -i renders/video.mp4 -c:v libx264 -preset slow -b:v 7M -maxrate 9M -bufsi
   -pix_fmt yuv420p -c:a aac -b:a 192k -movflags +faststart renders/video-web.mp4
 ```
 ≈ 0.9 MB per second at 7M (58s → 49MB, 123s → 108MB).
+For long pieces (> 3 min) use `-crf 20 -maxrate 6M -bufsize 12M` instead of `-b:v 7M`: 7-min LLM lecture went 272 MB → 76 MB with no visible loss.
+
+## Anti-piracy watermark (post-process, never in the composition)
+
+The user wanted a faint moving mark that "不影响阅读". The first try used fixed spots at 12% plain text. They said it was too strong, and the fixed spots sat next to content. What shipped:
+- **Design**: the 印章 seal (双言/两语 2×2 in a thin rounded frame, 92 px, cream). Make it with `scripts/wm_designs.py`, which needs `build/wm-font.otf`.
+  - To get the font: `fontTools` → load the woff2 → `flavor=None` → save as .otf. ffmpeg can't read woff2.
+- **Opacity 7%**. It hops every 20 s with a 1 s fade in and out, and is off from the end card on.
+- **Auto-placement**: for each 20 s window, sample frames at 1 fps and build an edge map, taking the max over the window. Pick the box with the fewest edges inside the safe area (below the HUD, above the captions), with a 48 px margin and at least 500 px from the previous spot. So it never covers text, and it can't be cropped away in one place.
+- Run `python3 scripts/watermark.py seal renders/video.mp4 snapshots/wm 50,130` to get previews, then `... seal renders/video.mp4 renders/video-web-wm.mp4` for the full encode. On a 7-minute video that takes about 1.5 min, and it does the web encode in the same pass.
+- ffmpeg notes:
+  - The fade is `geq` on a looped PNG: `a='alpha(X,Y)*A*fade(T)'`.
+  - Preview frames use `-ss T -copyts`, plus `setpts=PTS+T/TB` on the PNG stream so `T` stays absolute.
+- Verify:
+  - Diff the frame against the unwatermarked web copy at a spot. Expect a max of about 17/255 mid-window, about 5 at 0.3 s into a window, and 0 on the end card.
+  - Always keep the unwatermarked `video-web.mp4` too.
