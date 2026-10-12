@@ -1,6 +1,6 @@
 # Publish copy for Japanese viewers (publish.md)
 
-Overrides manga-skit-video `publish-copy.md` for this series: all copy in **Japanese**, platforms YouTube (JP) / TikTok (JP) / X. The Chinese word, pinyin and example appear exactly as on the card.
+Series rules on top of manga-skit-video `publish-copy.md` (platform limits, shared rules): all copy in **Japanese**, platforms YouTube (JP) / TikTok (JP) / X. The Chinese word, pinyin and example appear exactly as on the card.
 
 | platform | title / first line | body | tags |
 |---|---|---|---|
@@ -12,6 +12,7 @@ Rules:
 - Platforms and order: YouTube → TikTok → X. In publish.md the X link is the placeholder `https://youtube.com/shorts/<id>`.
 - Take plot and lines from `script.json`; never invent plot.
 - Series tag on every platform: `#戦国武将中国語を学ぶ`.
+- Site link `https://sengoku.thewang.net/ep/<NN-slug>/`: YouTube description last line `📚 例文と全セリフ → <link>`; TikTok last line, domain only (`sengoku.thewang.net`, not clickable there); X: not needed (Shorts link only, saves 23 chars).
 - Use 「信長様」 respectful forms in copy, matching the in-video tone.
 - Check lengths with Python; post X after YouTube is live (real Shorts link, no `?si=`).
-- Reference: `~/git/manga-chinese-sites/videos/sengoku-01-niang/publish.md`.
+- Reference: `~/git/sengoku-chinese/videos/sengoku-01-niang/publish.md`.

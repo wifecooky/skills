@@ -2,8 +2,9 @@
 # Run in the project dir (named <theme>-<NN>-<slug>):  python3 export_lesson.py [content_root]
 # Other dir names (e.g. 20261010-durian): EP=07-too-good-to-be-true python3 export_lesson.py
 # Writes <site>/episodes/<NN>-<slug>.json and copies the latest cover to <site>/covers/<NN>-<slug>.jpg, where <site> is the
-# theme's own website (SITES below; other themes: ~/git/manga-chinese-sites/content/<theme>), or <content_root>/<theme> if given.
+# theme pack's "site" (themes/<theme>/script.json), or <content_root>/<theme> if given.
 # Re-export keeps the "published" links already in the file; fill them in (and published.date) by hand after each upload.
+# The empty "published" keys are the theme pack's "platforms" (default youtube/tiktok/x).
 import json, os, re, sys, shutil, subprocess, datetime
 from pathlib import Path
 SKILL = Path(__file__).resolve().parent.parent
@@ -14,8 +15,8 @@ S.setdefault("series", T.get("series", ""))
 SC = T["scenes"][:T["head"]] + S["scenes"] + T["scenes"][T["head"]:]
 SID = S.get("theme") or "misc"
 NN, SLUG = re.match(r"(\d+)-(.+)" if os.environ.get("EP") else r".*?-(\d+)-(.+)", os.environ.get("EP") or Path.cwd().name).groups()
-SITES = {"sanguo": "~/git/taoyuan-english/content", "olympus": "~/git/gods-learn-chinese/content/olympus"}
-ROOT = Path(f"{sys.argv[1]}/{SID}" if sys.argv[1:] else SITES.get(SID, f"~/git/manga-chinese-sites/content/{SID}")).expanduser()
+ROOT = Path(f"{sys.argv[1]}/{SID}" if sys.argv[1:] else T.get("site") or
+            sys.exit(f'theme "{SID}" has no "site": add it to themes/{SID}/script.json or pass a content_root')).expanduser()
 OUT = ROOT / "episodes" / f"{NN}-{SLUG}.json"
 
 def plain(t):
@@ -47,7 +48,7 @@ ep = {
                    for sc in SC for l in sc.get("lines", [])],
     "video": {"file": str(Path.cwd() / mp4), "duration": round(dur, 1)} if mp4 else old.get("video"),
     "cover": f"../covers/{NN}-{SLUG}.jpg" if (ROOT / "covers" / f"{NN}-{SLUG}.jpg").exists() else None,
-    "published": {"youtube": "", "tiktok": "", "x": "", "date": "", **old.get("published", {})},
+    "published": {**dict.fromkeys(T.get("platforms", ["youtube", "tiktok", "x"]), ""), "date": "", **old.get("published", {})},
     "updated": datetime.date.today().isoformat(),
 }
 OUT.parent.mkdir(parents=True, exist_ok=True)

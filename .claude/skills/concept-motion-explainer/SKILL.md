@@ -59,7 +59,7 @@ Commands, mix levels, and gotchas: `references/pipeline.md`. Publishing (copy te
 
 - **Never overwrite a finished version.** New version = new dir: `rsync -a --exclude renders --exclude snapshots src/ dst/`, change `meta.json` id.
 - **Longer / detailed cut**: add explanation, not padding. Each new beat needs a new visual (LLM detailed: tokenizer vocab lookup, semantic-space neighbors, shallow vs deep layers, temperature sampling, streaming chat bubble, training scene with loss curve). Re-derive S from new VO.
-- **Other language**: translate UI text + VO. Keep the carrier example if the audience can read it (Chinese poem kept for Japanese viewers); re-subset fonts for the new script (e.g. Noto Serif JP with SC fallback); re-fit timing to new VO durations; set `<html lang>`. A subagent can run this in parallel.
+- **Other language** (English cut notes: `references/pipeline.md` § Other-language variant): translate UI text + VO; for a non-CJK audience swap the carrier for a native line with the same token count. Keep the carrier example if the audience can read it (Chinese poem kept for Japanese viewers); re-subset fonts for the new script (e.g. Noto Serif JP with SC fallback); re-fit timing to new VO durations; set `<html lang>`. A subagent can run this in parallel.
 
 ## 5. Quality bar checklist
 

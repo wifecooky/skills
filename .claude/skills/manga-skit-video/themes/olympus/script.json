@@ -7,7 +7,7 @@
     "Z": {
       "name": "Zeus",
       "chip": "ink",
-      "voice": "minimax-official-charming-santa-60a9eae3f7",
+      "voice": "doubao-official-en_male_ronald_uranus_bigtts",
       "look": "ZEUS: big jolly broad-chested old god ~60, wild curly white hair and a huge curly white beard, bushy white eyebrows, beaming grin, white himation draped over one shoulder with a red meander-pattern border, gold laurel wreath, holding a small zigzag lightning bolt like a pointer.",
       "persona": "宙斯，爱笑着给人派活的大老板，浑厚和气的老年男声"
     },
@@ -85,5 +85,6 @@
       "art": "End-of-class shot on a sunny marble terrace of Mount Olympus: ZEUS, HERCULES and HERMES stand in a row waving goodbye to the viewer; HERCULES waves a huge hand grinning, ZEUS laughs with both arms open, HERMES gives one tiny reluctant wave with a deadpan face. All characters are in the TOP half of the image; the lower half is only plain marble floor and screentone."
     }
   ],
-  "series": "Gods Learn Chinese"
+  "series": "Gods Learn Chinese",
+  "site": "~/git/gods-learn-chinese/content/olympus"
 }

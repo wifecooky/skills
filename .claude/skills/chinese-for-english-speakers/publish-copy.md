@@ -1,6 +1,6 @@
 # Publish copy for English-speaking viewers (publish.md)
 
-Overrides manga-skit-video `publish-copy.md` for this series: all copy in **English**, platforms YouTube / TikTok / X. The 汉字, pinyin (tone marks) and example appear exactly as on the card.
+Series rules on top of manga-skit-video `publish-copy.md` (platform limits, shared rules): all copy in **English**, platforms YouTube / TikTok / X. The 汉字, pinyin (tone marks) and example appear exactly as on the card.
 
 | platform | title / first line | body | tags |
 |---|---|---|---|
@@ -9,8 +9,9 @@ Overrides manga-skit-video `publish-copy.md` for this series: all copy in **Engl
 | X | ≤ 280 weighted (CJK = 2, URL = 23) | hook → 📖 word → Shorts link | 2 incl. series tag |
 
 Rules:
-- Platforms and order: YouTube → TikTok → X (not the 抖音/视频号/小红书 set of manga-skit-video). In publish.md the X link is the placeholder `https://youtube.com/shorts/<id>`.
+- Platforms and order: YouTube → TikTok → X (no 抖音/视频号/小红书). In publish.md the X link is the placeholder `https://youtube.com/shorts/<id>`.
 - Take plot and lines from `script.json`; never invent plot.
 - Series tag on every platform: `#GodsLearnChinese`.
+- Site link `https://gods.thewang.net/ep/<NN-slug>/`: YouTube description last line `📚 Examples + full script → <link>`; TikTok last line, domain only (`gods.thewang.net`, not clickable there); X: not needed (Shorts link only).
 - History claims: only what is verifiable, stated narrowly (ep1: Panathenaic Games in Athens awarded olive oil — not "the Olympics").
 - Check lengths with Python; post X after YouTube is live (real Shorts link, no `?si=`).

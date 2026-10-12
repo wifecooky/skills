@@ -84,5 +84,7 @@
     }
   ],
   "watermark": "@桃园英语角",
-  "series": "桃园英语角"
+  "series": "桃园英语角",
+  "site": "~/git/taoyuan-english/content",
+  "platforms": ["youtube", "douyin", "xiaohongshu", "wechat", "bilibili"]
 }

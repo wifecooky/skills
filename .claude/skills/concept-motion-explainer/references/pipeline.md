@@ -13,6 +13,9 @@ listenhub openapi tts --text "<line>" --voice zh-male-guchuan-9d6a4666 --format 
 ffprobe -v error -show_entries format=duration -of csv=p=0 assets/vo/vo0.mp3
 ```
 - Voices used: 谷川 `zh-male-guchuan-9d6a4666` (fun, lively — preferred over plain narrators).
+- English: Host Sam `hostsam-dab52696` at `--speed 1.08` (user picked it from a 4-voice audition: `listenhub speakers list --lang en`, one 20 s clip each, concatenated into one file to compare).
+- `--speed` validation bug: 1.1 / 1.10 / 1.12 / 1.15 are rejected ("at most two decimals", float rounding). 1.08, 1.2, 1.25 work.
+- ListenHub English clips come out ~2 dB quieter than the Chinese ones. Match them (`-af volume=2dB`) before mixing, or the BGM level from the other version drowns the VO.
 - Script tone: conversational, a little cheeky ("其实这家伙只会一件事"), short sentences, one idea per clip.
 
 ## Word timestamps (sync visual hits to words)
@@ -22,6 +25,14 @@ HF_HUB_OFFLINE=1 mlx_whisper assets/vo/vo3.mp3 --model mlx-community/whisper-sma
   --language zh --word-timestamps True --output-format json --output-dir /tmp/vot
 ```
 large-v3-turbo download can hang at 0% CPU — use cached small model offline.
+
+## Other-language variant (English cut of the 7-min LLM lecture)
+
+- **Carrier**: pick a line whose tokenization keeps the same number of tokens as the original, so every N-column layout survives. "To be or not to be, that is the ___" is exactly 10 real cl100k tokens (no "for this demo" caveat). Look up real IDs and neighbours with `tiktoken` instead of inventing them.
+- **Ribbon pitch**: English words are wider than one CJK glyph. The 80 px pitch / 60 px font became 128 px / 52 px (x = 256 + 128·i), with the slot widening to 256 when the long answer lands. Measure widths with PIL on the subset font first.
+- **Subtitles**: one sentence per line if ≤ 72 chars, else pack clauses split at `, ; :` up to 64 chars, and as a last resort split at the space nearest the middle. Sentence split must also handle `."` (period inside a closing quote).
+- **BGM** is length-bound: a longer VO needs the bed extended (`acrossfade=d=6` with a mid-track section of itself), then check the mean dB around the seam.
+- Agents: give each one the whole seamless chain (ch01–ch04 to one agent), so no boundary spans two agents. Hand over the old-language cue sheet as well, so they map beats instead of guessing.
 
 ## BGM (ListenHub music)
 
@@ -147,7 +158,7 @@ The user wanted a faint moving mark that "不影响阅读". The first try used f
   - To get the font: `fontTools` → load the woff2 → `flavor=None` → save as .otf. ffmpeg can't read woff2.
 - **Opacity 7%**. It hops every 20 s with a 1 s fade in and out, and is off from the end card on.
 - **Auto-placement**: for each 20 s window, sample frames at 1 fps and build an edge map, taking the max over the window. Pick the box with the fewest edges inside the safe area (below the HUD, above the captions), with a 48 px margin and at least 500 px from the previous spot. So it never covers text, and it can't be cropped away in one place.
-- Run `python3 scripts/watermark.py seal renders/video.mp4 snapshots/wm 50,130` to get previews, then `... seal renders/video.mp4 renders/video-web-wm.mp4` for the full encode. On a 7-minute video that takes about 1.5 min, and it does the web encode in the same pass.
+- The end-card start comes from `build/timing.json` `endcard_at` (no hard-coded END). Run `python3 scripts/watermark.py seal renders/video.mp4 snapshots/wm 50,130` to get previews, then `... seal renders/video.mp4 renders/video-web-wm.mp4` for the full encode. On a 7-minute video that takes about 1.5 min, and it does the web encode in the same pass.
 - ffmpeg notes:
   - The fade is `geq` on a looped PNG: `a='alpha(X,Y)*A*fade(T)'`.
   - Preview frames use `-ss T -copyts`, plus `setpts=PTS+T/TB` on the PNG stream so `T` stays absolute.

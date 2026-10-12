@@ -5,8 +5,8 @@ Best picks: the literal meaning is visual and a Greek god can act it out. Mark d
 | # | 汉字 | pinyin | Literal | Real meaning | Gag hook |
 |---|---|---|---|---|---|
 | 1 ✅ | 加油 | jiā yóu | add oil | you've got this! | Hercules oils himself up for the marathon; prize is olive oil |
-| 2 | 马上 | mǎ shàng | on a horse | right away | Zeus says "马上!" → Hercules hunts for a horse; Poseidon's horses arrive late |
-| 3 | 小心 | xiǎo xīn | small heart | be careful | Hercules tries to shrink his heart; falls in the hole anyway |
+| 2 🚧 olympus-02-mashang | 马上 | mǎ shàng | on a horse | right away | Zeus says "马上!" → Hercules hunts for a horse; Poseidon's horses arrive late |
+| 3 🚧 olympus-03-xiaoxin | 小心 | xiǎo xīn | small heart | be careful | Hercules tries to shrink his heart; falls in the hole anyway |
 | 4 | 东西 | dōng xi | east-west | thing, stuff | Hermes sent to fetch "东西" → brings a compass |
 | 5 | 吃醋 | chī cù | eat vinegar | be jealous | Hera drinks vinegar every time Zeus talks to someone |
 | 6 | 牛 | niú | cow | awesome | fans shout "牛!" at Zeus → he turns into a bull (myth callback) |

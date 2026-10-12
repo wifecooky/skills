@@ -7,7 +7,8 @@ import json, math, subprocess, sys
 import numpy as np
 from PIL import Image
 
-P, A, END, FPS = 20, 0.07, 407.09, 30     # window s, opacity, end card start, fps
+P, A, FPS = 20, 0.07, 30                  # window s, opacity, fps
+END = json.load(open("build/timing.json"))["endcard_at"]   # no mark on the end card
 SAFE = (60, 130, 1860, 860)               # x0,y0,x1,y1: below HUD, above captions
 Q = 4                                     # analysis downscale
 MIN_HOP = 500                             # px between consecutive spots

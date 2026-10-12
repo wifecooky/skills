@@ -13,7 +13,7 @@ description: Use when making, voicing, publishing or exporting an episode of "Go
 - Default acting (one engine per character): Z plain; E plain, `speed` 0.9–0.95, pause between words; H `emo` on every line; A plain, `speed` 1.0.
 - A god outside the cast (Poseidon…) either stays off-screen (show only his horses/waves) or joins the episode `cast` with a voice audition.
 - `panels.py`/`voice.py` read only the project `script.json` (only `build.py` merges the pack): copy the pack's full `cast` and `style` into the project, edit only the SETTING, add guests to `cast`.
-- Project dir: `~/git/manga-chinese-sites/videos/olympus-NN-<slug>` (slug = pinyin without tones, e.g. `olympus-02-mashang`).
+- Project dir: `~/git/gods-learn-chinese/videos/olympus-NN-<slug>` (slug = pinyin without tones, e.g. `olympus-02-mashang`).
 - Topic backlog with gag hooks: `topics.md`.
 
 Before any money is spent: STORYBOARD.md + logic-check + user approval of storyboard and cast (manga-skit-video step 2). Ask the user before locking a topic.
@@ -39,8 +39,13 @@ Ancient-Greece facts used as gags must be true and go in the description narrowe
 ## QA gate (before showing any preview)
 After `build.py`: `python3 $SK/vo_check.py`. Athena's mixed lines are always flagged "mixed" — expected for her bilingual voice, but listen to the Chinese part. Ear-check or re-voice every other CHECK line, then send the preview URL.
 
+## Feedback (manga-skit-video `feedback-loop.md`)
+- Store `<S>`: `~/git/gods-learn-chinese/videos/_metrics/olympus`
+- Public sources for `fetch`: the `published.youtube` / `published.tiktok` links in `~/git/gods-learn-chinese/content/olympus/episodes/*.json`
+- No dashboards.
+
 ## Publish
 English copy, rules in `publish-copy.md`. Never publish without an explicit go per platform (manga-skit-video step 11).
 
 ## Content export (the site owns the content)
-After render, and again after publishing (fill `published` links): `python3 $SK/export_lesson.py` → `~/git/manga-chinese-sites/content/olympus/episodes/NN-<slug>.json` (cover copied to `covers/`; also fill `published.date`; deploy per that repo's README). Re-export keeps the `published` links.
+After render, and again after publishing (fill `published` links): `python3 $SK/export_lesson.py` → `~/git/gods-learn-chinese/content/olympus/episodes/NN-<slug>.json` (cover copied to `covers/`; also fill `published.date`; deploy per that repo's README). Re-export keeps the `published` links.

@@ -75,7 +75,7 @@
           "who": "T",
           "text": "再见！",
           "sub": "zàijiàn",
-          "say": "再见。　再见！",
+          "say": "再见。",
           "speed": 0.9
         }
       ],
@@ -84,5 +84,6 @@
       "art": "End-of-class shot on the wooden veranda of Azuchi Castle with a garden behind: NOBUNAGA, HIDEYOSHI and IEYASU sit in a row waving goodbye to the viewer; HIDEYOSHI waves both arms wildly, NOBUNAGA gives a lordly wave of his fan, IEYASU gives one tiny reluctant wave with a deadpan face. All characters are in the TOP half of the image; the lower half is only plain wooden floor and screentone."
     }
   ],
-  "series": "戦国武将、中国語を学ぶ"
+  "series": "戦国武将、中国語を学ぶ",
+  "site": "~/git/sengoku-chinese/content/sengoku"
 }

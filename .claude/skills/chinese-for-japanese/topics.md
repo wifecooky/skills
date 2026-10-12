@@ -5,8 +5,8 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | # | 漢字 | 日本語 | 中国語 (py) | Gag hook |
 |---|---|---|---|---|
 | 1 ✅ | 娘 | むすめ | 母親 niáng | 秀吉 introduces 信長's daughter as his mother → 「わしの母上は六つか！？」 |
-| 2 | 手紙 | letter | toilet paper shǒuzhǐ | 秀吉 proudly hands the envoy 信長's 手紙 → envoy bows and runs to the latrine |
-| 3 | 汽車 | train | car qìchē | 南蛮 talk of 汽車 → 信長 imagines a steam locomotive on a castle road |
+| 2 🚧 sengoku-03-shouzhi | 手紙 | letter | toilet paper shǒuzhǐ | 秀吉 proudly hands the envoy 信長's 手紙 → envoy bows and runs to the latrine |
+| 3 🚧 sengoku-04-qiche | 汽車 | train | car qìchē | 南蛮 talk of 汽車 → 信長 imagines a steam locomotive on a castle road |
 | 4 | 大丈夫 | it's fine | real man dàzhàngfu | 秀吉 assures 「大丈夫！」 → the envoy expects a hero to step forward |
 | 5 | 愛人 | lover (affair) | spouse àiren | 明の商人 introduces his 愛人 openly → whole court is scandalized |
 | 6 | 走 | (走る) run | walk zǒu | 「走！」 → 秀吉 sprints, the envoy strolls |
