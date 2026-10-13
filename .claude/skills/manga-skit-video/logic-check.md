@@ -1,6 +1,6 @@
 # Storyboard logic check
 
-Run this before showing a storyboard to the user, and again after any scene is added, removed, or rewritten. The author can't see their own holes, so hand it to a **fresh subagent** that only gets `STORYBOARD.md` (plus the panel images if they exist) and this file. Fix every BLOCKER before the user sees the storyboard.
+Run this before showing a storyboard to the user, and again after any scene is added, removed, or rewritten. The author can't see their own holes, so hand it to a **fresh subagent** that only gets `STORYBOARD.md`, every line's `text`, `sub` and `say` from `script.json` (subtitles live only there, so item 9 can't be checked without them), the panel images if they exist, and this file. Fix every BLOCKER before the user sees the storyboard.
 
 ## Checklist
 

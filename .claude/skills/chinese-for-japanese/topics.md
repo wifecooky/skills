@@ -7,7 +7,7 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 1 ✅ | 娘 | むすめ | 母親 niáng | 秀吉 introduces 信長's daughter as his mother → 「わしの母上は六つか！？」 |
 | 2 🚧 sengoku-03-shouzhi | 手紙 | letter | toilet paper shǒuzhǐ | 秀吉 proudly hands the envoy 信長's 手紙 → envoy bows and runs to the latrine |
 | 3 🚧 sengoku-04-qiche | 汽車 | train | car qìchē | 南蛮 talk of 汽車 → 信長 imagines a steam locomotive on a castle road |
-| 4 | 大丈夫 | it's fine | real man dàzhàngfu | 秀吉 assures 「大丈夫！」 → the envoy expects a hero to step forward |
+| 4 🚧 sengoku-06-dazhangfu | 大丈夫 | it's fine | real man dàzhàngfu | 秀吉 assures 「大丈夫！」 → the envoy expects a hero to step forward |
 | 5 | 愛人 | lover (affair) | spouse àiren | 明の商人 introduces his 愛人 openly → whole court is scandalized |
 | 6 | 走 | (走る) run | walk zǒu | 「走！」 → 秀吉 sprints, the envoy strolls |
 | 7 | 勉強 | study | reluctantly / forced miǎnqiǎng | 秀吉 says he's 勉強 Chinese → teacher hears "doing it unwillingly" |
@@ -18,3 +18,12 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 12 | 先生 | teacher | Mr./husband xiānsheng | — |
 
 Ask the user before locking a topic; check that the Chinese example sentence is natural (native check for anything paid).
+
+## Trend candidates (Japan-local, see SKILL.md "Trend episodes")
+Checked 2026-10-12. Drop a row once its moment has passed.
+
+| Trend (JP) | Window | Chinese | Gag hook |
+|---|---|---|---|
+| 推し活 (日経トレンディ 2026-10 cover story) | ongoing | 追星 zhuīxīng | 信長 starts 推し活 for お市 / 濃姫; 秀吉 translates 推し as 推 tuī (push) → shoves her |
+| メロい (渋谷トレンドリサーチ 2026秋 #1 teen word) | ongoing | 上头 shàngtóu (native check) | 秀吉 says the 明 beauty is メロい → 老師 teaches 上头; 信長 thinks it means "to the head" and puts her fan on his head |
+| ハロウィン | publish by 10/31 | 万圣节 wànshèngjié / 变装 | 秀吉 hears 鬼 guǐ = ghost (not 鬼 oni) → dresses as a ghost, not an oni |

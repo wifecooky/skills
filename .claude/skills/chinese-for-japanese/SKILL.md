@@ -16,8 +16,17 @@ description: Use when making, voicing, publishing or exporting an episode of 「
 - `panels.py`/`voice.py` read only the project `script.json` (only `build.py` merges the pack): copy the pack's full `cast` and `style` into the project, edit only the SETTING, add guests to `cast`.
 - Project dir: `~/git/sengoku-chinese/videos/sengoku-NN-<slug>` (slug = romanized word, e.g. `sengoku-02-shouzhi`).
 - Topic backlog with gag hooks: `topics.md`.
+- Famous beauties (user, 2026-10-12: adult audience, add when the plot calls for it, not every episode): a historical beauty as a guest in the episode `cast` — Japanese side お市の方, 濃姫, 茶々; Chinese side 楊貴妃, 西施, 貂蝉 (as a 明 guest, a dream-bubble image or a 信長 fantasy). Level: alluring, not revealing — glamorous makeup, sultry eyes, flirty acting, at most a bare shoulder; no cleavage or body focus, no underwear (YouTube age-restriction kills Shorts reach, TikTok drops suggestive posts from For You). `look`: name the period garment (Sengoku: layered kosode + uchikake; Tang: ruqun with pibo shawl; NOT a qipao) and "bare neck and collarbone, alluring, elegant, fully clothed, no cleavage" (2026-10-12: an off-shoulder uchikake without "no cleavage" drew cleavage; a closed neckline was too prim — the user preferred bare neck and collarbone). Japanese-speaking beauty: audition native `japanese-*` female voices in `samples/`. Put her in the storyboard's cast card so the user approves her.
 
 Before any money is spent: STORYBOARD.md + logic-check + user approval of storyboard and cast (manga-skit-video step 2). Ask the user before locking a topic.
+
+## Trend episodes (user, 2026-10-12: more reach)
+- About one episode a week rides a **Japan-local** trend; the rest stay evergreen. A Chinese-only event (双十一) is not a trend for this audience.
+- Find it before storyboarding: WebSearch Japanese trend sources (X/Yahoo realtime via trend-calendar, 渋谷トレンドリサーチ teen words, Nikkei Trendy, TV/drama buzz) plus calendar events (ハロウィン, 紅葉, 七五三, 忘年会, 流行語大賞 in early Dec, 年末年始). Add picks to `topics.md` "Trend candidates" and let the user choose.
+- Map the trend to a word: a 同形異義語, or "how do you say <trending Japanese word> in Chinese" (推し活 → 追星). No word that fits the formula → skip the trend.
+- Site series: a 同形異義語 stays in `sengoku` (/series/onaji-kanji/, 漢字は同じ。意味は、別モノ。). A "how do you say it in Chinese" episode goes to the 流行語 series: add `"series_id": "ryukogo"` after `"theme"` in the project `script.json` so `export_lesson.py` writes `content/ryukogo/` (page `/videos/ryukogo-NN-<slug>/`, not `/ep/`; use that URL in `publish.md`). Episode numbers stay one channel-wide sequence (ep5 追星 is ryukogo 第5話).
+- Timing: a trend episode jumps the queue; schedule it within days, not behind the 2-day backlog.
+- Never: politics or diplomacy (including Japan–China), disasters, crime, deaths, living real people (no likeness, no name in art). Don't draw characters from a TV drama or anime (copyright); naming the trend in copy and hashtags is fine.
 
 ## Episode formula (~35s body, ~50s with intro/outro)
 1. Setup: 信長 orders 秀吉 to use Chinese.
@@ -45,11 +54,11 @@ After `build.py`: `python3 $SK/vo_check.py`. It ASRs every line in its own langu
 
 ## Feedback (manga-skit-video `feedback-loop.md`)
 - Store `<S>`: `~/git/sengoku-chinese/videos/_metrics/sengoku`
-- Public sources for `fetch`: every `published.youtube` link in `~/git/sengoku-chinese/content/sengoku/episodes/*.json`, plus `https://www.tiktok.com/@sengoku_chugokugo`
+- Public sources for `fetch`: every `published.youtube` link in `~/git/sengoku-chinese/content/*/episodes/*.json`, plus `https://www.tiktok.com/@sengoku_chugokugo`
 - No dashboards.
 
 ## Publish
 Japanese copy, rules in `publish-copy.md`. Never publish without an explicit go per platform (manga-skit-video step 11).
 
 ## Content export (the site owns the content)
-After render, and again after publishing (fill `published` links): `python3 $SK/export_lesson.py` → `~/git/sengoku-chinese/content/sengoku/episodes/NN-<slug>.json` (cover copied to `covers/`; also fill `published.date`; deploy per that repo's README). Re-export keeps the `published` links.
+After render, and again after publishing (fill `published` links): `python3 $SK/export_lesson.py` → `~/git/sengoku-chinese/content/sengoku/episodes/NN-<slug>.json` (or `content/ryukogo/` with `series_id`) (cover copied to `covers/`; also fill `published.date`; deploy per that repo's README). Re-export keeps the `published` links.

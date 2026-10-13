@@ -37,7 +37,8 @@ for sc in SC:
         t, lg = spoken(l), lang(spoken(l))
         heard = mlx_whisper.transcribe(str(f), path_or_hf_repo=ASR, language="en" if lg == "mixed" else lg)["text"].strip()
         hz, vs = pitch(f)
-        rows.append(dict(id=lid, who=l["who"], lang=lg, text=t, heard=heard, hz=hz, voiced=vs,
+        alt = bool(l.get("say")) and norm(re.sub(r"<[^>]+>", "", l["text"])) != norm(l["say"])
+        rows.append(dict(id=lid, who=l["who"], lang=lg, text=t, heard=heard, hz=hz, voiced=vs, alt=alt,
                          sim=difflib.SequenceMatcher(None, norm(t), norm(heard)).ratio()))
 
 # a multi-language voice sits ~1.5x higher in one language than the other: compare within (speaker, language)
@@ -46,6 +47,7 @@ bad = 0
 for r in rows:
     why = []
     if r["lang"] == "mixed": why.append("mixed-language line: unless the voice is bilingual, the CJK gets read with the wrong accent; listen, split if so")
+    if r["alt"]: why.append("bubble text and say differ in wording: viewers read one thing and hear another; OK only for a reading fix")
     if r["sim"] < 0.5: why.append(f"ASR mismatch {r['sim']:.2f}")
     m = med[r["who"], r["lang"]]
     if not 0.6 < r["hz"] / m < 1.5: why.append(f"pitch {r['hz']:.0f}Hz vs {CAST[r['who']]['name']} [{r['lang']}] median {m:.0f}Hz")

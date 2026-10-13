@@ -71,7 +71,13 @@ description: Use when the user asks for a work report — 報告 / 週報 / 作�
 | ~/Documents/git/NovarcaBrandDiscovery | 日本コスメブランド発掘ダッシュボード(Novarca Brand Discovery) |
 | ~/Documents/git/華僑PF | 華僑向けEC市場調査ツール(Yamibuy/Weee の日本商品・レビュー収集) |
 | ~/orca/projects/ppt-translater(= novarca/ppt-translater) | PPT翻訳ツール |
+| ~/Documents/git/セラー向け電子カタログ(= novarca/NOVARCA-Palette) | セラー向け電子カタログ(NOVARCA Palette) |
+| ~/Documents/git/douyin(remote なし) | 抖店運営自動化ツール(試作画面) |
+| ~/Documents/git/価格モニタリング(remote なし) | 価格モニタリング(試作) |
+| ~/orca/projects/ppt-translater-wifecooky | (PPT翻訳ツールの個人ミラー。重複なので報告対象外) |
 
+注: remote なし・wifecooky 作者でも仕事リポジトリのことがある(douyin・価格モニタリング)。remote の有無で私用と決めつけず、README/docs で業務か確認する。
+注: 作業後にまとめて commit することがある(価格モニタリング・華僑PF は 9 月の作業を 10/12 に commit)。期間外 commit しかないリポジトリも、ファイル更新日時(`ls -laT`)で期間内の作業を拾う。
 注: ~/Documents/git/ 以外に ~/orca/projects/ にも仕事リポジトリがある。スキャン時は両方見る。
 
 スキャンで新しいリポジトリを発見したら、報告後にこの表へ追記する。

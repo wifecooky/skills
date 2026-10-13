@@ -9,6 +9,8 @@ Series rules on top of manga-skit-video `publish-copy.md` (platform limits, shar
 | X | ≤ 280 weighted (CJK = 2, URL = 23) | hook → 📖 word → Shorts link | 2 incl. series tag |
 
 Rules:
+- **For now: YouTube only** (user, 2026-10-12: no Gods TikTok account; X paused). Write only the YouTube section in publish.md and publish only there; the TikTok/X rows apply again when the user says so.
+- X account: **@MeowMotto** (https://x.com/MeowMotto). Before posting, check the logged-in X handle is @MeowMotto; if not, stop and ask the user to switch.
 - Platforms and order: YouTube → TikTok → X (no 抖音/视频号/小红书). In publish.md the X link is the placeholder `https://youtube.com/shorts/<id>`.
 - Take plot and lines from `script.json`; never invent plot.
 - Series tag on every platform: `#GodsLearnChinese`.

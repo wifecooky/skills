@@ -1,6 +1,6 @@
 # script.json + assets -> index.html (HyperFrames, 1080x1920). Run in the project dir: python3 build.py
 # All timing is derived from the real VO wav lengths: rerun after any re-voice, never hand-edit index.html.
-import json, math, os, random, shutil, subprocess
+import json, math, os, random, re, shutil, subprocess
 from pathlib import Path
 
 SKILL = Path(__file__).resolve().parent.parent
@@ -45,7 +45,8 @@ for s in SC:
         l["vo"] = asset("vo", f"{s['id']}-{i}")
         c += l.get("lead", 0.25 if i == 0 else 0.3)
         l["at"] = round(c, 3)
-        c += dur(l["vo"])
+        l["d"] = dur(l["vo"])
+        c += l["d"]
     s["d"] = round(max(s.get("min", 1.2 if s.get("lines") else 2.0), c + s.get("tail", 0.5)), 3)
     t += s["d"]
 TOTAL = round(t, 3)
@@ -314,3 +315,9 @@ open("index.html", "w").write(html)
 for s in SC:
     print(f'{s["id"]:>4} {s["t0"]:6.2f}-{s["t0"] + s["d"]:6.2f}  ' + " / ".join(l["text"] for l in s.get("lines", [])))
 print("total", TOTAL, "s, audio clips", len(audio))
+for s in SC:  # more than 6 CJK chars per title line spills past the panel edge
+    for t_ in ((s["title"] if isinstance(s["title"], list) else S["title"])[:2] if s.get("title") else []):
+        if len(re.findall(r"[\u3040-\u30ff\u4e00-\u9fff\uff00-\uffef]", t_)) > 6:
+            print(f"WARN title line {t_!r} is over 6 CJK chars: it overflows the panel, shorten it")
+# one frame per line, after the camera push and bubble pop (one per scene lands mid-fade and misses lines)
+print("snapshot --at " + ",".join(f'{s["t0"] + l["at"] + min(0.6, l["d"] * 0.6):.1f}' for s in SC for l in s.get("lines", [])))
