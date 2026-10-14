@@ -83,6 +83,10 @@ Re-run after any text change, or new glyphs fall back to system fonts.
 - `check` "Navigation timeout" under load is transient → retry.
 - Vendor GSAP locally (`assets/vendor/gsap.min.js`); a CDN fetch can fail mid-render on a long piece.
 - Two `fromTo` on the same element + property: the later one's from-state wins at seek 0 (immediateRender). Any fromTo that is not the first on that property needs `immediateRender: false`, or the opening frame shows the wrong state.
+- A layer built for a later scene but drawn at the same spot as an earlier one (e.g. the font 木 that takes over from the morphing glyph at the family chapter) must be hidden at t=0 and shown only at its handover. If it isn't, it sits on top of the earlier scene the whole time, and the viewer sees the "answer" before it is revealed. Verify by snapshotting the early scenes and checking that only that scene's element is visible. Snapshotting only the scene you just built won't catch it.
+- Progress rails/timelines: give each stop three distinct states. Future: a faint skeleton (hollow dot, labels at about 0.22 alpha, no content). Current: bright labels, an accent dot at 1.5×, full content. Past: content at 0.4, labels at 0.45. Add an accent fill line that grows with the transition. Never show future content up front.
+- Morph sequences (A→B→C): keep the state you just left as a ghost behind the new one, at about 0.16 opacity. Keep only one ghost at a time and fade out the older one, so viewers can compare before and after without clutter. This was user feedback on the hanzi evolution.
+- An exiting scene must be gone before the next one fades in. For example, the ring zoom-out ending 0.15s before 沐 starts. If the two overlap at half opacity the frame turns to mud. Check by snapshotting the 0.3s around every hand-off.
 
 ## Long form: chapter sub-compositions and seamless boundaries
 
