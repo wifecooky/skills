@@ -9,7 +9,7 @@ Best picks: the literal meaning is visual and a Greek god can act it out. Mark d
 | 3 🚧 olympus-03-xiaoxin | 小心 | xiǎo xīn | small heart | be careful | Hercules tries to shrink his heart; falls in the hole anyway |
 | 4 🚧 olympus-05-dongxi | 东西 | dōng xi | east-west | thing, stuff | Hermes sent to fetch "东西" → brings a compass |
 | 5 🚧 olympus-06-chicu | 吃醋 | chī cù | eat vinegar | be jealous | Hera drinks vinegar every time Zeus flirts with a gorgeous nymph |
-| 6 | 牛 | niú | cow | awesome | fans shout "牛!" at Zeus → he turns into a bull (myth callback) |
+| 6 🚧 olympus-08-niu | 牛 | niú | cow | awesome | fans shout "牛!" at Zeus → he turns into a bull (myth callback) |
 | 7 | 熊猫 | xióng māo | bear-cat | panda | Artemis hunts a "bear-cat" chimera |
 | 8 | 人山人海 | rén shān rén hǎi | people mountain people sea | huge crowd | Poseidon floods Olympus with people |
 | 9 | 打酱油 | dǎ jiàng yóu | buy soy sauce | not my business / just passing | Hermes "just buying soy sauce" while gods fight |
