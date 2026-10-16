@@ -12,6 +12,7 @@ Series rules on top of `publish-copy-common.md` (platform limits, shared rules).
 
 Rules:
 - Fixed series tag on every platform: `#桃园英语角`.
+- Tags pick who the platform shows the video to first, so they target learners, not the news crowd (LEARNINGS H9, 2026-10-15). Put at least 3 learning tags first (`#英语口语` `#学英语` `#每日英语` `#地道英语` `#英语表达`), then at most 1 trend tag, and only when the people following that news overlap with English learners: `#雅思` `#出国` `#留学` `#抢票` `#演唱会` yes; `#双11` (shoppers) or `#中网` (sports results) no. The trend itself goes in the title and the first line.
 - Comment question: tag a friend, or make a sentence with the phrase.
 - Site link `https://taoyuan.thewang.net/ep/<NN-slug>/`: YouTube description last line `📚 例句和全文 → <link>`; 抖音 and 视频号 last line, domain only (`🌐 taoyuan.thewang.net`, no https, not clickable there); 小红书: none (outside links get notes throttled; put the domain in the profile instead); X: not needed.
 

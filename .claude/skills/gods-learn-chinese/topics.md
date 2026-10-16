@@ -10,7 +10,7 @@ Best picks: the literal meaning is visual and a Greek god can act it out. Mark d
 | 4 🚧 olympus-05-dongxi | 东西 | dōng xi | east-west | thing, stuff | Hermes sent to fetch "东西" → brings a compass |
 | 5 🚧 olympus-06-chicu | 吃醋 | chī cù | eat vinegar | be jealous | Hera drinks vinegar every time Zeus flirts with a gorgeous nymph |
 | 6 🚧 olympus-08-niu | 牛 | niú | cow | awesome | fans shout "牛!" at Zeus → he turns into a bull (myth callback) |
-| 7 | 熊猫 | xióng māo | bear-cat | panda | Artemis hunts a "bear-cat" chimera |
+| 7 🚧 olympus-09-xiongmao | 熊猫 | xióng māo | bear-cat | panda | Artemis hunts a "bear-cat" chimera |
 | 8 | 人山人海 | rén shān rén hǎi | people mountain people sea | huge crowd | Poseidon floods Olympus with people |
 | 9 | 打酱油 | dǎ jiàng yóu | buy soy sauce | not my business / just passing | Hermes "just buying soy sauce" while gods fight |
 | 11 🚧 olympus-04-fangdian | 放电 | fàng diàn | discharge electricity | flirt, make eyes at | Aphrodite "放电"s at Hercules → Zeus, god of lightning, takes it literally and zaps the hall; Hera walks in |

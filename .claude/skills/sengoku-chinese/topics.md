@@ -10,7 +10,7 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 4 🚧 sengoku-06-dazhangfu | 大丈夫 | it's fine | real man dàzhàngfu | 秀吉 assures 「大丈夫！」 → the envoy expects a hero to step forward |
 | 5 🚧 sengoku-07-airen | 愛人 | lover (affair) | spouse àiren | 明の商人 introduces his 愛人 openly → whole court is scandalized |
 | 6 🚧 sengoku-08-zou | 走 | (走る) run | walk zǒu | 「走！」 → 秀吉 sprints, the envoy strolls |
-| 7 | 勉強 | study | reluctantly / forced miǎnqiǎng | 秀吉 says he's 勉強 Chinese → teacher hears "doing it unwillingly" |
+| 7 🚧 sengoku-09-mianqiang | 勉強 | study | reluctantly / forced miǎnqiǎng | 秀吉 says he's 勉強 Chinese → teacher hears "doing it unwillingly" |
 | 8 | 老婆 | old woman | wife lǎopo | envoy praises 「您老婆真漂亮」 → 信長 angry at "old woman" |
 | 9 | 新聞 | newspaper | news xīnwén | — |
 | 10 | 丈夫 | sturdy | husband zhàngfu | — |

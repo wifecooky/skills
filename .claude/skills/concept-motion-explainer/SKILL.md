@@ -40,7 +40,7 @@ See `references/design-system.md` for CSS. Rules:
 
 ```
 1. BRIEF + STORYBOARD                     → verify: user confirms message/example/length
-2. Script (if narrated), one line per scene → verify: user approves script BEFORE TTS
+2. Script (if narrated), one line per scene → verify: logic + expression check passes (pipeline.md § Script check), then user approves script BEFORE TTS
 3. TTS per scene clip → ffprobe durations   → verify: no clip longer than its scene
 4. Scene timing table S = derived from VO   → voice drives timing, not the reverse
 5. Word timestamps (whisper) → key visual hits land on the spoken word

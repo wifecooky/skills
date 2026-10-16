@@ -18,6 +18,22 @@ ffprobe -v error -show_entries format=duration -of csv=p=0 assets/vo/vo0.mp3
 - ListenHub English clips come out ~2 dB quieter than the Chinese ones. Match them (`-af volume=2dB`) before mixing, or the BGM level from the other version drowns the VO.
 - Script tone: conversational, a little cheeky ("其实这家伙只会一件事"), short sentences, one idea per clip.
 
+## Script check: logic and expression (before showing the script, before TTS)
+
+Cause: the unit-test video said 「这本书最警惕的是误报」 and 「书的答案是」, but no book was ever introduced (the source only appears in the end-card credit). The user caught it after the render. The same pass found three more: 漏报/误报 → 四根柱子 had no bridge, 柱子 → 设计 had no bridge, and 「起火」 and 「坏了」 were mixed for the same idea. Every one of these cost a re-TTS, a retime, and a re-render.
+
+Fix: run these checks on the whole script and fix what fails *before* the user sees it:
+1. **Every reference is defined.** Each 这本书 / 它 / 这个 / 书里 / 作者 points to something the viewer has already heard in the VO. The on-screen credit does not count. If it is undefined, introduce it once or cut the reference.
+2. **Clip-to-clip bridge.** Read only the first sentence of each clip in order. Together they should form one argument. Each clip opens by saying how it relates to the last one: cause, contrast (反过来), question (怎么做到？), or mapping (不漏报，叫防止回归). When a new concept (四根柱子) arrives, tie it to one already explained.
+3. **One metaphor, one vocabulary.** State the mapping the first time it comes up (测试 = 报警器, 代码坏了 = 该响). Then use the same words every time, and make the on-screen captions match the VO.
+4. **Every claim has its reason.** 「它就响了」 needs the why (调用次数变了). 「测试却不响」 needs the mechanism (照抄实现，跟着一起错).
+5. **Pay off the hook.** If the hook promises something (「只做一件事」), deliver the answer within about 20 s and close it again at the end. Don't hold it open for the whole video.
+6. **Expression.** One idea per sentence. No 书面语 inside spoken lines. Read each line aloud: if it needs a second read to parse, rewrite it.
+7. **Dropped subjects (Chinese).** Write out the omitted subject of every sentence. Where the topic changes (AI 写测试 → 「一千块一件」), the dropped subject can't be recovered by ear. Name it (「比如一段算订单的代码：…」). The same goes for the head noun behind a measure word: 「一千块一件」 is stall talk, where the item is in front of you, and in a video the ear fills in the default noun for 件 (衣服). Write 「一件商品一千块」. The same applies when the referent silently switches: 「这个测试」 in a later scene must be the same test the viewer already met, or say 「有的测试」.
+8. **Cold listener (the author can't do 1–7 on their own script).** The author always knows the missing subject, so the gap stays invisible to them (user caught 「一千块一件」 after checks 1–6 passed). Spawn a fresh `general-purpose` agent, not a fork. Give it the VO lines in order, the audience profile (e.g. "Chinese developers who know 单元测试/重构/覆盖率"), and a one-line on-screen summary per clip. Don't give it the source article. Ask it, sentence by sentence: explicit subject, link to the previous sentence, and a flag wherever it had to guess. Without the audience profile it flags every term (22 flags, about half of them noise). Triage its table yourself: keep the flags that would hold for the real audience, and drop the rest with a reason.
+
+Verify: show the user a table of each failing line → its fix, with the check number, next to the script. They approve both before any TTS.
+
 ## Word timestamps (sync visual hits to words)
 
 ```bash
@@ -25,6 +41,16 @@ HF_HUB_OFFLINE=1 mlx_whisper assets/vo/vo3.mp3 --model mlx-community/whisper-sma
   --language zh --word-timestamps True --output-format json --output-dir /tmp/vot
 ```
 large-v3-turbo download can hang at 0% CPU — use cached small model offline.
+Never pass the script as `--initial-prompt`: whisper loops/hallucinates (unit-test-alarm v2: 4 of 8 clips garbage). For simplified output use a short neutral prompt + `--condition-on-previous-text False`: `--initial-prompt "以下是普通话的句子。"`. Homophones (响→想) don't matter for timing; check char count vs the txt.
+
+## Re-voice an existing cut (new VO, same visuals) — time warp, not hand retiming
+
+Cause (unit-test-alarm v2): script fixes changed every clip length; hand-shifting ~200 tween times is error-prone. Fix:
+- Keep all authored times in the v1 timebase. `build/warp.py` builds a piecewise-linear map W(v1→v2) from anchors = scene boundaries (same lead/tail around each VO as v1) + characters both VO transcripts share (difflib on per-char whisper times). Don't anchor VO starts if v2 prepends words to a clip. Hand-pin hits on reworded words (`MANUAL`).
+- In index.html: real timeline `TL`; `tl = {to,set,fromTo}` wrappers map position `p → W(p)` (durations unchanged); render reads `Wi(clock.t)`; clock/end card/shiftChildren/registration on `TL` with `END = W(S.end)`. Rail fills: `duration: W(out) - W(STEP_AT[i])`. sfx.py maps cues through the same warp.json.
+- Verify: print where key beats land vs the new whisper word times (each within ~0.2 s), and `grep -n 'data-duration="<old total>"' index.html` → nothing left (v2 missed `#scene` → everything black after 100 s). Captions authored back-to-back can collide when W compresses the gap — check `content_overlap` info lines.
+- Prepended words stretch: when a new clip starts with words v1 never had (v3 「比如一段算订单金额的代码：」), v1 events 0.02 s apart can end up 0.26 s apart. One element shows before the other hides, and they overlap (test card over the chip grid). Fix: pin each event of such a swap to the same word (`(9.84, first(1, "代")), (9.86, first(1, "代") + 0.03)`). Also pin anything that must sit on a sentence that is now new (vo6 card on 「真实的代码里」, not on the later 「测试」).
+- A pin drops char anchors within 0.3 s, never scene boundaries. Keep them in a separate `struct` list (v3 lost `(9.6, 9.6)`, so scene 1 started 1.7 s late). The chain step must be 0.01, not 0.02: `9.86 - 9.84` is `0.0199…` in floats, so a 0.02 test silently drops the second pin. Verify: print W at every scene start (it must equal `S`) and at every pin.
 
 ## Other-language variant (English cut of the 7-min LLM lecture)
 
@@ -163,6 +189,7 @@ The user wanted a faint moving mark that "不影响阅读". The first try used f
 - **Opacity 7%**. It hops every 20 s with a 1 s fade in and out, and is off from the end card on.
 - **Auto-placement**: for each 20 s window, sample frames at 1 fps and build an edge map, taking the max over the window. Pick the box with the fewest edges inside the safe area (below the HUD, above the captions), with a 48 px margin and at least 500 px from the previous spot. So it never covers text, and it can't be cropped away in one place.
 - The end-card start comes from `build/timing.json` `endcard_at` (no hard-coded END). Run `python3 scripts/watermark.py seal renders/video.mp4 snapshots/wm 50,130` to get previews, then `... seal renders/video.mp4 renders/video-web-wm.mp4` for the full encode. On a 7-minute video that takes about 1.5 min, and it does the web encode in the same pass.
+- Feed the **web copy** (`renders/video-web.mp4`), not the `-q high` master, to both preview and full encode. The ~540 MB master's decode made a 100 s preview run past 10 min; the web copy did a 115 s preview in 7 s. The placement only reads 1 fps edge maps, and the full encode re-encodes to web bitrate anyway, so the result is the same.
 - ffmpeg notes:
   - The fade is `geq` on a looped PNG: `a='alpha(X,Y)*A*fade(T)'`.
   - Preview frames use `-ss T -copyts`, plus `setpts=PTS+T/TB` on the PNG stream so `T` stays absolute.
