@@ -20,7 +20,13 @@ Load `/hyperframes` + `/hyperframes-core` before writing composition HTML. This 
    - Open with a misconception struck through: 「AI 在~~思考~~？」→「其实它只会一件事」→ big accent statement.
    - End with a pull-back, title mask-rise, then fade. Never start or end on a hard frame: ~0.6s lead-in before VO, BGM fade-in 1.5s / fade-out 2.5–3s.
    - **Intro breath (1.5s)**: fade from black + HUD brand slides in before the first VO. Without it the video starts mid-sentence and feels cut off.
-   - **End card (4s)**: after the final fade, a channel sign-off: 「关注视频号」/ big serif **双言两语** (per-char stagger) / accent rule / `WECHAT CHANNELS`. Every published video gets one.
+   - **End card (5s)**: after the final fade, a channel sign-off: 「关注视频号」/ big serif **双言两语** (per-char stagger) / accent rule / `WECHAT CHANNELS` / one CTA row. Every published video gets one.
+     - **CTA row**: three line-icon items, staggered in at EC+1.7 (e.g. 👍 点赞 · ☆ 收藏 · ↗ 转给写测试的同事).
+     - **Platform verbs only.** 视频号 has 赞/收藏/转发/评论, not 「三连」 (that's B站: 投币 doesn't exist here).
+     - **Tie the last item to the episode.** Name who to forward it to, from the hook. A generic 「点赞关注」 gets ignored.
+     - **Layout.** Leave a 76px gap above the row so brand and actions read as two groups. Use 34px text, or it's unreadable when a 16:9 video plays in a portrait phone feed. Make the row about as wide as 双言两语.
+     - **New glyphs → re-subset the fonts** (pipeline.md § Fonts).
+     - **Verify.** Snapshot EC+3.5 at full size. Check the row is centered and every glyph is in the serif font (no fallback).
    - Build both as offsets, not by retiming scenes: `INTRO`/`OUTRO` constants, `tl.shiftChildren(INTRO)`, audio `data-start += INTRO`, root/BGM duration = `S.end + INTRO + OUTRO`. Code: `references/pipeline.md` § Intro & end card.
 6. **Real numbers for credibility.** Vocab 100,277, layer 01/96, 4096 dims, top-1 0.72. Fake-precise numbers read as cheap; real ones read as expert.
 

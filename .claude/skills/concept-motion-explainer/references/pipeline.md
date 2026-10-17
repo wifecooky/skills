@@ -138,7 +138,7 @@ python3 -c "from PIL import Image,ImageChops as C;import glob;f=sorted(glob.glob
 Scene times `S` stay VO-derived (0 = first scene). Intro and outro are pure offsets on top:
 
 ```js
-const INTRO = 1.5, OUTRO = 4.0;
+const INTRO = 1.5, OUTRO = 5.0;                   // 5s: the CTA row needs reading time
 const clock = { t: -INTRO };                       // render() sees negative t during intro
 // ... build all scene tweens at S times ...
 tl.shiftChildren(INTRO, false, 0);                 // push every scene tween back by INTRO
@@ -153,6 +153,7 @@ tl.to("#ec-k", { opacity: 1, duration: 0.6 }, EC + 0.3);
 tl.to("#ec-name span", { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.09 }, EC + 0.45);
 tl.to("#ec-rule", { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, EC + 1.0);
 tl.to("#ec-sub", { opacity: 1, duration: 0.6 }, EC + 1.25);
+tl.fromTo(".ec-c", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", stagger: 0.15 }, EC + 1.7);  // CTA row
 tl.to("#endcard", { opacity: 0, duration: 0.8, ease: "power2.in" }, EC + OUTRO - 0.9);
 ```
 
@@ -195,4 +196,5 @@ The user wanted a faint moving mark that "不影响阅读". The first try used f
   - Preview frames use `-ss T -copyts`, plus `setpts=PTS+T/TB` on the PNG stream so `T` stays absolute.
 - Verify:
   - Diff the frame against the unwatermarked web copy at a spot. Expect a max of about 17/255 mid-window, about 5 at 0.3 s into a window, and 0 on the end card.
+  - When the input is `video-web.mp4`, the wm file is a second encode, so the whole-frame max diff is about 30 everywhere (encoder noise). Compare means instead. For each window k, take the 100 px box at `build/wm-plan-seal.json[k]` (spot) and the whole frame (rest). v3 got spot about 4.5–5.3 vs rest about 1.5–2.1 at every window, and about 0.1 for both on the end card. Pass `-y` to ffmpeg when grabbing frames to a reused temp file, or it silently re-reads the stale frame.
   - Always keep the unwatermarked `video-web.mp4` too.
