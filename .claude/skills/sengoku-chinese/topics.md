@@ -12,7 +12,7 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 6 🚧 sengoku-08-zou | 走 | (走る) run | walk zǒu | 「走！」 → 秀吉 sprints, the envoy strolls |
 | 7 🚧 sengoku-09-mianqiang | 勉強 | study | reluctantly / forced miǎnqiǎng | 秀吉 says he's 勉強 Chinese → teacher hears "doing it unwillingly" |
 | 8 🚧 sengoku-10-laopo | 老婆 | old woman | wife lǎopo | envoy praises 「您老婆真漂亮」 → 信長 angry at "old woman" |
-| 9 | 新聞 | newspaper | news xīnwén | — |
+| 9 🚧 sengoku-11-xinwen | 新聞 | newspaper | news xīnwén | 秀吉 asks the 明 merchant for 新闻 (paper) → he whispers gossip: 信長 is afraid of his wife; 信長 denies it loudly → 濃姫 behind him |
 | 10 | 丈夫 | sturdy | husband zhàngfu | — |
 | 11 | 床 | floor | bed chuáng | — |
 | 12 | 先生 | teacher | Mr./husband xiānsheng | — |
