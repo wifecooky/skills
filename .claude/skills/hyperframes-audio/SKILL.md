@@ -407,6 +407,9 @@ which is the path when you are authoring a composition rather than editing one:
 
 ```bash
 node <SKILL_DIR>/scripts/carve.mjs --comp index.html
+# --voice takes clip ids only; passing a group id fails ("no <audio>/<video> with id=…").
+# To carve against a group, give every voice the same data-audio-group and omit --voice:
+# auto-detect records the shared group in sources.
 ```
 
 That is the whole command. It finds the voice and the bed itself, carves

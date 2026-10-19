@@ -214,4 +214,4 @@ Palette, fonts, background layers, HUD. Copy and re-theme; keep 3-color discipli
 
 ```
 
-Copy the full working composition from `~/Downloads/videos/llm-next-token-detailed/index.html` as the structural template (camera, morph chain, clock driver, step rail).
+Copy the full working composition from `~/Documents/git/simananzhui/llm-next-token-detailed/index.html` as the structural template (camera, morph chain, clock driver, step rail).

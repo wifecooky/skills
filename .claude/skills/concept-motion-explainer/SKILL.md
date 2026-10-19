@@ -20,9 +20,10 @@ Load `/hyperframes` + `/hyperframes-core` before writing composition HTML. This 
    - Open with a misconception struck through: 「AI 在~~思考~~？」→「其实它只会一件事」→ big accent statement.
    - End with a pull-back, title mask-rise, then fade. Never start or end on a hard frame: ~0.6s lead-in before VO, BGM fade-in 1.5s / fade-out 2.5–3s.
    - **Intro breath (1.5s)**: fade from black + HUD brand slides in before the first VO. Without it the video starts mid-sentence and feels cut off.
-   - **End card (5s)**: after the final fade, a channel sign-off: 「关注视频号」/ big serif **双言两语** (per-char stagger) / accent rule / `WECHAT CHANNELS` / one CTA row. Every published video gets one.
+   - **End card (5s)**: after the final fade, a channel sign-off: 「关注视频号」/ big serif channel name (per-char stagger) / accent rule / `WECHAT CHANNELS` / one CTA row. Every published video gets one.
+     - **Which channel.** Kids/general science → **双言两语** (视频号 only). Engineering and AI principles → **驷码难追**, in two builds: `<dir>` for 视频号 (`关注视频号` / `WECHAT CHANNELS` / 点赞 · 收藏 · 转给…) and `<dir>-bili` for B站 (`关注B站` / `BILIBILI` / 一键三连 · 转给…). Write `关注B站` with no spaces; the 0.5em letter-spacing already spaces it out. Seal and watermark: `scripts/wm_designs.py 驷码难追 <font.otf>` (font = Noto Serif SC Black subset with the name's glyphs). Built assets are in `~/Documents/git/simananzhui/simananzhui-brand/`.
      - **CTA row**: three line-icon items, staggered in at EC+1.7 (e.g. 👍 点赞 · ☆ 收藏 · ↗ 转给写测试的同事).
-     - **Platform verbs only.** 视频号 has 赞/收藏/转发/评论, not 「三连」 (that's B站: 投币 doesn't exist here).
+     - **Platform verbs only.** 视频号 has 赞/收藏/转发/评论, not 「三连」. On B站, 「一键三连」 is the native verb and replaces 点赞 + 收藏.
      - **Tie the last item to the episode.** Name who to forward it to, from the hook. A generic 「点赞关注」 gets ignored.
      - **Layout.** Leave a 76px gap above the row so brand and actions read as two groups. Use 34px text, or it's unreadable when a 16:9 video plays in a portrait phone feed. Make the row about as wide as 双言两语.
      - **New glyphs → re-subset the fonts** (pipeline.md § Fonts).
@@ -55,7 +56,8 @@ See `references/design-system.md` for CSS. Rules:
 8. npx hyperframes check .                  → 0 errors
 9. snapshot contact sheets at scene midpoints → look at them yourself, fix overlaps
 10. render -q high, then web encode         → ffprobe duration matches
-10b. watermarked copy (scripts/watermark.py) → preview frames approved first; diff confirms mark mid-window, none on end card
+10a. seam check (scripts/seams.py)            → open breath, end-card join, music under the end card (pipeline.md § Seam check)
+10b. watermarked copy (scripts/watermark.py) → preview frames approved first; scripts/wm_check.py: seal box ≫ noise mid-window, ≈0 on end card
 11. publish to 视频号 (only on user's go)    → verify: list page shows the right 发表 time
 ```
 
@@ -77,6 +79,7 @@ Commands, mix levels, and gotchas: `references/pipeline.md`. Publishing (copy te
 - [ ] Soft open, soft close, no audio clipping?
 - [ ] Every chapter boundary where an element continues: pixel-diff of the frames either side ≈ 0 (no fade-out/fade-in dip, same IDs/values)?
 - [ ] SFX loudness-normalized; nothing noisy under the VO?
+- [ ] Machine cutaways: every joint and moving part checked at 4× in each state; pipes hollow, links fixed length, water levels physical (`references/pipeline.md` § Machine cutaways)?
 
 ## 6. Feedback loop
 

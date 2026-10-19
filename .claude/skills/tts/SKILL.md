@@ -199,7 +199,8 @@ if [ $EXIT_CODE -ne 0 ]; then
 fi
 rm -f /tmp/lh-err
 
-AUDIO_URL=$(echo "$RESULT" | jq -r '.audioUrl')
+# CLI 0.1.x nests the URL under topicDetail, and may emit raw newlines inside strings (breaks jq) — fall back to grep
+AUDIO_URL=$(echo "$RESULT" | jq -r '.audioUrl // .topicDetail.audio.data.audioUrl' 2>/dev/null || echo "$RESULT" | grep -o '"audioUrl": *"[^"]*"' | head -1 | cut -d'"' -f4)
 ```
 
 For long text, write to a temp file first (see `shared/cli-patterns.md` § Long Text Input):
@@ -209,7 +210,8 @@ Long text content goes here...
 ENDCONTENT
 
 RESULT=$($CMD_PREFIX create --text "$(cat /tmp/lh-content.txt)" --mode direct --speaker "{name}" --lang {lang} [--speed {0.5-2.0}] --json)
-AUDIO_URL=$(echo "$RESULT" | jq -r '.audioUrl')
+# CLI 0.1.x nests the URL under topicDetail, and may emit raw newlines inside strings (breaks jq) — fall back to grep
+AUDIO_URL=$(echo "$RESULT" | jq -r '.audioUrl // .topicDetail.audio.data.audioUrl' 2>/dev/null || echo "$RESULT" | grep -o '"audioUrl": *"[^"]*"' | head -1 | cut -d'"' -f4)
 
 rm -f /tmp/lh-content.txt
 ```
@@ -338,7 +340,8 @@ echo "TIMEOUT" >&2; exit 2
 
 When the background task completes, parse the result:
 ```bash
-AUDIO_URL=$(echo "$RESULT" | jq -r '.audioUrl')
+# CLI 0.1.x nests the URL under topicDetail, and may emit raw newlines inside strings (breaks jq) — fall back to grep
+AUDIO_URL=$(echo "$RESULT" | jq -r '.audioUrl // .topicDetail.audio.data.audioUrl' 2>/dev/null || echo "$RESULT" | grep -o '"audioUrl": *"[^"]*"' | head -1 | cut -d'"' -f4)
 SUBTITLES_URL=$(echo "$RESULT" | jq -r '.subtitlesUrl // empty')
 DURATION=$(echo "$RESULT" | jq -r '.audioDuration // empty')
 CREDITS=$(echo "$RESULT" | jq -r '.credits // empty')
@@ -410,7 +413,8 @@ When saving preferences, merge into `.listenhub/tts/config.json` — do not over
 5. Generate:
    ```bash
    RESULT=$($CMD_PREFIX create --text "The server will be down for maintenance at midnight." --mode direct --speaker "Mars" --lang en --json)
-   AUDIO_URL=$(echo "$RESULT" | jq -r '.audioUrl')
+   # CLI 0.1.x nests the URL under topicDetail, and may emit raw newlines inside strings (breaks jq) — fall back to grep
+AUDIO_URL=$(echo "$RESULT" | jq -r '.audioUrl // .topicDetail.audio.data.audioUrl' 2>/dev/null || echo "$RESULT" | grep -o '"audioUrl": *"[^"]*"' | head -1 | cut -d'"' -f4)
    ```
 6. Present: display `audioUrl` as link (inline mode)
 

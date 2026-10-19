@@ -32,6 +32,9 @@ Fix: run these checks on the whole script and fix what fails *before* the user s
 7. **Dropped subjects (Chinese).** Write out the omitted subject of every sentence. Where the topic changes (AI 写测试 → 「一千块一件」), the dropped subject can't be recovered by ear. Name it (「比如一段算订单的代码：…」). The same goes for the head noun behind a measure word: 「一千块一件」 is stall talk, where the item is in front of you, and in a video the ear fills in the default noun for 件 (衣服). Write 「一件商品一千块」. The same applies when the referent silently switches: 「这个测试」 in a later scene must be the same test the viewer already met, or say 「有的测试」.
 8. **Cold listener (the author can't do 1–7 on their own script).** The author always knows the missing subject, so the gap stays invisible to them (user caught 「一千块一件」 after checks 1–6 passed). Spawn a fresh `general-purpose` agent, not a fork. Give it the VO lines in order, the audience profile (e.g. "Chinese developers who know 单元测试/重构/覆盖率"), and a one-line on-screen summary per clip. Don't give it the source article. Ask it, sentence by sentence: explicit subject, link to the previous sentence, and a flag wherever it had to guess. Without the audience profile it flags every term (22 flags, about half of them noise). Triage its table yourself: keep the flags that would hold for the real audience, and drop the rest with a reason.
 
+9. **Sentence-to-sentence connectives (Chinese).** Check 2 covers clips; this covers adjacent sentences inside a line. For every pair, name the relation (contrast, cause, progression, sequence) and check that a word in the second sentence carries it: 却/但/可 for contrast, 因为/所以 for cause, 也/还/连…都 for progression, 后来/又 for sequence. A comma, a dash or a pause is rhythm, not logic, and the ear doesn't recover the relation from it. Cause: onemin ep01 had 「有一排小刻痕。护发素上，没有。」. The contrast was carried only by a pause, and the user caught it after TTS and render: 「护发素上却没有」 reads smoothly. Write the connective into the on-screen title as well, so caption and VO match (check 3).
+10. **Numbers as the voice will say them (Chinese).** The TTS input is not the caption. Years are read digit by digit: 「一九九一年」, never 「一千九百九十一年」. In the TTS text, write years out in Chinese numerals (use 零, not 〇, which some engines skip or misread). Keep digits in the on-screen captions. Counts stay cardinal (「六成」「八条」). Standard and model numbers (JIS S 0021) are usually better said by name (「日本工业标准」) than read out. Cause: onemin ep01 sent 「1990 年」「1991 年」 to ListenHub as written, and the user heard the year read as a cardinal number after the full mix. Re-recorded with Chinese numerals, line 04 got 0.68 s shorter and line 09 0.44 s shorter. A re-recorded line moves every phrase inside it, so re-measure with silencedetect and retime anything synced to a word (see § Story beats). Verify: before generating, grep the TTS input for `[0-9]`; every hit must be a deliberate reading.
+
 Verify: show the user a table of each failing line → its fix, with the check number, next to the script. They approve both before any TTS.
 
 ## Word timestamps (sync visual hits to words)
@@ -114,6 +117,66 @@ Re-run after any text change, or new glyphs fall back to system fonts.
 - Morph sequences (A→B→C): keep the state you just left as a ghost behind the new one, at about 0.16 opacity. Keep only one ghost at a time and fade out the older one, so viewers can compare before and after without clutter. This was user feedback on the hanzi evolution.
 - An exiting scene must be gone before the next one fades in. For example, the ring zoom-out ending 0.15s before 沐 starts. If the two overlap at half opacity the frame turns to mud. Check by snapshotting the 0.3s around every hand-off.
 
+## Layout polish: four traps `check` passes (onemin ep01, 2026-10-18)
+
+`hyperframes check` returned 0 errors on all four of these. Only snapshots caught them. The ep01 generator (`onemin-japan/episodes/ep01-shampoo/.hyperframes/gen_comps.py`) already contains every fix, so later episodes that copy it inherit them.
+
+- **An element that fades in later shows from frame 0.**
+  - Cause: a `fromTo(..., {immediateRender:false})` doesn't apply its from-state until the tween starts. Before that the element sits at its CSS opacity. Moving the tween later only made the flash last longer: the legend was on screen 2 s before the people it explains.
+  - Fix: every element whose entrance comes from a tween gets `opacity:0` in CSS. A key, legend or label enters at or after the thing it labels, never before.
+  - Verify: snapshot each scene at its first frame. Only that beat's first elements may be visible.
+- **Rising title lines paint over the caption below them.**
+  - Cause: a line reveal that animates `y` up from below has no edge. While it travels, it draws across whatever sits under the title block.
+  - Fix: clip the title block at its own bottom edge, leaving the top and sides open for overhang: `.h1{clip-path:inset(-40px -40px 0 -40px)}`. The lines then come up from behind that edge.
+  - Verify: snapshot mid-reveal (about 0.2 s into each title) and check the caption is untouched.
+- **Annotations drift off their target during a zoom.**
+  - Cause: the tick marks pointing at the bottle's notches were siblings of the Ken Burns wrapper. The footage scaled 1.15× but the marks didn't, so they ended 50 px off.
+  - Fix: anything that points at something in the media lives inside the wrapper that zooms or pans, so it shares the transform. Position it in the media's coordinates, not the stage's.
+  - Verify: snapshot the start and end of the move. The mark must sit on the same feature in both.
+- **CJK captions break badly.**
+  - Cause: the browser wraps at the box edge. It left 「过。」 alone on a line and split 「全行/业」.
+  - Fix: in the generator, measure each caption as CJK = 1 and ASCII ≈ 0.55. If it is over one line (box width ÷ font size; 834/38 ≈ 21.9), break with `<br>` at the `，：；` closest to the middle. Never leave a line of 1–3 characters. If there is no punctuation to break at, rewrite the line rather than let the browser break it.
+    ```python
+    def brk(s, cap=21.9):
+        w = lambda t: sum(.55 if c.isascii() else 1 for c in t)
+        cuts = [i + 1 for i, c in enumerate(s[:-1]) if c in "，：；"]
+        if w(s) <= cap or not cuts or "<br>" in s:  # a hand-broken caption stays as written
+            return s
+        i = min(cuts, key=lambda i: abs(w(s[:i]) - w(s) / 2))
+        return s[:i] + "<br>" + s[i:]
+    ```
+  - Verify: list every caption over one line together with where its break falls, and snapshot the longest one.
+
+## Story beats: three traps a design critique caught (onemin ep01, 2026-10-18)
+
+`check` passed on all three. The critique found them; before/after snapshots proved the fixes (`ep01-shampoo/.hyperframes/crit-compare/`).
+
+- **The stat appears before the voice says it, and the caption spoils it.**
+  - Cause: the six red people started at 10.0 s and 「约六成」 landed at 10.9 s. The voice says 「约六成」 at 11.3 s. The full-sentence caption had already printed the answer at 8.8 s. The stagger was 0.12 s, so six people went red in 0.7 s: that reads as "most", not as "six".
+  - Fix:
+    - Measure where the stat's word is spoken: `ffmpeg -i vo.wav -af silencedetect=noise=-28dB:d=0.05 -f null -`. The gaps are phrase breaks.
+    - The count runs in the pause before the word. Use ≥ 0.2 s per unit so it can be counted, and rebuild any per-unit SFX at the same spacing.
+    - The number lands on the word.
+    - Split the caption at the colon. The half that holds the answer appears with the number.
+    - No legend. The title already says what red means (data-in-motion.md: "No legends").
+  - Verify: snapshot just before, at, and just after the spoken word. The number and the answer half of the caption must be absent before it.
+- **The emotional peak is the smallest type on screen.**
+  - Cause: in the twist, the struck-out 「实用新型专利」 was 64 px 900 weight. The payoff 「主动撤回 → 全行业都能用」 was a 34 px note, and it was the only beat with no title.
+  - Fix: the beat's payoff line becomes its title (96 px, second line in the accent colour, same bottom anchor as every other beat). Remove the note that repeats it. The title stays up while the rest of that section plays.
+  - Verify: in the peak beat's snapshot, the payoff line must be the largest text in the frame.
+- **A drawn hand or arm ends in mid-air.**
+  - Cause: the hand SVG stopped at x≈985, so the wrist was cut off inside the frame.
+  - Fix: any limb that comes from off-screen extends past the frame edge (bleed). Widen the viewBox; do not scale up the hand.
+  - Verify: snapshot with the limb at rest. Its cut end must lie outside 0–1080.
+
+Also: CJK titles get `font-feature-settings:"halt" 1` so 「，」 doesn't leave a 100 px hole at 96 px. The font subset must keep that feature: `pyftsubset … --layout-features+=halt`.
+
+## Machine cutaways: every joint must work (toilet video, 2026-10-16)
+
+- Cause: the user asked to check 「各个部件，管子连接处」. At 4× the toilet cutaway was physically wrong in 13 places: a gap and a step where the bowl met the trap, wall thickness jumping 2→4 px, a solid floor flange blocking the drain, a solid overflow "pipe", a refill line drawn as a bare stroke, a lift rod that shortened as it moved, a hinge and a tank floating in the air, a seal water level 6 px below the weir, and bowl water 32 px above the trap water during the flush (breaks communicating vessels).
+- Fix: build each part as it is made, not as a shape. Pipes are hollow, with walls of one thickness, and joins run along the tangent with no shoulder. Every moving link is fixed length and hangs on a pin. Every part sits on or is bolted to something, with a gasket where a pipe passes a wall. Water obeys physics in every frame: one level in connected vessels, the seal level at the weir, and flow only through an open path.
+- Verify: before the first render, list every joint and moving part, then snapshot each at 4× in every state (rest, mid-action, refill; the toilet took 12 joints × 3 states = 28 crops) and look at each one. Afterwards, check about 16 keyframes from open to end card for regressions.
+
 ## Long form: chapter sub-compositions and seamless boundaries
 
 For anything over ~2 min, split into one sub-composition per chapter (`compositions/chNN-*.html`, ids prefixed `chNN-`, hosts alternate tracks 2/3). Shared bg/HUD/subtitles/audio stay in root. Hand each chapter to an agent with a written contract (geometry of shared elements, local cue times, safe area, verification steps).
@@ -168,6 +231,16 @@ tl.to("#endcard", { opacity: 0, duration: 0.8, ease: "power2.in" }, EC + OUTRO -
 
 - Every `<audio>` `data-start` += INTRO (vo0 at 0.6 → 2.1); root, scene and BGM `data-duration` = `S.end + INTRO + OUTRO`.
 - Timecode must count from the real frame: `f = round((t + INTRO) * FPS)`.
+
+### Seam check: open and end card (user asked "开头结尾衔接处有没有违和感，顺不顺滑，有没有情绪")
+
+Run `python3 scripts/seams.py renders/video.mp4 snapshots/seam ENDCARD_AT` on every render, and look at both strips. Pass when:
+- **Open:** luma rises from 0 over ~1.2 s, and the first VO starts at ≥ 2.0 s with only BGM before it. The 2026-10-08 TCP cut spoke at 0.5 s over the fade-in. It had no `INTRO`.
+- **End join:** fade to black reaches 0, and the end card starts fading in within 0.1–0.2 s (no dead black, no hard cut). Max frame-to-frame luma jump is under ~8/255.
+- **Music runs under the whole end card** and decays to under −45 dB at the last frame. Cause hit 2026-10-18: lengthening OUTRO (4 → 5 s) or adding an end card to an old cut makes the video longer than `bgm.mp3`. The music stops and the end card sits in silence, so the mood drops.
+  - Fix: `ffmpeg -i bgm.mp3 -af atempo=<bgm_len/needed_len> bgm-NN.mp3`. Stretch the whole track; under −15 dB of VO, a ≤ 7% slowdown is inaudible. Don't loop or crossfade a section: the beats don't line up (a flam), and the track's own intro leaves a −34 dB hole mid end card.
+- **Climax hit vs VO:** a title-slam SFX overlapping the last VO words must stay within ~4 dB of the VO. The TCP `impact-bass-2` at 0.5 volume was 11 dB over the VO tail; 0.25 kept the hit and the words.
+- **Adding an intro to an old cut:** put `tl.shiftChildren(INTRO, false, 0)` after every scene tween. Delete the old `#fade` fade-in at 0 and re-add it after the shift. Clock: `fromTo(clock, {t: -INTRO}, {t: S.end, duration: S.end + INTRO}, 0)`. Add +INTRO to every non-BGM `<audio>`. render() must tolerate t < 0.
 
 ## Check, snapshot, render
 

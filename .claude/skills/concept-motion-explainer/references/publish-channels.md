@@ -16,6 +16,21 @@ Outward-facing: publish/schedule only after the user explicitly says so. Upload 
 
 Show the user the filled copy before publishing.
 
+## 驷码难追 (engineering + AI principles): B站 main, 视频号 sync
+
+Audience: engineers with 0–3 years. Upload `<dir>-bili/renders/video-web-wm.mp4` to B站 and `<dir>/renders/video-web-wm.mp4` to 视频号. The end cards differ (一键三连 vs 点赞·收藏), so never cross-upload.
+
+| field (B站) | rule | example |
+|---|---|---|
+| 标题 | Lead with what the viewer gets or the question they already have, not the channel pun. Keep it faithful to the video, with no claims it doesn't make. Add a length promise. | `TCP 为什么要握三次手，两次不行吗？1 分钟动画讲透` |
+| 简介 | hook line → carrier example → 3–6 bullet points → chapter timestamps (scene `S` + INTRO, mm:ss) → 参考 (book / article / RFC). | `simananzhui-brand/bili-copy.md` |
+| 标签 | 10: topic (3–4) + field (软件工程 / 计算机网络 / 人工智能) + 程序员, 编程, 计算机, 动画科普 | |
+| 分区 | 科技 › 计算机技术 (confirm the name on the upload page) | |
+| 封面 | 1920×1080: the most telling frame plus 2 lines of big text, with the accent on the key words. B站 also crops a 4:3 version for the feed, so keep the text inside the centre 4:3. | |
+| 原创 | the user ticks it themselves | |
+
+视频号 copy for this channel follows the table above, minus 「和孩子一起」. Its 话题 are `#驷码难追 #程序员 #编程` plus topic tags.
+
 ## Browser (gstack browse)
 
 ```bash

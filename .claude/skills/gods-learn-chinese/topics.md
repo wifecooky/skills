@@ -12,7 +12,7 @@ Best picks: the literal meaning is visual and a Greek god can act it out. Mark d
 | 6 🚧 olympus-08-niu | 牛 | niú | cow | awesome | fans shout "牛!" at Zeus → he turns into a bull (myth callback) |
 | 7 🚧 olympus-09-xiongmao | 熊猫 | xióng māo | bear-cat | panda | Artemis hunts a "bear-cat" chimera |
 | 8 🚧 olympus-10-renshanrenhai | 人山人海 | rén shān rén hǎi | people mountain people sea | huge crowd | Poseidon floods Olympus with people |
-| 9 | 打酱油 | dǎ jiàng yóu | buy soy sauce | not my business / just passing | Hermes "just buying soy sauce" while gods fight |
+| 9 🚧 olympus-12-dajiangyou | 打酱油 | dǎ jiàng yóu | buy soy sauce | not my business / just passing | Hermes "just buying soy sauce" while gods fight |
 | 11 🚧 olympus-04-fangdian | 放电 | fàng diàn | discharge electricity | flirt, make eyes at | Aphrodite "放电"s at Hercules → Zeus, god of lightning, takes it literally and zaps the hall; Hera walks in |
 | 12 | 触电 | chù diàn | get an electric shock | love at first sight | Hercules meets a stunning nymph, Hermes says "触电" → Zeus helpfully electrocutes him |
 | 10 | 好久不见 | hǎo jiǔ bú jiàn | long time no see | (English borrowed it!) | twist: Hermes says English already stole this one |

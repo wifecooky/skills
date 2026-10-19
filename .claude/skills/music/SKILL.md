@@ -64,6 +64,8 @@ Models for generation commands: `auto` (default), `mureka-7.6`, `mureka-8`, `mur
 - File limits (all max 10 MB): audio mp3/m4a (`track` also accepts wav); image jpg/jpeg/png/webp; video mp4/mov/avi/mkv/webm
 - All time-range flags are in **seconds** (`--generate-start/--generate-end`)
 - For async generation commands, use a long timeout: `run_in_background: true` with `timeout: 660000` (600s+). Sync commands (`recognize`, `describe`, `stem`) return immediately
+- CLI 0.1.x: the built-in poll can die early with `Request timed out: GET …/music/tasks/<id>` (exit 1) while the task keeps generating server-side (seen 2026-10-18, ~2 min for an instrumental). Do not resubmit — that bills again. Take the id from the error URL and poll `listenhub music get <id> --json` until `status` is `success`; the URLs are under `.tracks[0].{audioUrl,wavUrl}`, the cost under `.creditCost`
+- `instrumental` ignores a requested length ("about one minute" returned 180 s) — trim the bed locally with ffmpeg rather than regenerating
 - `cover` is deprecated — steer users to `remix` unless they explicitly ask for `cover`
 
 <HARD-GATE>

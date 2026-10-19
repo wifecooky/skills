@@ -13,7 +13,7 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 7 🚧 sengoku-09-mianqiang | 勉強 | study | reluctantly / forced miǎnqiǎng | 秀吉 says he's 勉強 Chinese → teacher hears "doing it unwillingly" |
 | 8 🚧 sengoku-10-laopo | 老婆 | old woman | wife lǎopo | envoy praises 「您老婆真漂亮」 → 信長 angry at "old woman" |
 | 9 🚧 sengoku-11-xinwen | 新聞 | newspaper | news xīnwén | 秀吉 asks the 明 merchant for 新闻 (paper) → he whispers gossip: 信長 is afraid of his wife; 信長 denies it loudly → 濃姫 behind him |
-| 10 | 丈夫 | sturdy | husband zhàngfu | — |
+| 10 🚧 sengoku-12-zhangfu | 丈夫 | sturdy | husband zhàngfu | 秀吉 tells 明の舞姫 美玲 「信长大人，丈夫！」 (meaning sturdy) → she hears "husband", thinks 信長 proposed and accepts; 信長 declares himself her 丈夫 → 濃姫 with a naginata: 「お体が丈夫で、ようございました」 |
 | 11 | 床 | floor | bed chuáng | — |
 | 12 | 先生 | teacher | Mr./husband xiānsheng | — |
 
