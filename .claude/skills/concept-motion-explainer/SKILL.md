@@ -13,6 +13,8 @@ Load `/hyperframes` + `/hyperframes-core` before writing composition HTML. This 
 ## 1. Concept — do this before touching code
 
 1. **One-sentence message.** Reduce the concept to its essence. LLM → "一次只预测下一个词，然后重复". If you can't say it in one line, you don't understand it yet.
+   - **When explaining someone's project, the message is their novel idea, not the familiar background it rests on.** Cause: the Handwired episode was framed as "GPU 快因为它笨" (well-known GPU lockstep) while the author's own tagline is "turn regular JS into a neural net; no training, exact" — the user caught it after the full build. Fix: read the project's top-level README/tagline first and put that idea in the message; mechanisms and payoffs (GPU speed) become supporting scenes. Verify: the one-sentence message contains the author's headline claim, and a viewer could not have learned the message from a generic textbook.
+   - **Read the whole source before any draft, not just its first screen.** Cause: the re-pitch was written from the README's first paragraphs and repeated the tagline's "代码直接变成网络", while the docs say no tool converts existing JS (you write builder code; the auto compiler is a lab experiment), and the other demos (Mini OS, learned gallery) were never read — the user had to ask again. Fix: before pitching, read the landing page, docs index, every demo's README and the author's status / known-limits page; list what the author says is NOT delivered. Verify: the draft names every demo the author ships, and each claim in it is checked against the docs, not the tagline.
 2. **One carrier example for the whole video.** Pick something the audience already knows whose "answer" they can guess. LLM → 《静夜思》"床前明月光，疑是地上__" (everyone guesses 霜). The same example flows through every stage; never switch examples mid-video.
 3. **Stage list = the real pipeline.** Map the mechanism to 5–7 stages (LLM: 输入 → 切分 → 嵌入 → 注意力 → 预测 → 重复 [+ 训练 in detailed cut]). Each stage = one scene.
 4. **One-take, no hard cuts.** Each scene's output element *morphs* into the next scene's input (text → token chips → column labels → vector columns → attention → probability bars → char flies back into the sentence). Camera = transforms on `#cam`/`#world`.
@@ -47,7 +49,7 @@ See `references/design-system.md` for CSS. Rules:
 
 ```
 1. BRIEF + STORYBOARD                     → verify: user confirms message/example/length
-2. Script (if narrated), one line per scene → verify: logic + expression check passes (pipeline.md § Script check), then user approves script BEFORE TTS
+2. Script (if narrated), one line per scene → draft against /ljg-plain 红线, gate with /human-writing, hook line through /dbs-hook (pipeline.md § Writing pass) → verify: check_prose.py clean + logic/expression check 1–13 passes (pipeline.md § Script check), then user approves script BEFORE TTS
 3. TTS per scene clip → ffprobe durations   → verify: no clip longer than its scene
 4. Scene timing table S = derived from VO   → voice drives timing, not the reverse
 5. Word timestamps (whisper) → key visual hits land on the spoken word
