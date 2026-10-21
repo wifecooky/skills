@@ -121,5 +121,6 @@ Create a systematic plan:
 - **Breathing room**: Does the layout feel comfortable, not cramped or wasteful?
 - **Consistency**: Is the spacing system applied uniformly?
 - **Responsiveness**: Does the layout adapt gracefully across screen sizes?
+- **Sibling cards line up**: In a grid of equal-height cards whose text length varies, the media sits at the same offset in every card. Lesson (2026-10-21, 红楼一梦 判词 cards — user: 「配图位置没有统一？因为各个卡片的文字量不一样被挤了吧」): the image lived in the card's `1fr` row with `align-self: center`, so the leftover height — card height minus that card's text — moved it. Fix: give the elastic `1fr` row to the text that varies, not to the media (`auto auto 1fr auto` = label, image, text, footer). Verify: measure `img.top - card.top` for every card at two widths; all values must be equal
 
 Remember: Space is the most underused design tool. A layout with the right rhythm and hierarchy can make even simple content feel polished and intentional.

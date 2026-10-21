@@ -175,7 +175,19 @@ while (true) {
 |---------|-----|
 | Using `word-break: break-all` | Use `keep-all` — `break-all` breaks everywhere |
 | Applying BudouX to containers with child elements | Apply to leaf text elements only |
+| `keep-all` on Chinese prose with no BudouX `<wbr>` — a clause up to the next 。，becomes one unbreakable word; in a narrow `text-align: justify` column (phone, lantern/card notes) the line stretches into wide letter gaps (seen 2026-10-21, 红楼一梦 朱批) | Only use `keep-all` where BudouX inserted break points; otherwise set `word-break: normal` on Chinese prose blocks. Verify: screenshot the narrowest column at 390px — no visible extra spacing between characters |
 | Missing `overflow-wrap` fallback | Always pair `keep-all` with `overflow-wrap: break-word` |
 | Loading wrong language bundle | Match bundle to page content language |
 | Using `system-ui` with Pretext on macOS | Use named fonts like `Inter`, `Helvetica Neue` |
 | Calling `layout()` with mismatched font/lineHeight | Must match CSS declarations exactly |
+
+## Font Choice for zh-CN Audiences (Classroom / Projector)
+
+Lesson from a 初中 lesson deck (2026-10-19): the user asked 「你确定字体是符合初中生的吗」.
+
+| Cause | Fix | Verify |
+|-------|-----|--------|
+| Google Fonts CJK display font (ZCOOL KuaiLe) — `fonts.googleapis.com` is blocked/unreliable in mainland China, so schools silently fall back; the cartoon style also reads childish to 13–15-year-olds | System 黑体 stack only: `"PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC", sans-serif`; headings at weight 800, no web-font request | `grep googleapis` returns nothing |
+| Latin mono font (DM Mono) for numbers mixed into Chinese | Same 黑体 stack + `font-variant-numeric: tabular-nums` | — |
+| SVG `<text>` in a fixed viewBox shrinks with its box (map/wheel labels rendered at 10–12px) | Size SVG text for the rendered width (labels ≥ ~16px on screen) | Measure rendered label size at 1366×768 |
+| Projected slides overflowed one screen (teacher had to scroll) | Landscape split layout (lesson text left, interaction right) + per-scene `zoom` fit (never below .7, skip on phones) | For every scene at 1024×768, 1280×720, 1366×768, 1920×1080: `main.scrollHeight - main.clientHeight === 0` |
