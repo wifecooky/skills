@@ -210,7 +210,7 @@ footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line)
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">2026-10-19 検証 ・ 商品リンク 34 件</div>
+    <div class="eyebrow">2026-10-20 検証 ・ 商品リンク 34 件</div>
     <h1>淘宝巡回システムの検証</h1>
     <p class="lead">淘宝 App の商品詳細ページを iPhone で 1 件ずつ自動で開き、価格を読み取れるかを検証しました。</p>
     <ul class="chips">
@@ -229,6 +229,11 @@ footer { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line)
     <dl class="memo">
       <div><dt>検証環境</dt><dd>王の個人の iPhone ／ 個人の淘宝アカウント</dd></div>
       <div><dt>対象商品</dt><dd>「淘分销控价专用表格」の商品リンク 37 件<br>→ 重複を除いた <strong>34 件</strong>を巡回</dd></div>
+      <div><dt>既存ツール</dt><dd><ul>
+        <li>世の中の iPhone 自動操作ツールの多くは XCTest 方式（WDA など）</li>
+        <li>この方式だと、淘宝の商品詳細ページを開いた<strong>瞬間にログアウト</strong></li>
+        <li>XCTest が動いている間は、人が手で開いてもログアウト</li>
+      </ul></dd></div>
       <div><dt>使用ツール</dt><dd><ul>
         <li>公開されている iphone-use を<strong>そのまま使ったものではない</strong></li>
         <li>試行錯誤しながら<strong>独自に改修</strong>（XCTest 方式でのログアウト、英字入力の切り替え、商品リンクの開き方など）</li>

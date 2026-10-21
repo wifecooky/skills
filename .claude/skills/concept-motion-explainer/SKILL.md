@@ -23,7 +23,7 @@ Load `/hyperframes` + `/hyperframes-core` before writing composition HTML. This 
    - End with a pull-back, title mask-rise, then fade. Never start or end on a hard frame: ~0.6s lead-in before VO, BGM fade-in 1.5s / fade-out 2.5–3s.
    - **Intro breath (1.5s)**: fade from black + HUD brand slides in before the first VO. Without it the video starts mid-sentence and feels cut off.
    - **End card (5s)**: after the final fade, a channel sign-off: 「关注视频号」/ big serif channel name (per-char stagger) / accent rule / `WECHAT CHANNELS` / one CTA row. Every published video gets one.
-     - **Which channel.** Kids/general science → **双言两语** (视频号 only). Engineering and AI principles → **驷码难追**, in two builds: `<dir>` for 视频号 (`关注视频号` / `WECHAT CHANNELS` / 点赞 · 收藏 · 转给…) and `<dir>-bili` for B站 (`关注B站` / `BILIBILI` / 一键三连 · 转给…). Write `关注B站` with no spaces; the 0.5em letter-spacing already spaces it out. Seal and watermark: `scripts/wm_designs.py 驷码难追 <font.otf>` (font = Noto Serif SC Black subset with the name's glyphs). Built assets are in `~/Documents/git/simananzhui/simananzhui-brand/`.
+     - **Which channel.** Kids/general science → **双言两语** (视频号 only). Engineering and AI principles → **驷码难追**, in two builds (视频号 `<dir>`, B站 `<dir>-bili`); end-card strings, seal and brand assets: skill `simananzhui-episode` § 5.
      - **CTA row**: three line-icon items, staggered in at EC+1.7 (e.g. 👍 点赞 · ☆ 收藏 · ↗ 转给写测试的同事).
      - **Platform verbs only.** 视频号 has 赞/收藏/转发/评论, not 「三连」. On B站, 「一键三连」 is the native verb and replaces 点赞 + 收藏.
      - **Tie the last item to the episode.** Name who to forward it to, from the hook. A generic 「点赞关注」 gets ignored.
@@ -50,7 +50,7 @@ See `references/design-system.md` for CSS. Rules:
 ```
 1. BRIEF + STORYBOARD                     → verify: user confirms message/example/length
 2. Script (if narrated), one line per scene → draft against /ljg-plain 红线, gate with /human-writing, hook line through /dbs-hook (pipeline.md § Writing pass) → verify: check_prose.py clean + logic/expression check 1–13 passes (pipeline.md § Script check), then user approves script BEFORE TTS
-3. TTS per scene clip → ffprobe durations   → verify: no clip longer than its scene
+3. TTS per scene clip → ffprobe durations   → verify: no clip longer than its scene; scripts/vo_levels.py exits 0 (no mid-clip volume drop)
 4. Scene timing table S = derived from VO   → voice drives timing, not the reverse
 5. Word timestamps (whisper) → key visual hits land on the spoken word
 6. Build composition (single index.html, one paused root timeline)
