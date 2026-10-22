@@ -65,6 +65,7 @@ Models for generation commands: `auto` (default), `mureka-7.6`, `mureka-8`, `mur
 - All time-range flags are in **seconds** (`--generate-start/--generate-end`)
 - For async generation commands, use a long timeout: `run_in_background: true` with `timeout: 660000` (600s+). Sync commands (`recognize`, `describe`, `stem`) return immediately
 - CLI 0.1.x: the built-in poll can die early with `Request timed out: GET …/music/tasks/<id>` (exit 1) while the task keeps generating server-side (seen 2026-10-18, ~2 min for an instrumental). Do not resubmit — that bills again. Take the id from the error URL and poll `listenhub music get <id> --json` until `status` is `success`; the URLs are under `.tracks[0].{audioUrl,wavUrl}`, the cost under `.creditCost`
+- CLI 0.1.0 `instrumental` takes no `--title` (`error: unknown option '--title'`, exit 1, nothing billed). The API allows **2 requests per 60 s**: a third parallel submit fails with code 29998 `Too many requests` and is not billed. Submit at most 2 at once, then submit the rest after 60 s. After every batch, check that each result json has an `id` (seen 2026-10-21: 3 parallel submits, the third was dropped)
 - `instrumental` ignores a requested length ("about one minute" returned 180 s) — trim the bed locally with ffmpeg rather than regenerating
 - `cover` is deprecated — steer users to `remix` unless they explicitly ask for `cover`
 
@@ -360,6 +361,19 @@ fi
 
 **Estimated times**:
 - Music generation: 5-10 minutes
+
+## Using a generated track as web-page BGM
+
+Lessons from the honglou-shici site (2026-10-21). The user reported 「没声音」.
+
+| Cause | Fix | Verify |
+|---|---|---|
+| A persisted sound toggle drew the button as pressed on reload, but the audio was still waiting for a gesture. The click handler flipped the button's `aria-pressed`, so the first click turned sound **off**. | Toggle from the real playing state: `set(!on)`, not from the button attribute. | Store "on", reload, and click the button once. The analyser RMS must be above 0. |
+| Safari will not play `<audio>` from a server without Range support (`python -m http.server`). | For local review, use a server that answers `Range` with a 206. | `curl -H 'Range: bytes=0-99'` returns 206. |
+| iOS allows `play()` only inside a gesture. | Start every track in the gesture handler at gain 0, then crossfade with GainNodes (`createMediaElementSource`). | Switch tracks after the first click; each new section gets sound. |
+| Generated tracks come out at about -13 LUFS and mask UI sound effects. | Encode at `loudnorm=I=-16`, AAC 80k, with a 3 s fade-in and a 6 s fade-out so the loop has no hard seam. Keep the in-page music gain at about 0.5. | Effects stay audible over the music. |
+| A single central "start" button doubled as the sound switch, but readers who just scroll past it never learn the page has music (user: 「入梦按钮会不会漏按，这样用户不知道有bgm」). | Never rely on one entry gesture to announce BGM. When a reader who has never chosen (no saved preference) scrolls past the hero with sound off, show a one-line bubble under the sound button ("本页有配乐，点此开启"); clicking it turns sound on, and it hides itself after 8 s. Do not show it to anyone who saved "off", and never autoplay on scroll. | Clear storage, scroll one screen: the bubble appears and points at the button. Click it: sound on, preference saved. Saved "0": the bubble never appears. |
+| Revealing a 灯谜 answer played a bright two-note bell, which reads as a quiz-show "correct!" chime. The answers are ill omens, so the sound broke the mood (user: 「点击灯笼的效果音会不会出戏」). | Pick each effect from the object's own world and the content's tone, not from generic UI feedback. Lighting a lantern = a soft noise puff (wick catching) plus one low qin pluck. Keep bells for things that really ring (drawing a lot). | For every `sfx()` call, name the real object that makes the sound. If the honest answer is "a UI success ding", replace it. |
 
 ## Resources
 

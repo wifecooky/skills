@@ -1,5 +1,5 @@
 {
-  "lastUpdated": 1792110765694,
+  "lastUpdated": 1792617133425,
   "skills": [
     {
       "skillId": "brand-guidelines",
@@ -119,7 +119,7 @@
       "name": "skill-creator",
       "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
       "source": "anthropic-example",
-      "updatedAt": "2026-09-14T19:41:01.499089Z"
+      "updatedAt": "2026-10-21T20:47:56.610025Z"
     },
     {
       "skillId": "skill_01Sug4wL9VNUSJp9Y6LwJJPK",
@@ -136,8 +136,5 @@
       "source": "anthropic-example",
       "updatedAt": "2026-10-14T14:41:49.960676Z"
     }
-  ],
-  "pendingClaims": [
-    "83627:Thu Oct 15 08:12:14 2026/mcp-builder"
   ]
 }

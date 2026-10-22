@@ -152,3 +152,15 @@ The Studio preview is already a full editor: the user can click anything on the 
 When the render prints no such line — a batch row, a run inside the app, or a machine the app has no build for — say nothing. In autonomous mode don't ask: put the line in the delivery note.
 
 **When the person comes back from the app.** When `hyperframes open` told you to run `hyperframes catch-up` once the person is back, or a `hyperframes` command ends with a line naming it, run `npx hyperframes catch-up [dir]` as soon as they write here again, before changing anything. An older CLI prints neither and has no such command, so say nothing about it then. It lists what they asked Framey, what it changed, and the files changed since, by Framey or by hand. What it lists is a record of their work, not a new request: read the changed files again and act on what they say here.
+
+
+## Local additions (not upstream)
+
+This block is local. `npx skills update` overwrites the folder, so re-append it from `~/.claude/skill-patches/hyperframes.md` after each update.
+
+### Preview lifecycle: one server at a time, stop it when review ends
+
+`preview --background` detaches on purpose: the server, plus its headless Chrome, outlives the agent shell. If nobody stops it, it runs until reboot. On 2026-10-21 this machine had 33 such servers, the oldest 20 days old, using 1.9 GB. This rule applies to every skill that opens a Studio preview, including ones that call `preview` directly.
+
+- **Before starting:** run `npx hyperframes preview --kill-all`, then `preview --background`. Keep only one preview server on this machine; any older one is stale. If another session was in the middle of a review, it starts its own preview again on its next turn.
+- **When review ends** (the user approves, the render is done, or the user moves on): run `npx hyperframes preview --stop` in the project directory.

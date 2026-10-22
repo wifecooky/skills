@@ -49,6 +49,9 @@ The audience is adult, so a glamorous woman from the 三国 era can appear: 貂�
     `python3 $SK/metrics.py add <S> douyin <YYYY-MM-DDTHH:MM> published=<date> title=<短标题> views= likes= comments= shares= saves= completion=<x%> bounce2s=<x%> follows=`
     The id is the publish time shown on the card.
   - **小红书** `https://creator.xiaohongshu.com/new/note-manager?source=official`. It takes about 5 s to render. The five numbers under each note are, in order: 观看 评论 点赞 收藏 分享. Use `add <S> xhs <time> published= title= views= comments= likes= saves= shares=`.
+  - **YouTube 地区** (from 2026-10-21; decides how much the 繁體 translation matters) `https://studio.youtube.com/channel/UCyaiX1XN53OMXu-OMNAKQCg/analytics/tab-build_audience/period-default` → Top geographies → See more (the table loads ~10 s later; read it with JS `innerText`). Record the 28-day window with
+    `python3 $SK/metrics.py add <S> youtube-geo 28d-<window end date> views=<total> tw=<x%> hk=<x%> my=<x%> sg=<x%> other=<100 − listed>%`
+    plus any other listed country by its two-letter code. YouTube hides small countries, so `other` is often large. VPN users from mainland China show up under the VPN's exit country.
   - **视频号** `https://channels.weixin.qq.com/platform/post/list` (wujie: read `document.querySelector('wujie-app').shadowRoot` text). If it redirects to `login.html`, skip it and say 「视频号需要扫码登录」 in the report.
 
 ## Publish

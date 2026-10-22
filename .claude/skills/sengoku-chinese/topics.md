@@ -15,7 +15,7 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 9 🚧 sengoku-11-xinwen | 新聞 | newspaper | news xīnwén | 秀吉 asks the 明 merchant for 新闻 (paper) → he whispers gossip: 信長 is afraid of his wife; 信長 denies it loudly → 濃姫 behind him |
 | 10 🚧 sengoku-12-zhangfu | 丈夫 | sturdy | husband zhàngfu | 秀吉 tells 明の舞姫 美玲 「信长大人，丈夫！」 (meaning sturdy) → she hears "husband", thinks 信長 proposed and accepts; 信長 declares himself her 丈夫 → 濃姫 with a naginata: 「お体が丈夫で、ようございました」 |
 | 11 🚧 sengoku-13-chuang | 床 | floor | bed chuáng | 信長 tells 秀吉 to ask the standing 明 dancer 美玲 to sit on the 床 (tatami floor) → 秀吉 「请坐在床上！」 → she hears "sit on the bed", blushes 「你好坏呀」; 信長 learns 床=bed, declares 床の間 his bedroom and lies down in the alcove → 濃姫: 「そこは床の間にございます」 |
-| 12 | 先生 | teacher | Mr./husband xiānsheng | — |
+| 12 🚧 sengoku-14-xiansheng | 先生 | teacher | Mr./husband xiānsheng | 信長 has 秀吉 tell 明の舞姫 美玲 that 家康 is 濃姫's go 先生 → 「家康大人是浓姬夫人的先生！」 → she hears "濃姫's husband": 「原来浓姬夫人有两个先生呀！」; 信長 learns 先生=husband, declares himself 濃's 先生 → loses ten games of go to her: 「……先生。これで十連敗にございます。」 |
 
 Ask the user before locking a topic; check that the Chinese example sentence is natural (native check for anything paid).
 

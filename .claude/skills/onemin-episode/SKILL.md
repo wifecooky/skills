@@ -51,9 +51,9 @@ Done when every line is voiced and no line runs past the next line's `VO_AT`.
 2. `cd $EP && python3 .hyperframes/gen_comps.py && sh assets/fonts/subset.sh && npx --yes hyperframes@0.8.169 check`. The generator also re-carves the BGM; subset again after any text change.
 3. Snapshot every changed beat at its hit time: `npx --yes hyperframes@0.8.169 snapshot --at <t,t,…> --no-end --describe false -o .hyperframes/artifacts/snapN`, and look at each frame.
 4. Update `SCRIPT.md` (add a 「vN → vN+1 修改」 table on revisions), `STORYBOARD.md`, the episode BRIEF's VO total.
-5. Preview: `npx --yes hyperframes@0.8.169 preview --background`, then hand over `http://127.0.0.1:3009/#project/<ep>`.
+5. Preview: `npx --yes hyperframes@0.8.169 preview --kill-all && npx --yes hyperframes@0.8.169 preview --background` (one preview server at a time), then hand over the `Studio` URL it prints (`http://localhost:<port>/#project/<ep>`) as is. Do not write a port from memory: this step used to say 3009 while the server actually ran on 3002.
 
-Done when check says passed with 0 errors, the snapshots are looked at, and the user approved the preview. Render only after that (concept-motion-explainer pipeline step 10 onward).
+Done when check says passed with 0 errors, the snapshots are looked at, and the user approved the preview. Render only after that (concept-motion-explainer pipeline step 10 onward). Once the user approves or the render is done, stop the server with `npx --yes hyperframes@0.8.169 preview --stop`. A server left running keeps its headless Chrome; 33 of them had piled up by 2026-10-21.
 
 ## 5. Website page
 

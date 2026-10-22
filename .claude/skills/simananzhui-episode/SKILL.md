@@ -66,9 +66,9 @@ Done when: every clip is shorter than its scene, the hook claim lands ≤ 5 s (p
 ## 4. Build → gate preview
 
 - Composition, BGM/SFX, fonts, story beats, intro/end card, seams: pipeline.md, by section.
-- Run `npx hyperframes check .` (0 errors), take snapshot contact sheets and look at them yourself, then `npx hyperframes preview --background` for the user.
+- Run `npx hyperframes check .` (0 errors), take snapshot contact sheets and look at them yourself, then `npx hyperframes preview --kill-all && npx hyperframes preview --background` for the user (one preview server at a time).
 
-Done when: the user approves the preview. Render only after that (`render -q high`, web encode, `scripts/seams.py`).
+Done when: the user approves the preview. Render only after that (`render -q high`, web encode, `scripts/seams.py`). Once the user approves or the render is done, stop the server with `npx hyperframes preview --stop`.
 
 ## 5. Two builds, end cards, seal
 
