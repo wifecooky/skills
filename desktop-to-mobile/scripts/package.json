@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "ui-check.mjs runtime: npm install once in this dir",
+  "dependencies": { "playwright": "1.63.0" }
+}

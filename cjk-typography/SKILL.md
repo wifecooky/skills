@@ -18,23 +18,25 @@ Proper line breaking, text layout, and reflow-free measurement for Chinese, Japa
 
 ## Step 1: CSS Baseline
 
-Always add to `body` or root container:
+Always add to `body` or root container. Put `keep-all` only on elements that BudouX (Step 2) has processed:
 
 ```css
 body {
-  word-break: keep-all;      /* never break inside CJK word clusters */
-  overflow-wrap: break-word;  /* allow break at word boundaries to prevent overflow */
+  overflow-wrap: break-word;  /* long strings never overflow */
+}
+.budoux {
+  word-break: keep-all;       /* wrap only at the <wbr> that BudouX inserted */
 }
 ```
 
 | Property | Effect |
 |----------|--------|
-| `word-break: keep-all` | Keeps CJK phrases intact, no mid-cluster breaks |
 | `overflow-wrap: break-word` | Fallback for long strings that would overflow |
+| `word-break: keep-all` | Keeps CJK phrases intact. Without BudouX `<wbr>`, a whole clause becomes one unbreakable word (see Common Mistakes) |
 
 ## Step 2: BudouX (Smart Phrase Breaking)
 
-[Google BudouX](https://github.com/nicekid1/BudouX) inserts `<wbr>` tags at semantically correct break points. The browser only wraps at these positions.
+[Google BudouX](https://github.com/google/budoux) inserts `<wbr>` tags at semantically correct break points. The browser only wraps at these positions.
 
 ### CDN Integration (Static Sites)
 
@@ -173,7 +175,7 @@ while (true) {
 
 | Mistake | Fix |
 |---------|-----|
-| Using `word-break: break-all` | Use `keep-all` — `break-all` breaks everywhere |
+| Using `word-break: break-all` | Use the default `normal`, or `keep-all` with BudouX — `break-all` breaks everywhere |
 | Applying BudouX to containers with child elements | Apply to leaf text elements only |
 | `keep-all` on Chinese prose with no BudouX `<wbr>` — a clause up to the next 。，becomes one unbreakable word; in a narrow `text-align: justify` column (phone, lantern/card notes) the line stretches into wide letter gaps (seen 2026-10-21, 红楼一梦 朱批) | Only use `keep-all` where BudouX inserted break points; otherwise set `word-break: normal` on Chinese prose blocks. Verify: screenshot the narrowest column at 390px — no visible extra spacing between characters |
 | Missing `overflow-wrap` fallback | Always pair `keep-all` with `overflow-wrap: break-word` |

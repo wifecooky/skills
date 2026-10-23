@@ -108,6 +108,15 @@ Capture every route discovered in Route Discovery. For auth-required pages, inje
 
 ### Layer 3: Visual Checklist (per screenshot)
 
+First run the machine check. It covers A1, A4, B1, B2, C1, C2 (overlap) and `user-scalable=no` at 320/390/768/1440:
+
+```bash
+cd ~/.claude/skills/desktop-to-mobile/scripts && npm install   # once
+node ~/.claude/skills/desktop-to-mobile/scripts/ui-check.mjs <site-dir | http-url> [route ...]
+```
+
+`✗` lines fail (exit 1). `⚠` lines are the stricter mobile targets (prose 16px, taps 44px). Add `--strict` to fail on them too: new projects start strict. Copy its results into the table, then check the other items by eye.
+
 For EACH screenshot, check every item. Mark PASS/FAIL explicitly.
 
 #### A. Layout & Viewport
@@ -125,7 +134,7 @@ For EACH screenshot, check every item. Mark PASS/FAIL explicitly.
 
 | # | Check | Pass Criteria | Standard |
 |---|-------|---------------|----------|
-| B1 | Body text >= 16px | Minimum 1rem | Google Mobile-Friendly |
+| B1 | Body text >= 16px, nothing < 12px | Prose 1rem; captions, labels, nav and language switchers 12px minimum | Google Mobile-Friendly |
 | B2 | Input text >= 16px | No iOS auto-zoom on focus | Apple Safari |
 | B3 | No mid-word breaks | Titles/labels don't split mid-word | Typography |
 | B4 | No orphaned text | Section titles stay on one line | Typography |
@@ -461,6 +470,8 @@ Desktop modals centered with `align-items: center` break on mobile: content is c
 5. **Re-screenshot** — Verify fix
 6. **Desktop check** — Confirm zero regression at 1440px
 
+**Done when** `ui-check.mjs` exits 0 on every changed route (with `--strict` on a new project) and every Layer 3 item is PASS.
+
 ### 3.3 Scope Boundary
 
 This skill covers **CSS-only responsive changes**. If the audit reveals needs beyond CSS:
@@ -500,6 +511,7 @@ Do not attempt these within this skill. Report them as separate tasks.
 |---------|-----|
 | `user-scalable=no` | Remove (blocks accessibility zoom) |
 | `input { font-size: 14px }` | Use 16px (prevents iOS auto-zoom) |
+| Language switcher or caption at 10–11px | 12px minimum for any visible text |
 | `100vh` | Use `100dvh` (iOS Safari chrome overlap) |
 | `position: fixed` without safe area | Add `env(safe-area-inset-*)` |
 | 3+ col grid without breakpoint | Add `repeat(2, 1fr)` at 768px |
