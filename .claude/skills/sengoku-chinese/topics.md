@@ -25,6 +25,6 @@ Checked 2026-10-12. Drop a row once its moment has passed.
 | Trend (JP) | Window | Chinese | Gag hook |
 |---|---|---|---|
 | 推し活 (日経トレンディ 2026-10 cover story) | ongoing | 追星 zhuīxīng | 信長 starts 推し活 for お市 / 濃姫; 秀吉 translates 推し as 推 tuī (push) → shoves her |
-| メロい (渋谷トレンドリサーチ 2026秋 #1 teen word) | ongoing | 上头 shàngtóu (native check) | 秀吉 says the 明 beauty is メロい → 老師 teaches 上头; 信長 thinks it means "to the head" and puts her fan on his head |
+| 🚧 sengoku-15-shangtou メロい (渋谷トレンドリサーチ 2026秋 #1 teen word) | ongoing | 上头 shàngtóu (native check) | 秀吉 says the 明 beauty is メロい → 老師 teaches 上头; 信長 thinks it means "to the head" and puts her fan on his head |
 | ハロウィン | publish by 10/31 | 万圣节 wànshèngjié / 变装 | 秀吉 hears 鬼 guǐ = ghost (not 鬼 oni) → dresses as a ghost, not an oni |
 | 大谷翔平 [名人] (World Series / MVP news, only while he is trending) | while trending | 野球 = pickup game in Chinese; baseball is 棒球 bàngqiú (native check: drop if 野球 isn't natural) | 信長 hears of a giant of 野球 from 日本; 秀吉 invites the 明 envoy to 野球 → he expects a scrappy street game in a rice field; 老師 teaches 棒球. 大谷 is never drawn |
