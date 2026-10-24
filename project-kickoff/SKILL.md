@@ -100,7 +100,7 @@ A site where a push deploys (GitHub Pages) uses the pre-push hook. A site with a
 - `packs/static-site.md`: rules from the 4 static sites, each with where it came from.
 - `packs/nextjs.md`: rules from jam-bo's fix history, each with the commit it would have caught.
 - `hooks/kickoff-gate.js`: a PreToolUse hook on Edit and Write, wired in `~/.claude/settings.json`. It finds the git root of the file being edited. It denies the edit once per repo per session in two cases:
-  - A repo with 20 commits or fewer has no `FEATURES.md` and no `.kickoff-skip`.
+  - A new repo (first commit in the last 14 days, 20 commits or fewer) has no `FEATURES.md` and no `.kickoff-skip`.
   - A repo ships `.githooks/` or `.husky/` hooks that git's `core.hooksPath` does not run.
 
   Writing `FEATURES.md` or `.kickoff-skip` is never blocked. Set `SKIP_KICKOFF_GATE=1` to turn the hook off. The hook fails open: on any error, the edit goes through.
