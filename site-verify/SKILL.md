@@ -5,6 +5,8 @@ description: Acceptance check for a static site that keeps a FEATURES.md feature
 
 # site-verify
 
+A new project starts with the project-kickoff skill; this skill is its step 2 for sites.
+
 The user should not be the one who clicks through every feature. The repo holds the list; the script clicks; you look at the screenshots; the user gets one page to skim plus a short list of what only a human can judge.
 
 ## Files in a site repo
