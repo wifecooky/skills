@@ -61,6 +61,7 @@ Raise the tier when a project outlives its plan. jam-bo started as a prototype. 
    - Run it on the broken code and see ✗.
    - Fix the code and see ✓.
    - Write the lesson into the owning skill. The lesson-gate Stop hook asks for this.
+   - If every project on this stack can make the same mistake, also add a row to `packs/<stack>.md` with the commit as evidence, and a rule case in `evals/`. This is how lessons from new projects come back here.
    - Guessing does not converge. jam-bo's KOL scroll took 7 rounds; a spec plus a failing e2e test stopped it (5cd738c).
    - sanguo 9169304 shows the pattern on a small fix.
 
@@ -99,6 +100,7 @@ A site where a push deploys (GitHub Pages) uses the pre-push hook. A site with a
 - `templates/`: `FEATURES.md`, `gate.sh`, `check-rules.mjs`, `pre-push`, `gate.yml`.
 - `packs/static-site.md`: rules from the 4 static sites, each with where it came from.
 - `packs/nextjs.md`: rules from jam-bo's fix history, each with the commit it would have caught.
+- `evals/`: cases for the skill-eval skill. A rule case replays a pack rule against its evidence commit; an agent case checks a step of the flow. Run `node ../skill-eval/run.mjs . --rules-only` after every pack edit.
 - `hooks/kickoff-gate.js`: a PreToolUse hook on Edit and Write, wired in `~/.claude/settings.json`. It finds the git root of the file being edited. It denies the edit once per repo per session in two cases:
   - A new repo (first commit in the last 14 days, 20 commits or fewer) has no `FEATURES.md` and no `.kickoff-skip`.
   - A repo ships `.githooks/` or `.husky/` hooks that git's `core.hooksPath` does not run.
@@ -116,3 +118,18 @@ A site where a push deploys (GitHub Pages) uses the pre-push hook. A site with a
 | yuanzhuo (圆桌) | 3, Next.js | none yet | not kicked off; apply `packs/nextjs.md` before the first feature |
 
 These 4 sites predate `gate.sh`. Each one calls its checks directly from its own gate. Move them to `gate.sh` when you next touch the gate, not as a drive-by.
+
+## Where the talk lives
+
+The flow generalises Lauren Tan's talk (Cursor, 2026) with what our projects taught. Each idea in the talk maps to one place:
+
+| Talk | Here |
+|---|---|
+| Verification: the agent runs the product and accepts its own work | Step 2; site-verify |
+| Feature map: the agent knows where each feature is | Step 1; `templates/FEATURES.md` |
+| Turn failure modes into skills | Step 5; the lesson-gate hook |
+| Evals are the agent's unit tests; hill-climb on them | The skill-eval skill; `evals/` |
+| Hard constraints beat soft rules; shortest path = correct path | Step 4; `packs/` |
+| Greenfield: add the constraints before the first feature | The kickoff-gate hook |
+| Atomic PRs; git history as context | Step 6 |
+| Trust curve: local, then cloud, then auto-merge | Not adopted. The user checks each deploy locally, and only the user changes that |

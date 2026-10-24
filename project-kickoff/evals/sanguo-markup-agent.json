@@ -1,0 +1,22 @@
+{
+  "id": "sanguo-markup-agent",
+  "kind": "agent",
+  "about": "step 5: a user-found bug is fixed AND becomes a check that fails on the old code. Run with --baseline. Ablating step 5 alone does not lower the score: the skill states 'a check that fails once' in 4 more places. 'fixed' accepts both fixes: strip the marks from the data, or render them in the view.",
+  "repo": "~/Documents/git/sanguo",
+  "at": "9169304^",
+  "task": "测验里有一道题，题目里直接显示出了两个星号 **，看着很怪。帮我修一下。",
+  "checks": [
+    {
+      "name": "fixed",
+      "run": "! grep -q '\\*\\*' js/data/quiz.js || grep -qF '**' js/views/quiz.js"
+    },
+    {
+      "name": "checks green",
+      "run": "for f in scripts/check-*.js; do node \"$f\" >/dev/null 2>&1 || exit 1; done"
+    },
+    {
+      "name": "guard fails on old code",
+      "run": "T=$(mktemp -d) && cp -R \"$OLD\"/. \"$T\" && cp -R scripts/. \"$T/scripts/\" && cd \"$T\" && ! (for f in scripts/check-*.js; do node \"$f\" >/dev/null 2>&1 || exit 1; done)"
+    }
+  ]
+}

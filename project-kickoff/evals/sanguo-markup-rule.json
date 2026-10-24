@@ -1,0 +1,10 @@
+{
+  "id": "sanguo-markup-rule",
+  "kind": "rule",
+  "about": "static-site pack: data shown as plain text holds no markup. The quiz showed 「**不是**」 with its asterisks.",
+  "repo": "~/Documents/git/sanguo",
+  "bad": "9169304^",
+  "good": "9169304",
+  "checker": ["scripts/check-data.js"],
+  "cmd": "node scripts/check-data.js"
+}
