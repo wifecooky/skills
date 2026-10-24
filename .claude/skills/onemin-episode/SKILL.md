@@ -22,7 +22,7 @@ Paths below are relative to the repo root; `EP=episodes/epNN-slug`. CLI pin: `np
    - Progress-bar labels are content words that agree with the script (ep02 「只改形状」 contradicted 「提示语也改了」).
    - TTS text: years as 「一九九五年」, numbers as words (「零点二秒」); on-screen titles use digits.
 
-Done when `check_prose.py` is clean, every check passed, the cold listener's one-line summary contains the BRIEF message, and the user said yes. TTS waits for that yes.
+Done when `node scripts/check-rules.mjs $EP` passes (it runs `check_prose.py` on the 配音 column and fails on digits, URLs and 语气铁律 words), every check passed, the cold listener's one-line summary contains the BRIEF message, and the user said yes. TTS waits for that yes.
 
 ## 2. New episode project (skip when revising)
 
@@ -53,7 +53,7 @@ Done when every line is voiced and no line runs past the next line's `VO_AT`.
 4. Update `SCRIPT.md` (add a 「vN → vN+1 修改」 table on revisions), `STORYBOARD.md`, the episode BRIEF's VO total.
 5. Preview: `npx --yes hyperframes@0.8.169 preview --kill-all && npx --yes hyperframes@0.8.169 preview --background` (one preview server at a time), then hand over the `Studio` URL it prints (`http://localhost:<port>/#project/<ep>`) as is. Do not write a port from memory: this step used to say 3009 while the server actually ran on 3002.
 
-Done when check says passed with 0 errors, the snapshots are looked at, and the user approved the preview. Render only after that (concept-motion-explainer pipeline step 10 onward). Once the user approves or the render is done, stop the server with `npx --yes hyperframes@0.8.169 preview --stop`. A server left running keeps its headless Chrome; 33 of them had piled up by 2026-10-21.
+Done when check says passed with 0 errors, the snapshots are looked at, and the user approved the preview. Render only after that (concept-motion-explainer pipeline step 10 onward). After the render, `node scripts/check-rules.mjs $EP` must pass again (it checks `renders/video.mp4` is 1080×1920 and ≤ 60 s, and that no URL is on screen). Once the user approves or the render is done, stop the server with `npx --yes hyperframes@0.8.169 preview --stop`. A server left running keeps its headless Chrome; 33 of them had piled up by 2026-10-21.
 
 ## 5. Website page
 
@@ -62,7 +62,7 @@ Done when check says passed with 0 errors, the snapshots are looked at, and the 
 3. `python3 brand/make.py` (writes `$EP/og.png`), drop the topic from `site/upcoming.json`, `node site/build.mjs`, QA desktop + 390 px with `/gstack-browse`.
    - QA covers the whole page down to the footer, at 390 px too: scroll to the bottom and take a viewport screenshot. The bottom is where a full-page shot shrinks things out of view. (Pager, 2026-10-20: the 「上一期」 link had no arrow, and the 「下一期 · 制作中」 item, which is not a link, kept the 20px bold link style in grey, so it read as a broken link. There was also a 110px dead gap above the footer.) Done when every link carries an arrow pointing where it goes, and everything that is not a link is visibly quieter than the links.
 
-Deploy (`npx wrangler pages deploy site/dist --project-name onemin --branch main`) and the onemin.net domain only when the user asks.
+Deploy (`scripts/deploy.sh`: check-rules → build → `wrangler pages deploy site/dist --project-name onemin --branch main`) and the onemin.net domain only when the user asks. A rule that a script can check goes into `scripts/check-rules.mjs`, not only into prose here.
 
 ## 6. Publish kit
 

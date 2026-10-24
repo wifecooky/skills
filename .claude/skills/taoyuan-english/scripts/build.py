@@ -305,9 +305,20 @@ html = f'''<!doctype html>
 </div>
 <script>
 window.__timelines = window.__timelines || {{}};
-const tl = gsap.timeline({{ paused: true }});
-{chr(10).join(js)}
-window.__timelines["main"] = tl;
+document.fonts.ready.then(() => {{
+  // a long headline wraps and pushes the card down into the bubble: shrink it until the card (+ shadow) clears the topmost chip
+  document.querySelectorAll(".card").forEach(c => {{
+    const says = [...c.parentNode.querySelectorAll(".say")], b = c.querySelector("b");
+    if (!says.length) return;
+    const lim = Math.min(...says.map(e => e.offsetTop)) - 34 - 24;
+    for (let px = 108; c.offsetTop + c.offsetHeight + 14 > lim && px >= 64; px -= 4) b.style.fontSize = px + "px";
+    if (c.offsetTop + c.offsetHeight + 14 > lim)  // `hyperframes check` reports console errors
+      console.error(`${{c.id}} still covers the bubble chip at a 64px headline: shorten card.zh/note or the bubble text`);
+  }});
+  const tl = gsap.timeline({{ paused: true }});
+  {(chr(10) + "  ").join(js)}
+  window.__timelines["main"] = tl;
+}});
 </script>
 </body>
 </html>
