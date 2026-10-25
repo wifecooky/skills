@@ -14,6 +14,7 @@ Run this before showing a storyboard to the user, and again after any scene is a
 8. **Panel matches line.** The speaker is drawn, the action in the line is visible, and no one is in frame who shouldn't be.
 9. **Teaching point (lesson videos).** The target phrase is used correctly in context *before* the card. The card's meaning matches how it was used. Translations are idiomatic, not literal, unless the literal reading is the joke.
 10. **Length.** About 30–45 s for Shorts. Cut any scene that neither sets up nor pays off.
+11. **The joke works for a viewer who doesn't know the target language.** Say the joke in one sentence as that viewer sees it. If the misunderstanding only makes sense to someone who already knows the language ("he mixed up 狗熊 with 英雄 because both have xióng"), or the gag object never shows the expression itself (a wrong-tattoo joke drawn as a picture, not the characters), that's a BLOCKER. A setup that sits in the bottom third of its panel is hidden by the bubble: that's a BLOCKER too. So is a gag object in the top-left corner of a scene with `sfx` (the SFX text covers it for 2 s). Why: olympus ep18 v1 (2026-10-24) passed items 1–10 twice and still had no laugh for the user.
 
 ## Output format
 

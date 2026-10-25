@@ -16,6 +16,7 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 10 🚧 sengoku-12-zhangfu | 丈夫 | sturdy | husband zhàngfu | 秀吉 tells 明の舞姫 美玲 「信长大人，丈夫！」 (meaning sturdy) → she hears "husband", thinks 信長 proposed and accepts; 信長 declares himself her 丈夫 → 濃姫 with a naginata: 「お体が丈夫で、ようございました」 |
 | 11 🚧 sengoku-13-chuang | 床 | floor | bed chuáng | 信長 tells 秀吉 to ask the standing 明 dancer 美玲 to sit on the 床 (tatami floor) → 秀吉 「请坐在床上！」 → she hears "sit on the bed", blushes 「你好坏呀」; 信長 learns 床=bed, declares 床の間 his bedroom and lies down in the alcove → 濃姫: 「そこは床の間にございます」 |
 | 12 🚧 sengoku-14-xiansheng | 先生 | teacher | Mr./husband xiānsheng | 信長 has 秀吉 tell 明の舞姫 美玲 that 家康 is 濃姫's go 先生 → 「家康大人是浓姬夫人的先生！」 → she hears "濃姫's husband": 「原来浓姬夫人有两个先生呀！」; 信長 learns 先生=husband, declares himself 濃's 先生 → loses ten games of go to her: 「……先生。これで十連敗にございます。」 |
+| 13 🚧 sengoku-17-guaiwo | 怪我 | injury | my fault guài wǒ | 信長 has a bandaged foot; 秀吉 tells the 明 merchant 「大人的脚……怪我！」 (meaning injury) → merchant hears "my fault!": 「原来是你干的？！」; 信長 learns 怪我=my fault, trips on his bad foot and smashes the merchant's vase → makes 秀吉 say 「……怪我。」 → 「又是你？！」 |
 
 Ask the user before locking a topic; check that the Chinese example sentence is natural (native check for anything paid).
 

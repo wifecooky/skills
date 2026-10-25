@@ -29,6 +29,7 @@ Before any money is spent: STORYBOARD.md + logic-check + user approval of storyb
 
 Put one reusable example in `"lesson": {"examples": [{"zh","py","tr"}]}` (tr = English); it must match the card/description.
 Ancient-Greece facts used as gags must be true and go in the description narrowed to what is verifiable.
+When the gag object is the Chinese itself (a tattoo, a sign, a scroll), draw the 汉字 on it in the panels that pay it off: open `style` for exactly that prop ("The ONLY lettering allowed is … 狗熊 …; apart from that, ABSOLUTELY NO TEXT") and keep it off-camera or covered in the other panels, so a garbled redraw costs one panel. Cause: ep18 v1 kept the global NO TEXT rule, so the tattoo became a puppy-and-bear picture and the wrong-tattoo joke was lost. Fix: v2 draws 狗熊 only in 01 and 06. Verify: the 01/06 snapshots show legible 狗熊.
 
 ## Voice rules
 | Situation | Do |

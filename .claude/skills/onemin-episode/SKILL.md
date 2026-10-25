@@ -59,10 +59,11 @@ Done when check says passed with 0 errors, the snapshots are looked at, and the 
 
 1. `$EP/figure.svg`: the object as a line drawing with one vermilion leader line, same classes as `episodes/ep01-shampoo/figure.svg`.
 2. Add `"figure": "figure.svg", "og": "og.png"` to `page.draft.json`, then rename it to `page.json`. `site/build.mjs` reads every `page.json` and crashes on one without these keys; that is why drafts carry the other name.
-3. `python3 brand/make.py` (writes `$EP/og.png`), drop the topic from `site/upcoming.json`, `node site/build.mjs`, QA desktop + 390 px with `/gstack-browse`.
+3. `python3 brand/make.py` (writes `$EP/og.png`), drop the topic from `site/upcoming.json`, `node site/build.mjs`, then `node scripts/verify.mjs` (site-verify skill: `FEATURES.md` is the feature map; episode counts and titles are read from `site/dist`, so a new episode needs no test change). Look at the new episode's screenshots in `.verify/index.html` at 390 and 1440.
    - QA covers the whole page down to the footer, at 390 px too: scroll to the bottom and take a viewport screenshot. The bottom is where a full-page shot shrinks things out of view. (Pager, 2026-10-20: the 「上一期」 link had no arrow, and the 「下一期 · 制作中」 item, which is not a link, kept the 20px bold link style in grey, so it read as a broken link. There was also a 110px dead gap above the footer.) Done when every link carries an arrow pointing where it goes, and everything that is not a link is visibly quieter than the links.
+   - Timeline line breaks (2026-10-24). Cause: `glued()` in `site/build.mjs` kept the source refs on one line with a fixed last 4 characters. That cut words (周|围, 山|中俊治), numbers (1|%) and quoted terms (実用|新案). Fix: the cut snaps to an `Intl.Segmenter` word boundary, and never lands inside a standard number, a number, a short 「」 term or a kana run (`ATOM`). When a new episode adds a new kind of term that must stay whole, add it to `ATOM`. Verify: the `fact-wrap` test in `node scripts/verify.mjs` fails on the old glue.
 
-Deploy (`scripts/deploy.sh`: check-rules → build → `wrangler pages deploy site/dist --project-name onemin --branch main`) and the onemin.net domain only when the user asks. A rule that a script can check goes into `scripts/check-rules.mjs`, not only into prose here.
+Deploy (`scripts/deploy.sh`: check-rules → build → ui-check → verify → `wrangler pages deploy site/dist --project-name onemin --branch main`) and the onemin.net domain only when the user asks. A rule that a script can check goes into `scripts/check-rules.mjs`, not only into prose here.
 
 ## 6. Publish kit
 
