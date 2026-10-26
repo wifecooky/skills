@@ -9,6 +9,7 @@ Each store holds `metrics.jsonl` (one row per video per day), `comments.jsonl`, 
 
 ## 1. Collect
 1. `python3 $SK/metrics.py fetch <S> <url> ...` (yt-dlp, no login). Videos that are still scheduled return 0, which is fine.
+   - Pass each URL as its own argument. The shell is zsh, which does not split an unquoted `$urls`: all URLs arrive as one argument and only the first video is fetched (olympus 2026-10-25: the report showed `youtube: 1 videos from <16 URLs>` and missed ep18's 1014 views). Fix: build an array, `urls=($(… | grep .))`, then pass `"${urls[@]}"`. Verify: one `youtube: 1 videos from <url>` line per URL, and today's row count in `metrics.jsonl` equals the URL count.
 2. Dashboards, only if the series skill lists them: read them in the user's Chrome (claude-in-chrome, **read-only**). Open one tab, read it with `get_page_text` / JS `innerText`, then close the tab. Record each work with `python3 $SK/metrics.py add <S> <platform> <id> published= title= ...` as the series skill says. Never try to log in.
    - If Chrome or the extension isn't connected, or a page has changed beyond recognition, skip that platform and say so. Don't retry in a loop.
    - Comments: if a card shows 评论 > 0, open that work's comment view read-only and copy the text into the report. Don't reply.

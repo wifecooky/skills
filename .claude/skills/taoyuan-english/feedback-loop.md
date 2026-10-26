@@ -9,10 +9,15 @@ Each store holds `metrics.jsonl` (one row per video per day), `comments.jsonl`, 
 
 ## 1. Collect
 1. `python3 $SK/metrics.py fetch <S> <url> ...` (yt-dlp, no login). Videos that are still scheduled return 0, which is fine.
+   - Pass each URL as its own argument. The shell is zsh, which does not split an unquoted `$urls`: all URLs arrive as one argument and only the first video is fetched (olympus 2026-10-25: the report showed `youtube: 1 videos from <16 URLs>` and missed ep18's 1014 views). Fix: build an array, `urls=($(… | grep .))`, then pass `"${urls[@]}"`. Verify: one `youtube: 1 videos from <url>` line per URL, and today's row count in `metrics.jsonl` equals the URL count.
 2. Dashboards, only if the series skill lists them: read them in the user's Chrome (claude-in-chrome, **read-only**). Open one tab, read it with `get_page_text` / JS `innerText`, then close the tab. Record each work with `python3 $SK/metrics.py add <S> <platform> <id> published= title= ...` as the series skill says. Never try to log in.
    - If Chrome or the extension isn't connected, or a page has changed beyond recognition, skip that platform and say so. Don't retry in a loop.
    - Comments: if a card shows 评论 > 0, open that work's comment view read-only and copy the text into the report. Don't reply.
-3. `python3 $SK/metrics.py report <S>` prints the table (views at ~48 h, so older videos don't win by age) and today's new comments.
+3. `python3 $SK/metrics.py report <S>` prints the table (views at the first snapshot ≥ 48 h, so older videos don't win by age), today's new comments, then the judge block (`metrics.py judge <S>` prints it alone):
+   - Per-episode views per platform and the series median, from `<S>/hypotheses.json`. Each hypothesis's thresholds give 达标 / 未达标 / 待定 (snapshot < 48 h). Copy these verdicts into LEARNINGS instead of recomputing by hand.
+   - Posts on one platform less than 24 h apart, and the earliest time for the next episode.
+   - LEARNINGS.md line count (warns above 40).
+   - After publishing, add the episode's ids to `episodes` in `hypotheses.json` (douyin/wechat id = the publish time on the dashboard card). A new hypothesis with a numeric target goes into `hypotheses` too.
 
 ## 2. Learn (update `<S>/LEARNINGS.md`)
 - **Sample sizes are tiny** (tens to hundreds of views). One episode proves nothing. Write 「趋势」 until a pattern holds across ≥ 3 episodes, and keep every claim tied to evidence (episode, platform, number).

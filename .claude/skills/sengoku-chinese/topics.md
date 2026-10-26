@@ -17,6 +17,7 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 11 🚧 sengoku-13-chuang | 床 | floor | bed chuáng | 信長 tells 秀吉 to ask the standing 明 dancer 美玲 to sit on the 床 (tatami floor) → 秀吉 「请坐在床上！」 → she hears "sit on the bed", blushes 「你好坏呀」; 信長 learns 床=bed, declares 床の間 his bedroom and lies down in the alcove → 濃姫: 「そこは床の間にございます」 |
 | 12 🚧 sengoku-14-xiansheng | 先生 | teacher | Mr./husband xiānsheng | 信長 has 秀吉 tell 明の舞姫 美玲 that 家康 is 濃姫's go 先生 → 「家康大人是浓姬夫人的先生！」 → she hears "濃姫's husband": 「原来浓姬夫人有两个先生呀！」; 信長 learns 先生=husband, declares himself 濃's 先生 → loses ten games of go to her: 「……先生。これで十連敗にございます。」 |
 | 13 🚧 sengoku-17-guaiwo | 怪我 | injury | my fault guài wǒ | 信長 has a bandaged foot; 秀吉 tells the 明 merchant 「大人的脚……怪我！」 (meaning injury) → merchant hears "my fault!": 「原来是你干的？！」; 信長 learns 怪我=my fault, trips on his bad foot and smashes the merchant's vase → makes 秀吉 say 「……怪我。」 → 「又是你？！」 |
+| 14 🚧 sengoku-18-bisi | 必死 | desperate, all-out | certain death bìsǐ | 信長 has 秀吉 tell 明の舞姫 美玲 he is 必死 for her → 「信长大人……为了您，必死！」 → she hears "he will surely die": 「信长大人要死了？！」, weeps 「一路走好……」, 信長 thinks she is moved; 信長 learns 必死=certain death → turns to find 濃姫 with a naginata → 「……わし、必死じゃ。」 |
 
 Ask the user before locking a topic; check that the Chinese example sentence is natural (native check for anything paid).
 

@@ -21,6 +21,7 @@ A famous figure drops in to help explain the phrase. The time-travel mismatch (�
 - **Historical or public-domain figures only. Never a living real person** (no celebrities, influencers or entrepreneurs). AI likeness and voice raise portrait and voice rights and deep-synthesis labeling rules, and the series publishes without AI labels.
 - **Where:** the card scene (with or instead of Owen) or the final twist. Try to keep the main part under 40 s (H3, not yet verified), and give the guest 1–2 lines.
 - **How:** add a project `cast` entry, for example `"S": {name, chip, voice, look, persona}`.
+  - `panels.py`/`voice.py` read only the project `script.json` (only `build.py` merges the pack). Copy the pack's full `cast` into the project, then add the guest. Why: ep23 (2026-10-25) had only the guest in `cast`, so voice.py died with KeyError 'C' and panels.py drew without the pack looks. Verify: `python3 -c "import json;print(list(json.load(open('script.json'))['cast']))"` lists L G Z C T plus the guest.
   - `look` names the era's garment (e.g. "Elizabethan doublet and ruff").
   - Pick a `voice` that is not used by any pack character.
   - The pack charsheet doesn't include the guest. Describe the guest fully in each panel's `art`, and exclude everyone not in that panel ("Only X is drawn; …").
@@ -34,7 +35,7 @@ The audience is adult, so a glamorous woman from the 三国 era can appear: 貂�
   - gpt-image-2 refuses or mangles revealing prompts.
   - The account is an English-learning brand.
 - **Fit the phrase.** Use her when the lesson is about attraction or romance: drop-dead gorgeous, head over heels, out of my league, femme fatale, play hard to get.
-- **How:** add a project `cast` entry.
+- **How:** add a project `cast` entry (full pack cast first, as for guests).
   - Her `look` names the Han-dynasty garment (e.g. "Eastern Han layered silk ruqun, NOT a qipao").
   - Voice candidates: 谄媚女声, 撒娇学妹, 倾心少女. Let the user pick by ear on a real line.
   - Exclude her from panels she isn't in, as for guests.
