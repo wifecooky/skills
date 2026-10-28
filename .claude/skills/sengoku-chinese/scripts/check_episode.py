@@ -59,7 +59,7 @@ def check(proj):
     # script.json (pipeline.md § script.json quick reference)
     if "NO TEXT" not in d.get("style", "").upper():
         fail('style must contain "NO TEXT" (text in generated panels comes out garbled)')
-    if theme and scenes and "title" in scenes[0]:
+    if theme and d.get("intro", True) and scenes and "title" in scenes[0]:
         fail("scene 01 has `title`, but the theme intro already carries the title")
     emo = {}
     for s in scenes:

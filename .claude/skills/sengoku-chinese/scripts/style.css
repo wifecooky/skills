@@ -28,7 +28,7 @@ html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; backgro
 .stamp { position: absolute; right: 180px; top: 960px; width: 250px; height: 250px; border: 14px solid #E8322B; border-radius: 30px;
   color: #E8322B; font-family: "SC"; font-weight: 900; font-size: 190px; line-height: 222px; text-align: center; background: rgba(247,243,234,.85); z-index: 5; opacity: 0; }
 .header { position: absolute; left: 50px; top: 196px; }
-.series { font-family: "HY", "SC"; font-size: 64px; color: #111; }
+.series { font-family: "SC"; font-weight: 900; font-size: 64px; color: #111; }
 .dream { position: absolute; right: 26px; top: 210px; width: 660px; height: 660px; z-index: 6; }
 .dream-in { position: absolute; inset: 0; transform-origin: 72% 4%; }
 .shard { position: absolute; inset: 0; }

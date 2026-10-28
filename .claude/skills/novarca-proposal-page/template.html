@@ -1,0 +1,503 @@
+<title>〔タイトル〕 提案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* Layout: modern product doc. Sticky section nav; hero = asks panel + key figures; each section = left rail (heading + takeaway) / right content. Stacks on phones. */
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --ink: #12161d;
+  --ink-2: #5a6372;
+  --line: #e2e5ea;
+  --accent: #2f5bea;
+  --accent-soft: #e6ecfd;
+  --accent-ink: #ffffff;
+  --prep: #b4c5f7;
+  --alert: #d4353b;
+  --font: "IBM Plex Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  --fs-xs: .75rem;
+  --fs-s: .8125rem;
+  --fs-m: .9375rem;
+  --fs-l: 1.1875rem;
+  --fs-xl: 1.625rem;
+  --fs-2xl: 2.5rem;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1015; --surface: #151a21; --ink: #e7eaef; --ink-2: #9ba5b4; --line: #272e38;
+    --accent: #7d9bff; --accent-soft: #1b2645; --accent-ink: #0d1015; --prep: #3a4f8f; --alert: #ff7b74;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1015; --surface: #151a21; --ink: #e7eaef; --ink-2: #9ba5b4; --line: #272e38;
+  --accent: #7d9bff; --accent-soft: #1b2645; --accent-ink: #0d1015; --prep: #3a4f8f; --alert: #ff7b74;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--fs-m);
+  line-height: 1.7;
+  font-feature-settings: "palt";
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent); color: var(--accent-ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-inline: 32px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---- Nav ---- */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; gap: 24px; height: 52px; }
+.nav .name { font-weight: 700; font-size: var(--fs-s); white-space: nowrap; }
+.nav ul { list-style: none; margin: 0 0 0 auto; padding: 0; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.nav ul::-webkit-scrollbar { display: none; }
+.nav a { display: block; padding: 5px 10px; border-radius: 999px; color: var(--ink-2); text-decoration: none; font-size: var(--fs-s); white-space: nowrap; }
+.nav a:hover { color: var(--ink); background: var(--surface); }
+
+/* ---- Hero ---- */
+.hero { padding-block: 48px 40px; }
+.hero h1, .rail .take, .steps h3 { word-break: auto-phrase; }
+.hero h1 { margin: 0; font-size: var(--fs-2xl); line-height: 1.25; font-weight: 700; letter-spacing: -.02em; text-wrap: balance; }
+.hero .what { margin: 14px 0 0; font-size: var(--fs-l); font-weight: 500; max-width: 40em; text-wrap: pretty; }
+.hero .what b { color: var(--accent); font-weight: 700; }
+.hero .meta { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: var(--fs-s); color: var(--ink-2); }
+.hero .meta span b { color: var(--ink); font-weight: 500; margin-left: 6px; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.asks-panel { padding: 6px 24px; border-color: var(--accent); box-shadow: 0 1px 2px rgba(18, 22, 29, .04), 0 8px 24px -12px color-mix(in srgb, var(--accent) 45%, transparent); }
+.asks { list-style: none; margin: 0; padding: 0; counter-reset: ask; }
+.asks li:first-child { border-top: 0; }
+.asks li { counter-increment: ask; display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--line); }
+.asks li::before {
+  content: counter(ask); display: grid; place-items: center; width: 24px; height: 24px; margin-top: 1px;
+  border-radius: 7px; background: var(--accent-soft); color: var(--accent); font-size: var(--fs-s); font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.asks .t { font-weight: 700; line-height: 1.55; }
+.asks .t span { display: block; margin-top: 2px; font-weight: 400; font-size: var(--fs-s); color: var(--ink-2); }
+.who { font-size: var(--fs-xs); color: var(--ink-2); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; white-space: nowrap; margin-top: 2px; }
+
+.figs { margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.figs div { padding: 20px 24px; border-left: 1px solid var(--line); }
+.figs div:first-child { border-left: 0; }
+.figs dd { margin: 0; font-size: var(--fs-2xl); line-height: 1.05; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.figs dd small { font-size: var(--fs-m); font-weight: 500; letter-spacing: 0; margin-left: 4px; color: var(--ink-2); }
+.figs dd small.pre { margin: 0 4px 0 0; }
+.figs dt { margin-top: 6px; font-size: var(--fs-s); color: var(--ink-2); line-height: 1.5; }
+.figs dt b { display: block; color: var(--ink); font-weight: 500; font-size: var(--fs-m); }
+.figs .alert dd { color: var(--alert); }
+
+/* ---- Sections ---- */
+.sec { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; padding-block: 44px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.rail { position: sticky; top: 84px; align-self: start; }
+.rail h2 { margin: 0; font-size: var(--fs-s); font-weight: 500; color: var(--accent); letter-spacing: .04em; }
+.rail .take { margin: 8px 0 0; font-size: var(--fs-xl); line-height: 1.4; font-weight: 700; letter-spacing: -.01em; text-wrap: balance; }
+.rail .aside { margin: 12px 0 0; font-size: var(--fs-s); color: var(--ink-2); }
+.content { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+.note { margin: 0; font-size: var(--fs-s); color: var(--ink-2); }
+
+/* legend + bars */
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: var(--fs-s); color: var(--ink-2); }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.sw { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+.bot { background: var(--accent); }
+.prep { background: var(--prep); }
+.human { background: transparent; border: 1.5px dashed var(--ink-2); }
+.chart { padding: 20px 24px; }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.bars li { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr); gap: 14px; align-items: center; font-size: var(--fs-s); }
+.bars li.gap { margin-top: 10px; }
+.bars .lbl { text-align: right; line-height: 1.4; word-break: keep-all; overflow-wrap: anywhere; }
+.bars .track { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bar { height: 18px; border-radius: 5px; flex: none; }
+.bars .val { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.bars .none { font-size: var(--fs-xs); color: var(--ink-2); border: 1.5px dashed var(--line); border-radius: 5px; padding: 0 10px; }
+
+/* issues */
+.issues { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.issues li { padding: 16px 18px; font-size: var(--fs-s); line-height: 1.65; }
+.issues b { display: block; font-size: var(--fs-m); margin-bottom: 4px; }
+.issues em { font-style: normal; font-weight: 700; color: var(--alert); white-space: nowrap; }
+
+/* split */
+.lanes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.lane { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+.lane h3 { margin: 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-m); }
+.lane dl { margin: 0; display: grid; gap: 10px; }
+.lane dt { font-weight: 700; font-size: var(--fs-s); display: flex; align-items: center; gap: 8px; }
+.lane dd { margin: 2px 0 0; font-size: var(--fs-s); color: var(--ink-2); line-height: 1.6; }
+.lane.is-bot { background: var(--accent-soft); border-color: transparent; }
+.guard { margin: 0; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--alert); color: var(--ink); font-size: var(--fs-s); display: flex; gap: 12px; }
+.guard b { color: var(--alert); white-space: nowrap; }
+
+/* flow */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; counter-reset: st; }
+.flow li { position: relative; padding: 0 16px 0 0; counter-increment: st; font-size: var(--fs-s); line-height: 1.6; }
+.flow .dot { display: flex; align-items: center; gap: 0; margin-bottom: 12px; }
+.flow .dot::before { content: counter(st); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 700; font-size: var(--fs-s); flex: none; background: var(--surface); color: var(--ink); border: 1.5px solid var(--ink-2); }
+.flow li.b .dot::before { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.flow li:not(:last-child) .dot::after { content: ""; flex: 1; height: 2px; background: var(--line); margin-left: 8px; }
+.flow .actor { display: block; font-weight: 700; font-size: var(--fs-m); color: var(--ink); }
+.flow li.b .actor { color: var(--accent); }
+.flow strong { color: var(--alert); }
+.fields { margin: 0; }
+.fields dt { font-weight: 700; font-size: var(--fs-s); margin-bottom: 8px; }
+.fields dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.fields dd span { font-size: var(--fs-xs); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; }
+.rules { margin: 0; padding: 0 0 0 1.2em; font-size: var(--fs-s); }
+.rules li + li { margin-top: 2px; }
+.sub { margin: 8px 0 0; font-size: var(--fs-m); font-weight: 700; }
+.cmp { width: 100%; border-collapse: collapse; font-size: var(--fs-s); }
+.cmp th, .cmp td { text-align: left; vertical-align: top; padding: 10px 16px; border-top: 1px solid var(--line); }
+.cmp thead th { border-top: 0; font-size: var(--fs-xs); color: var(--ink-2); font-weight: 500; }
+.cmp tbody th { font-weight: 500; color: var(--ink-2); white-space: nowrap; }
+.cmp .ours { font-weight: 700; color: var(--accent); }
+.cmp-wrap { overflow-x: auto; }
+
+/* plan */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.steps li { padding: 16px 20px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.25fr) minmax(0, 1fr); gap: 8px 24px; align-items: start; font-size: var(--fs-s); line-height: 1.6; }
+.steps .main { display: flex; flex-direction: column; gap: 10px; }
+.steps .hd { display: flex; align-items: center; gap: 8px; }
+.steps .no { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; flex: none; }
+.steps .dur { margin-left: auto; font-size: var(--fs-xs); color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.steps h3 { margin: 0; font-size: var(--fs-m); line-height: 1.45; }
+.steps .what { color: var(--ink-2); margin: 0; }
+.wk { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+.wk i { height: 6px; border-radius: 3px; background: var(--line); }
+.wk i.on { background: var(--accent); }
+.wk i.maybe { background: var(--prep); }
+.wk.tbd i { background: transparent; border: 1px dashed var(--ink-2); }
+.gate { padding-left: 16px; border-left: 1px solid var(--line); }
+.gate span { display: block; font-size: var(--fs-xs); color: var(--ink-2); }
+.gate b { font-weight: 500; }
+.steps li.open { background: transparent; border-style: dashed; }
+.plan-key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: var(--fs-xs); color: var(--ink-2); margin: 0; }
+.plan-key span { display: inline-flex; align-items: center; gap: 6px; }
+.plan-key i { width: 16px; height: 6px; border-radius: 3px; display: inline-block; }
+.cost { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 16px; padding: 16px 20px; font-size: var(--fs-s); }
+.cost dt { font-weight: 700; }
+.cost dd { margin: 0; }
+
+/* risks */
+.risks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.risks li { padding: 14px 18px; font-size: var(--fs-s); line-height: 1.6; }
+.risks .r { display: block; font-weight: 700; font-size: var(--fs-m); margin-bottom: 4px; }
+.risks .a { display: flex; gap: 8px; color: var(--ink-2); }
+.risks .a::before { content: ""; width: 10px; height: 10px; flex: none; margin-top: .45em; border-radius: 3px; background: var(--accent); }
+
+.foot { padding-block: 24px 40px; border-top: 1px solid var(--line); font-size: var(--fs-xs); color: var(--ink-2); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; }
+
+/* ---- Tablet ---- */
+@media (max-width: 1000px) {
+  .sec { grid-template-columns: 1fr; gap: 20px; }
+  .rail { position: static; }
+}
+/* ---- Phone ---- */
+@media (max-width: 720px) {
+  .wrap { padding-inline: 16px; }
+  .nav .name { display: none; }
+  .nav ul { margin-left: -6px; }
+  .hero { padding-block: 24px 28px; }
+  .hero h1 { font-size: var(--fs-xl); }
+  .hero .what { font-size: var(--fs-m); margin-top: 8px; }
+  .hero .meta { font-size: var(--fs-xs); gap: 2px 14px; margin-top: 10px; }
+  .figs { margin-top: 18px; }
+  .figs div { padding: 12px 10px; }
+  .figs dd { font-size: 1.375rem; white-space: nowrap; }
+  .figs dd small { font-size: var(--fs-xs); margin-left: 1px; }
+  .figs dd small.pre { margin-right: 1px; }
+  .figs dt { font-size: var(--fs-xs); margin-top: 4px; }
+  .figs dt b { font-size: var(--fs-xs); }
+  .figs dt span { display: none; }
+  .asks-panel { padding: 4px 16px; }
+  .asks li { grid-template-columns: 24px minmax(0, 1fr); padding: 10px 0; }
+  .asks .t { font-size: var(--fs-s); }
+  .asks .t span { font-size: var(--fs-xs); }
+  .asks .who { grid-column: 2; justify-self: start; margin-top: 0; }
+  .sec { padding-block: 32px; }
+  .rail .take { font-size: var(--fs-l); }
+  .chart { padding: 16px; }
+  .bars li { grid-template-columns: minmax(0, 8.5em) minmax(0, 1fr); gap: 10px; }
+  .issues, .lanes, .risks { grid-template-columns: 1fr; }
+  .steps li { grid-template-columns: 1fr; padding: 16px; }
+  .gate { padding: 10px 0 0; border-left: 0; border-top: 1px solid var(--line); }
+  .flow { grid-template-columns: 1fr; gap: 14px; }
+  .flow li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; padding: 0; }
+  .flow .dot { margin: 0; }
+  .flow li:not(:last-child) .dot::after { display: none; }
+  .cmp th, .cmp td { padding: 8px 10px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bar { transform-origin: left; animation: grow .8s cubic-bezier(.16, 1, .3, 1) both; }
+  @keyframes grow { from { transform: scaleX(.001); } to { transform: scaleX(1); } }
+}
+@media print {
+  .nav { display: none; }
+  .rail { position: static; }
+}
+</style>
+
+<nav class="nav" lang="ja" aria-label="目次">
+  <div class="wrap">
+    <span class="name">〔短いタイトル〕</span>
+    <ul>
+      <li><a href="#now">現状</a></li>
+      <li><a href="#issue">課題</a></li>
+      <li><a href="#split">分担</a></li>
+      <li><a href="#first">最初に作るもの</a></li>
+      <li><a href="#plan">計画</a></li>
+      <li><a href="#risk">リスク</a></li>
+      <li><a href="#ask">お願い</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap" lang="ja">
+  <!-- ヘッダー：タイトル → 何をするか 1〜2 文 → 宛先・作成・日付 → 数字 3 つ -->
+  <header class="hero">
+    <h1>〔タイトル〕 提案</h1>
+    <p class="what">〔何に何を付けるか〕、<b>〔提案の核になる機能〕</b>を〔する〕。〔誰のどんな時間・手間を減らすか〕。</p>
+    <p class="meta"><span>宛先<b>〔部署 氏名さん〕</b></span><span>作成<b>〔氏名（役割）〕</b></span><span>作成日<b class="num">〔YYYY-MM-DD〕</b></span></p>
+
+    <!-- 数字は 3 つだけ。概数は small.pre に「約」。悪い数字（漏れ・失敗）は div.alert -->
+    <dl class="panel figs" aria-label="主要な数字">
+        <div><dd><small class="pre">約</small>〔数字〕<small>〔単位〕</small></dd><dt><b>〔何の数か〕</b><span>〔期間・対象〕</span></dt></div>
+        <div><dd>〔数字〕<small>〔単位〕</small></dd><dt><b>〔何の数か〕</b><span>〔補足〕</span></dt></div>
+        <div class="alert"><dd>〔数字〕<small>〔単位〕</small></dd><dt><b>〔起きている問題〕</b><span>〔どこで・いつ〕</span></dt></div>
+    </dl>
+  </header>
+
+  <!-- 現状：業務別の件数。色＝誰がやるか（bot / prep / human）。データは下の script の tasks -->
+  <section class="sec" id="now" aria-labelledby="h-now">
+    <div class="rail">
+      <h2 id="h-now">現状</h2>
+      <p class="take">〔現状の結論 1 文。数字と単位は &amp;nbsp; でつなぐ〕</p>
+      <p class="aside">〔何をどれだけ見たか〕</p>
+    </div>
+    <div class="content">
+      <ul class="legend" aria-label="凡例">
+        <li><span class="sw bot"></span>Bot がやる（〔n〕）</li>
+        <li><span class="sw prep"></span>Bot が準備・人が決定（〔n〕）</li>
+        <li><span class="sw human"></span>人（〔n〕）</li>
+      </ul>
+      <div class="panel chart"><ul class="bars" id="bars" aria-label="業務別の件数"></ul></div>
+      <p class="note">出所：〔データの出所・期間〕。件数は概数。〔まだ見ていない範囲〕</p>
+    </div>
+  </section>
+
+  <!-- 課題：カード 4〜6 枚。b＝短い見出し、本文 1〜2 行、目立たせる数字は em -->
+  <section class="sec" id="issue" aria-labelledby="h-issue">
+    <div class="rail">
+      <h2 id="h-issue">課題</h2>
+      <p class="take">〔根本原因 1 文〕</p>
+      <p class="aside">〔なぜそれが根本か、1 文〕</p>
+    </div>
+    <div class="content">
+      <ul class="issues">
+        <li class="panel"><b>〔課題名〕</b>〔事実 1〜2 行〕。〔件数〕 <em>〔n 件〕</em></li>
+        <li class="panel"><b>〔課題名〕</b>〔事実〕</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 分担：左＝Bot（is-bot）、右＝人。動詞で分ける。制約は p.guard -->
+  <section class="sec" id="split" aria-labelledby="h-split">
+    <div class="rail">
+      <h2 id="h-split">Bot と人の分担</h2>
+      <p class="take">〔Bot がやる動詞〕は Bot。〔人に残す動詞〕は人</p>
+    </div>
+    <div class="content">
+      <div class="lanes">
+        <div class="panel lane is-bot">
+          <h3><span class="sw bot"></span>Bot に任せること</h3>
+          <dl>
+            <div><dt>〔動詞〕</dt><dd>〔対象〕</dd></div>
+            <div><dt><span class="sw prep"></span>〔動詞〕（Bot が作り、人が送る）</dt><dd>〔対象〕</dd></div>
+          </dl>
+        </div>
+        <div class="panel lane">
+          <h3><span class="sw human"></span>人に残すこと</h3>
+          <dl>
+            <div><dt>〔動詞〕</dt><dd>〔対象〕</dd></div>
+          </dl>
+        </div>
+      </div>
+      <p class="guard"><b>Bot の制約</b><span>〔読むだけ・書かない・連絡しない など〕</span></p>
+    </div>
+  </section>
+
+  <!-- 最初に作るもの：流れ 3〜5 手。Bot の手は li.b。台帳の項目は fields、決まりは rules -->
+  <section class="sec" id="first" aria-labelledby="h-first">
+    <div class="rail">
+      <h2 id="h-first">最初に作るもの</h2>
+      <p class="take">〔最初に作る機能の名前〕</p>
+      <p class="aside">〔なぜこれから始められるか、1 文〕</p>
+    </div>
+    <div class="content">
+      <div class="panel" style="padding: 22px 24px;">
+        <ol class="flow">
+          <li><span class="dot"></span><span><span class="actor">〔人〕</span>〔すること〕</span></li>
+          <li class="b"><span class="dot"></span><span><span class="actor">Bot</span>〔すること〕</span></li>
+          <li><span class="dot"></span><span><span class="actor">〔人〕</span>〔すること〕。<strong>〔Bot がしないこと〕</strong></span></li>
+          <li class="b"><span class="dot"></span><span><span class="actor">Bot</span>〔すること〕</span></li>
+        </ol>
+      </div>
+      <dl class="fields">
+        <dt>〔台帳の名前〕の項目</dt>
+        <dd><span>〔項目〕</span><span>〔項目〕</span></dd>
+      </dl>
+      <ul class="rules">
+        <li>〔データの決まり〕</li>
+      </ul>
+
+      <!-- 既存の取り組みとの比較があるときだけ。ないなら h3.sub から p.note まで削除 -->
+      <h3 class="sub">〔既存の取り組み〕との分担</h3>
+      <div class="panel cmp-wrap">
+        <table class="cmp">
+          <thead><tr><th></th><th>〔既存〕</th><th>〔本提案〕</th></tr></thead>
+          <tbody>
+            <tr><th>〔観点〕</th><td>〔既存〕</td><td class="ours">〔本提案〕</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">〔どうまとめるか、何を取り入れるか〕</p>
+    </div>
+  </section>
+
+  <!-- 計画：フェーズはすべて script の phases。体制と費用は dl.cost -->
+  <section class="sec" id="plan" aria-labelledby="h-plan">
+    <div class="rail">
+      <h2 id="h-plan">実施計画</h2>
+      <p class="take">〔どこで試し、何を満たしたら次へ〕</p>
+      <p class="aside">期間は目安です。</p>
+    </div>
+    <div class="content">
+      <p class="plan-key"><span><i class="bot"></i>最短の週数</span><span><i class="prep"></i>延びた場合</span></p>
+      <ol class="steps" id="steps"></ol>
+      <dl class="panel cost">
+        <dt>体制</dt><dd>〔誰が開発するか〕</dd>
+        <dt>費用</dt><dd>〔費用の見込みと、いつ実測するか〕</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- リスク：script の risks。[リスク, 対策] -->
+  <section class="sec" id="risk" aria-labelledby="h-risk">
+    <div class="rail">
+      <h2 id="h-risk">リスクと対策</h2>
+      <p class="take">〔対策を貫く原則 1 文〕</p>
+    </div>
+    <div class="content">
+      <ul class="risks" id="risks"></ul>
+    </div>
+  </section>
+
+  <!-- お願い：必ず最後。1 件目は承認。各件に担当（who） -->
+  <section class="sec" id="ask" aria-labelledby="h-ask">
+    <div class="rail">
+      <h2 id="h-ask">お願い</h2>
+      <p class="take">判断・協力をお願いしたいこと</p>
+      <p class="aside">全 〔n〕 件</p>
+    </div>
+    <div class="content">
+      <div class="panel asks-panel">
+          <ol class="asks">
+            <li><span class="t">〔何の承認〕<span>〔期間・規模・新しく要るもの〕</span></span><span class="who">〔誰に〕</span></li>
+            <li><span class="t">〔協力内容〕<span>〔量と用途〕</span></span><span class="who">〔誰に〕</span></li>
+          </ol>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>〔タイトル〕 提案</span>
+    <span>作成 〔氏名（役割）〕 ・ 〔YYYY-MM-DD〕</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  // 現状: role = bot（Bot がやる）/ prep（Bot が準備・人が決定）/ human（人）。n = 件数（概数）、null = 件数なし。
+  // 同じ role を続けて並べる（role が変わる所に自動で間が空く）。
+  var tasks = [
+    { t: "〔業務・業務〕", n: 30, u: "件", role: "bot" },
+    { t: "〔業務〕", n: 20, u: "件", role: "prep" },
+    { t: "〔業務〕", n: null, u: "", role: "human" }
+  ];
+  var max = Math.max.apply(null, tasks.map(function (r) { return r.n || 0; })), bars = document.getElementById("bars");
+  tasks.forEach(function (r, i) {
+    var li = el("li", i > 0 && tasks[i - 1].role !== r.role ? "gap" : "");
+    var lbl = el("span", "lbl");
+    r.t.split("・").forEach(function (w, j) { if (j) { lbl.appendChild(document.createTextNode("・")); lbl.appendChild(document.createElement("wbr")); } lbl.appendChild(document.createTextNode(w)); });
+    var track = el("span", "track");
+    if (r.n == null) {
+      track.appendChild(el("span", "none", "件数なし・人が担当"));
+    } else {
+      var bar = el("span", "bar " + r.role);
+      bar.style.width = "calc((100% - 5.5em) * " + (r.n / max).toFixed(4) + ")";
+      bar.style.animationDelay = (i * 40) + "ms";
+      track.appendChild(bar);
+      track.appendChild(el("span", "val", "約 " + r.n + " " + r.u));
+    }
+    li.appendChild(lbl); li.appendChild(track); bars.appendChild(li);
+  });
+
+  // 実施計画: min/max = 週数（目安）。null = 期間未定。gate = 次へ進む判定（null なら「未定」）。
+  var phases = [
+    { name: "〔フェーズ名〕", min: 1, max: 2, what: "〔内容〕", gate: "〔判定〕" },
+    { name: "〔フェーズ名〕", min: 4, max: 4, what: "〔内容〕", gate: "〔判定〕" },
+    { name: "〔展開〕", min: null, max: null, what: "〔対象〕", gate: null }
+  ];
+  var steps = document.getElementById("steps");
+  phases.forEach(function (p, i) {
+    var li = el("li", "panel" + (p.min == null ? " open" : ""));
+    var main = el("div", "main"), hd = el("div", "hd");
+    hd.appendChild(el("span", "no", String(i + 1)));
+    hd.appendChild(el("h3", "", p.name));
+    hd.appendChild(el("span", "dur", p.min == null ? "期間未定" : (p.min === p.max ? p.min + " 週" : p.min + "〜" + p.max + " 週")));
+    main.appendChild(hd);
+    var wk = el("div", "wk" + (p.min == null ? " tbd" : ""));
+    wk.setAttribute("aria-hidden", "true");
+    for (var k = 1; k <= 4; k++) wk.appendChild(el("i", p.min == null ? "" : k <= p.min ? "on" : k <= p.max ? "maybe" : ""));
+    main.appendChild(wk);
+    li.appendChild(main);
+    li.appendChild(el("p", "what", p.what));
+    var g = el("div", "gate");
+    g.appendChild(el("span", "", "次へ進む判定"));
+    g.appendChild(el("b", "", p.gate || "未定"));
+    li.appendChild(g);
+    steps.appendChild(li);
+  });
+
+  // リスク
+  var risks = [
+    ["〔リスク〕", "〔対策〕"],
+    ["〔リスク〕", "〔対策〕"]
+  ];
+  var ul = document.getElementById("risks");
+  risks.forEach(function (r) {
+    var li = el("li", "panel");
+    li.appendChild(el("span", "r", r[0]));
+    li.appendChild(el("span", "a", r[1]));
+    ul.appendChild(li);
+  });
+})();
+</script>
+

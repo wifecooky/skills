@@ -18,6 +18,10 @@ Pick words where the Japanese reading creates a visual, absurd misunderstanding 
 | 12 🚧 sengoku-14-xiansheng | 先生 | teacher | Mr./husband xiānsheng | 信長 has 秀吉 tell 明の舞姫 美玲 that 家康 is 濃姫's go 先生 → 「家康大人是浓姬夫人的先生！」 → she hears "濃姫's husband": 「原来浓姬夫人有两个先生呀！」; 信長 learns 先生=husband, declares himself 濃's 先生 → loses ten games of go to her: 「……先生。これで十連敗にございます。」 |
 | 13 🚧 sengoku-17-guaiwo | 怪我 | injury | my fault guài wǒ | 信長 has a bandaged foot; 秀吉 tells the 明 merchant 「大人的脚……怪我！」 (meaning injury) → merchant hears "my fault!": 「原来是你干的？！」; 信長 learns 怪我=my fault, trips on his bad foot and smashes the merchant's vase → makes 秀吉 say 「……怪我。」 → 「又是你？！」 |
 | 14 🚧 sengoku-18-bisi | 必死 | desperate, all-out | certain death bìsǐ | 信長 has 秀吉 tell 明の舞姫 美玲 he is 必死 for her → 「信长大人……为了您，必死！」 → she hears "he will surely die": 「信长大人要死了？！」, weeps 「一路走好……」, 信長 thinks she is moved; 信長 learns 必死=certain death → turns to find 濃姫 with a naginata → 「……わし、必死じゃ。」 |
+| 15 | 便宜 | べんぎ (convenience) | cheap piányi | 信長 has 秀吉 tell 明の舞姫 美玲 she is a 便宜 (handy, helpful) guest → 「美玲小姐……很便宜！」 → she hears "you're cheap": slaps 秀吉; 老師: 便宜=安い, 便宜(べんぎ)=方便 fāngbiàn · 这个很便宜。（これは安い）; 信長 learns 便宜=cheap, praises 濃姫's kimono 「便宜じゃ！」 → 濃姫 glares (added 2026-10-27 by the daily run; H5) |
+| 16 | 結束 | unity | end / be over jiéshù | 信長 wants 美玲 to know 織田 and 明 are 結束 (united) → 秀吉 「我们……结束了！」 → she hears "we're over" (breakup), weeps and leaves; 老師: 结束=終わる, 結束(けっそく)=团结 tuánjié · 会议结束了。（会議が終わった）; 信長 tells 濃姫 「わしらは結束じゃ！」 → she hears it his new way (added 2026-10-27; H5) |
+| 17 | 湯 | hot water / bath | soup tāng | 秀吉 invites the 明 merchant into the 湯 (bath) → 「请进汤里！」 → he hears "get into the soup" and fears being cooked; 老師: 汤=スープ, お湯=热水 rèshuǐ · 我想喝热水。（お湯が飲みたい）; 信長 orders 「湯じゃ！」 at dinner and gets a bathtub of soup (added 2026-10-27; H12 object gag, weaker) |
+| 18 | 告訴 | sue | tell gàosu | 明の商人 cheats 信長; 信長 「告訴するぞ！」 → 秀吉 「信长大人要告诉你！」 → merchant leans in for a secret; 老師: 告诉=伝える, 告訴(こくそ)=起诉 qǐsù · 我告诉你一个秘密。（秘密を教えてあげる）; 信長 learns 告诉=tell, whispers his secret to 秀吉 → it reaches 濃姫 (added 2026-10-27; H12 blame gag) |
 
 Ask the user before locking a topic; check that the Chinese example sentence is natural (native check for anything paid).
 
@@ -29,4 +33,3 @@ Checked 2026-10-12. Drop a row once its moment has passed.
 | 推し活 (日経トレンディ 2026-10 cover story) | ongoing | 追星 zhuīxīng | 信長 starts 推し活 for お市 / 濃姫; 秀吉 translates 推し as 推 tuī (push) → shoves her |
 | 🚧 sengoku-15-shangtou メロい (渋谷トレンドリサーチ 2026秋 #1 teen word) | ongoing | 上头 shàngtóu (native check) | 秀吉 says the 明 beauty is メロい → 老師 teaches 上头; 信長 thinks it means "to the head" and puts her fan on his head |
 | 🚧 sengoku-16-gui ハロウィン（鬼 guǐ） | publish by 10/31 | 万圣节 wànshèngjié / 变装 | 秀吉 hears 鬼 guǐ = ghost (not 鬼 oni) → dresses as a ghost, not an oni |
-| 大谷翔平 [名人] (World Series / MVP news, only while he is trending) | while trending | 野球 = pickup game in Chinese; baseball is 棒球 bàngqiú (native check: drop if 野球 isn't natural) | 信長 hears of a giant of 野球 from 日本; 秀吉 invites the 明 envoy to 野球 → he expects a scrappy street game in a rice field; 老師 teaches 棒球. 大谷 is never drawn |

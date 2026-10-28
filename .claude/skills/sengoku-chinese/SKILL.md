@@ -29,12 +29,14 @@ Before any money is spent: STORYBOARD.md + logic-check + user approval of storyb
 - Timing: a trend episode jumps the queue; schedule it within days, not behind the 2-day backlog.
 - Never: politics or diplomacy (including Japan–China), disasters, crime, deaths, drawing living real people (no likeness, no name in art; naming a celebrity in dialogue and copy is fine). Don't draw characters from a TV drama or anime (copyright); naming the trend in copy and hashtags is fine.
 
-## Episode formula (~35s body, ~50s with intro/outro)
-1. Setup: 信長 orders 秀吉 to use Chinese.
-2. 秀吉 uses the **Japanese meaning** of a shared kanji word → the Chinese side hears something absurd.
-3. 家康 dry one-liner names what went wrong.
-4. Card scene: `{zh, py, en: "＝<日本語の意味>", note: "<correct word> · <例文>（訳）"}`, `min` ≈ 6. 老師 says the word slowly.
+## Episode formula (≤40 s, no intro; from ep18, LEARNINGS H14)
+Set `"intro": false` after `"theme"`. The first scene carries `"title": true`: the title slams in at 0.1 s, stays alone about 1 s, and clears before the first bubble (build.py). Give that first line `lead` ≈ 1.8.
+1. Cold open (0 s): 秀吉 uses the **Japanese meaning** of a shared kanji word → the Chinese side hears something absurd. The title states the absurd result (H7). Put the motive in the `sub` (例: 「必死で恋しておられる」), since there is no setup scene.
+2. Card scene **by 10 s**: `{zh, py, en: "＝<日本語の意味>", note: "<correct word> · <例文>（訳）"}`, `min` ≈ 4.4. 老師 says the word slowly; the example stays on the card, not in the voice.
+3. Irony: the viewer now knows; the characters act on the wrong meaning.
+4. 家康 dry one-liner names what went wrong. Keep it: the card talks to the viewer, so a character needs an in-story trigger to learn the word.
 5. Callback: 信長 "learns" it and over-applies or reverses it → final gag + stamp.
+Outro (theme pack): title フォローしてね！ + badge 「毎回ひとつ、漢字のワナ」 (the subscribe reason). Check the total in build.py output: ≤ 40 s, card start ≤ ~10 s.
 
 Put one reusable example sentence in `"lesson": {"examples": [{"zh","py","tr"}]}`; it must equal the card's example.
 

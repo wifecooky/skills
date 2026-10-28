@@ -181,7 +181,7 @@ if stages:
                   f'data-track-index="2"><div class="dream-in" id="dream-in"><div class="dots" id="dots">'
                   f'<i></i><i></i><i></i></div>{shards}{pill_html}</div></div>')
 
-first = next((s for s in SC if not s.get("title")), SC[0])
+first = next((s for s in SC if not s.get("title") or s.get("lines")), SC[0])  # skip the title-only intro
 header = (f'<div class="header clip" id="header" data-start="{first["t0"]}" data-duration="{round(TOTAL - first["t0"], 3)}" '
           f'data-track-index="3"><span class="series">{S["series"]}</span></div>')
 
@@ -253,6 +253,8 @@ for s in SC:
     if s.get("title"):
         js.append(f'tl.fromTo("#title-{sid}",{{scale:2.4,opacity:0,rotation:-4}},{{scale:1,opacity:1,rotation:-4,duration:0.35,ease:"power4.in"}},{at(s, 0.1)});')
         js.append(f'tl.to("#title-{sid}",{{y:10,duration:0.06,yoyo:true,repeat:5,ease:"none"}},{at(s, 0.45)});')
+        if says and s is SC[0]:  # cold open ("intro": false): the title clears before the first line; the outro keeps its own
+            js.append(f'tl.to("#title-{sid}",{{opacity:0,duration:0.2}},{at(s, says[0]["at"] - 0.3)});')
     if s.get("card"):
         js.append(f'tl.fromTo("#card-{sid}",{{scale:0.6,opacity:0,rotation:-3}},{{scale:1,opacity:1,rotation:-1.5,duration:0.35,ease:"back.out(2)"}},{at(s, 0.2)});')
     if s.get("stamp"):

@@ -1,0 +1,519 @@
+<title>AIブランド・セラー担当アシスタント 提案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* Layout: modern product doc. Sticky section nav; hero = asks panel + key figures; each section = left rail (heading + takeaway) / right content. Stacks on phones. */
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --ink: #12161d;
+  --ink-2: #5a6372;
+  --line: #e2e5ea;
+  --accent: #2f5bea;
+  --accent-soft: #e6ecfd;
+  --accent-ink: #ffffff;
+  --prep: #b4c5f7;
+  --alert: #d4353b;
+  --font: "IBM Plex Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  --fs-xs: .75rem;
+  --fs-s: .8125rem;
+  --fs-m: .9375rem;
+  --fs-l: 1.1875rem;
+  --fs-xl: 1.625rem;
+  --fs-2xl: 2.5rem;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1015; --surface: #151a21; --ink: #e7eaef; --ink-2: #9ba5b4; --line: #272e38;
+    --accent: #7d9bff; --accent-soft: #1b2645; --accent-ink: #0d1015; --prep: #3a4f8f; --alert: #ff7b74;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1015; --surface: #151a21; --ink: #e7eaef; --ink-2: #9ba5b4; --line: #272e38;
+  --accent: #7d9bff; --accent-soft: #1b2645; --accent-ink: #0d1015; --prep: #3a4f8f; --alert: #ff7b74;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--fs-m);
+  line-height: 1.7;
+  font-feature-settings: "palt";
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent); color: var(--accent-ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-inline: 32px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---- Nav ---- */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; gap: 24px; height: 52px; }
+.nav .name { font-weight: 700; font-size: var(--fs-s); white-space: nowrap; }
+.nav ul { list-style: none; margin: 0 0 0 auto; padding: 0; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.nav ul::-webkit-scrollbar { display: none; }
+.nav a { display: block; padding: 5px 10px; border-radius: 999px; color: var(--ink-2); text-decoration: none; font-size: var(--fs-s); white-space: nowrap; }
+.nav a:hover { color: var(--ink); background: var(--surface); }
+
+/* ---- Hero ---- */
+.hero { padding-block: 48px 40px; }
+.hero h1, .rail .take, .steps h3 { word-break: auto-phrase; }
+.hero h1 { margin: 0; font-size: var(--fs-2xl); line-height: 1.25; font-weight: 700; letter-spacing: -.02em; text-wrap: balance; }
+.hero .what { margin: 14px 0 0; font-size: var(--fs-l); font-weight: 500; max-width: 40em; text-wrap: pretty; }
+.hero .what b { color: var(--accent); font-weight: 700; }
+.hero .meta { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: var(--fs-s); color: var(--ink-2); }
+.hero .meta span b { color: var(--ink); font-weight: 500; margin-left: 6px; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.asks-panel { padding: 6px 24px; border-color: var(--accent); box-shadow: 0 1px 2px rgba(18, 22, 29, .04), 0 8px 24px -12px color-mix(in srgb, var(--accent) 45%, transparent); }
+.asks { list-style: none; margin: 0; padding: 0; counter-reset: ask; }
+.asks li:first-child { border-top: 0; }
+.asks li { counter-increment: ask; display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--line); }
+.asks li::before {
+  content: counter(ask); display: grid; place-items: center; width: 24px; height: 24px; margin-top: 1px;
+  border-radius: 7px; background: var(--accent-soft); color: var(--accent); font-size: var(--fs-s); font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.asks .t { font-weight: 700; line-height: 1.55; }
+.asks .t span { display: block; margin-top: 2px; font-weight: 400; font-size: var(--fs-s); color: var(--ink-2); }
+.who { font-size: var(--fs-xs); color: var(--ink-2); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; white-space: nowrap; margin-top: 2px; }
+
+.figs { margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.figs div { padding: 20px 24px; border-left: 1px solid var(--line); }
+.figs div:first-child { border-left: 0; }
+.figs dd { margin: 0; font-size: var(--fs-2xl); line-height: 1.05; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.figs dd small { font-size: var(--fs-m); font-weight: 500; letter-spacing: 0; margin-left: 4px; color: var(--ink-2); }
+.figs dd small.pre { margin: 0 4px 0 0; }
+.figs dt { margin-top: 6px; font-size: var(--fs-s); color: var(--ink-2); line-height: 1.5; }
+.figs dt b { display: block; color: var(--ink); font-weight: 500; font-size: var(--fs-m); }
+.figs .alert dd { color: var(--alert); }
+
+/* ---- Sections ---- */
+.sec { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; padding-block: 44px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.rail { position: sticky; top: 84px; align-self: start; }
+.rail h2 { margin: 0; font-size: var(--fs-s); font-weight: 500; color: var(--accent); letter-spacing: .04em; }
+.rail .take { margin: 8px 0 0; font-size: var(--fs-xl); line-height: 1.4; font-weight: 700; letter-spacing: -.01em; text-wrap: balance; }
+.rail .aside { margin: 12px 0 0; font-size: var(--fs-s); color: var(--ink-2); }
+.content { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+.note { margin: 0; font-size: var(--fs-s); color: var(--ink-2); }
+
+/* legend + bars */
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: var(--fs-s); color: var(--ink-2); }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.sw { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+.bot { background: var(--accent); }
+.prep { background: var(--prep); }
+.human { background: transparent; border: 1.5px dashed var(--ink-2); }
+.chart { padding: 20px 24px; }
+.bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.bars li { display: grid; grid-template-columns: minmax(0, 15em) minmax(0, 1fr); gap: 14px; align-items: center; font-size: var(--fs-s); }
+.bars li.gap { margin-top: 10px; }
+.bars .lbl { text-align: right; line-height: 1.4; word-break: keep-all; overflow-wrap: anywhere; }
+.bars .track { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bar { height: 18px; border-radius: 5px; flex: none; }
+.bars .val { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.bars .none { font-size: var(--fs-xs); color: var(--ink-2); border: 1.5px dashed var(--line); border-radius: 5px; padding: 0 10px; }
+
+/* issues */
+.issues { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.issues li { padding: 16px 18px; font-size: var(--fs-s); line-height: 1.65; }
+.issues b { display: block; font-size: var(--fs-m); margin-bottom: 4px; }
+.issues em { font-style: normal; font-weight: 700; color: var(--alert); white-space: nowrap; }
+
+/* split */
+.lanes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.lane { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+.lane h3 { margin: 0; display: flex; align-items: center; gap: 8px; font-size: var(--fs-m); }
+.lane dl { margin: 0; display: grid; gap: 10px; }
+.lane dt { font-weight: 700; font-size: var(--fs-s); display: flex; align-items: center; gap: 8px; }
+.lane dd { margin: 2px 0 0; font-size: var(--fs-s); color: var(--ink-2); line-height: 1.6; }
+.lane.is-bot { background: var(--accent-soft); border-color: transparent; }
+.guard { margin: 0; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--alert); color: var(--ink); font-size: var(--fs-s); display: flex; gap: 12px; }
+.guard b { color: var(--alert); white-space: nowrap; }
+
+/* flow */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; counter-reset: st; }
+.flow li { position: relative; padding: 0 16px 0 0; counter-increment: st; font-size: var(--fs-s); line-height: 1.6; }
+.flow .dot { display: flex; align-items: center; gap: 0; margin-bottom: 12px; }
+.flow .dot::before { content: counter(st); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 700; font-size: var(--fs-s); flex: none; background: var(--surface); color: var(--ink); border: 1.5px solid var(--ink-2); }
+.flow li.b .dot::before { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.flow li:not(:last-child) .dot::after { content: ""; flex: 1; height: 2px; background: var(--line); margin-left: 8px; }
+.flow .actor { display: block; font-weight: 700; font-size: var(--fs-m); color: var(--ink); }
+.flow li.b .actor { color: var(--accent); }
+.flow strong { color: var(--alert); }
+.fields { margin: 0; }
+.fields dt { font-weight: 700; font-size: var(--fs-s); margin-bottom: 8px; }
+.fields dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.fields dd span { font-size: var(--fs-xs); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; }
+.rules { margin: 0; padding: 0 0 0 1.2em; font-size: var(--fs-s); }
+.rules li + li { margin-top: 2px; }
+.sub { margin: 8px 0 0; font-size: var(--fs-m); font-weight: 700; }
+.cmp { width: 100%; border-collapse: collapse; font-size: var(--fs-s); }
+.cmp th, .cmp td { text-align: left; vertical-align: top; padding: 10px 16px; border-top: 1px solid var(--line); }
+.cmp thead th { border-top: 0; font-size: var(--fs-xs); color: var(--ink-2); font-weight: 500; }
+.cmp tbody th { font-weight: 500; color: var(--ink-2); white-space: nowrap; }
+.cmp .ours { font-weight: 700; color: var(--accent); }
+.cmp-wrap { overflow-x: auto; }
+
+/* plan */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.steps li { padding: 16px 20px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.25fr) minmax(0, 1fr); gap: 8px 24px; align-items: start; font-size: var(--fs-s); line-height: 1.6; }
+.steps .main { display: flex; flex-direction: column; gap: 10px; }
+.steps .hd { display: flex; align-items: center; gap: 8px; }
+.steps .no { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; flex: none; }
+.steps .dur { margin-left: auto; font-size: var(--fs-xs); color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.steps h3 { margin: 0; font-size: var(--fs-m); line-height: 1.45; }
+.steps .what { color: var(--ink-2); margin: 0; }
+.wk { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+.wk i { height: 6px; border-radius: 3px; background: var(--line); }
+.wk i.on { background: var(--accent); }
+.wk i.maybe { background: var(--prep); }
+.wk.tbd i { background: transparent; border: 1px dashed var(--ink-2); }
+.gate { padding-left: 16px; border-left: 1px solid var(--line); }
+.gate span { display: block; font-size: var(--fs-xs); color: var(--ink-2); }
+.gate b { font-weight: 500; }
+.steps li.open { background: transparent; border-style: dashed; }
+.plan-key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: var(--fs-xs); color: var(--ink-2); margin: 0; }
+.plan-key span { display: inline-flex; align-items: center; gap: 6px; }
+.plan-key i { width: 16px; height: 6px; border-radius: 3px; display: inline-block; }
+.cost { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 16px; padding: 16px 20px; font-size: var(--fs-s); }
+.cost dt { font-weight: 700; }
+.cost dd { margin: 0; }
+
+/* risks */
+.risks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.risks li { padding: 14px 18px; font-size: var(--fs-s); line-height: 1.6; }
+.risks .r { display: block; font-weight: 700; font-size: var(--fs-m); margin-bottom: 4px; }
+.risks .a { display: flex; gap: 8px; color: var(--ink-2); }
+.risks .a::before { content: ""; width: 10px; height: 10px; flex: none; margin-top: .45em; border-radius: 3px; background: var(--accent); }
+
+.foot { padding-block: 24px 40px; border-top: 1px solid var(--line); font-size: var(--fs-xs); color: var(--ink-2); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; }
+
+/* ---- Tablet ---- */
+@media (max-width: 1000px) {
+  .sec { grid-template-columns: 1fr; gap: 20px; }
+  .rail { position: static; }
+}
+/* ---- Phone ---- */
+@media (max-width: 720px) {
+  .wrap { padding-inline: 16px; }
+  .nav .name { display: none; }
+  .nav ul { margin-left: -6px; }
+  .hero { padding-block: 24px 28px; }
+  .hero h1 { font-size: var(--fs-xl); }
+  .hero .what { font-size: var(--fs-m); margin-top: 8px; }
+  .hero .meta { font-size: var(--fs-xs); gap: 2px 14px; margin-top: 10px; }
+  .figs { margin-top: 18px; }
+  .figs div { padding: 12px 10px; }
+  .figs dd { font-size: 1.375rem; white-space: nowrap; }
+  .figs dd small { font-size: var(--fs-xs); margin-left: 1px; }
+  .figs dd small.pre { margin-right: 1px; }
+  .figs dt { font-size: var(--fs-xs); margin-top: 4px; }
+  .figs dt b { font-size: var(--fs-xs); }
+  .figs dt span { display: none; }
+  .asks-panel { padding: 4px 16px; }
+  .asks li { grid-template-columns: 24px minmax(0, 1fr); padding: 10px 0; }
+  .asks .t { font-size: var(--fs-s); }
+  .asks .t span { font-size: var(--fs-xs); }
+  .asks .who { grid-column: 2; justify-self: start; margin-top: 0; }
+  .sec { padding-block: 32px; }
+  .rail .take { font-size: var(--fs-l); }
+  .chart { padding: 16px; }
+  .bars li { grid-template-columns: minmax(0, 8.5em) minmax(0, 1fr); gap: 10px; }
+  .issues, .lanes, .risks { grid-template-columns: 1fr; }
+  .steps li { grid-template-columns: 1fr; padding: 16px; }
+  .gate { padding: 10px 0 0; border-left: 0; border-top: 1px solid var(--line); }
+  .flow { grid-template-columns: 1fr; gap: 14px; }
+  .flow li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; padding: 0; }
+  .flow .dot { margin: 0; }
+  .flow li:not(:last-child) .dot::after { display: none; }
+  .cmp th, .cmp td { padding: 8px 10px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bar { transform-origin: left; animation: grow .8s cubic-bezier(.16, 1, .3, 1) both; }
+  @keyframes grow { from { transform: scaleX(.001); } to { transform: scaleX(1); } }
+}
+@media print {
+  .nav { display: none; }
+  .rail { position: static; }
+}
+</style>
+
+<nav class="nav" lang="ja" aria-label="目次">
+  <div class="wrap">
+    <span class="name">セラー担当アシスタント提案</span>
+    <ul>
+      <li><a href="#now">現状</a></li>
+      <li><a href="#issue">課題</a></li>
+      <li><a href="#split">分担</a></li>
+      <li><a href="#first">最初に作るもの</a></li>
+      <li><a href="#plan">計画</a></li>
+      <li><a href="#risk">リスク</a></li>
+      <li><a href="#ask">お願い</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap" lang="ja">
+  <header class="hero">
+    <h1>AIブランド・セラー担当アシスタント 提案</h1>
+    <p class="what">既存の BDX Bot に、<b>過去の判断事例を検索する機能</b>を付けます。セラー担当がブランド担当に同じ確認を繰り返す時間を減らします。</p>
+    <p class="meta"><span>宛先<b>BI部 嶋倉さん、ブランド担当</b></span><span>作成<b>王（開発担当）</b></span><span>作成日<b class="num">2026-10-27</b></span></p>
+
+    <dl class="panel figs" aria-label="主要な数字">
+        <div><dd><small class="pre">約</small>1,050<small>件</small></dd><dt><b>見たメッセージ</b><span>2026/8/28〜10/27 の 60 日、5 グループ</span></dt></div>
+        <div><dd>10<small>種類</small></dd><dt><b>繰り返す業務</b><span>同じ確認・催促・集計が繰り返し発生</span></dt></div>
+        <div class="alert"><dd>4<small>件</small></dd><dt><b>クーポン漏れの取消・再発注</b><span>花王カネボウ、9 月だけで</span></dt></div>
+    </dl>
+  </header>
+
+  <section class="sec" id="now" aria-labelledby="h-now">
+    <div class="rail">
+      <h2 id="h-now">現状</h2>
+      <p class="take">10&nbsp;種類のうち 9&nbsp;種類は、<wbr>Bot が回答か準備をできる</p>
+      <p class="aside">BDX Bot が参加する 5 グループのチャットを 60 日分見ました。</p>
+    </div>
+    <div class="content">
+      <ul class="legend" aria-label="凡例">
+        <li><span class="sw bot"></span>Bot がやる（4）</li>
+        <li><span class="sw prep"></span>Bot が準備・人が決定（5）</li>
+        <li><span class="sw human"></span>人（1）</li>
+      </ul>
+      <div class="panel chart"><ul class="bars" id="bars" aria-label="業務別の件数（60 日、概数）"></ul></div>
+      <p class="note">出所：BDX Bot が参加する 5 グループ（花王カネボウ、ファンケル、SUQQU、POLA、BI部連携）のチャット、2026/8/28〜10/27。件数は概数。DECORTÉ と uka は Bot 未参加のため、まだ見ていません。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="issue" aria-labelledby="h-issue">
+    <div class="rail">
+      <h2 id="h-issue">課題</h2>
+      <p class="take">判断の基準が人の頭とチャットにしかなく、検索できない</p>
+      <p class="aside">これが最も時間を使っている原因です。</p>
+    </div>
+    <div class="content">
+      <ul class="issues">
+        <li class="panel"><b>同じ確認の繰り返し</b>セラー担当が注文状況や過去の判断を自分で調べられない。「取扱い可能でしょうか」系だけで 60 日に <em>38 件以上</em></li>
+        <li class="panel"><b>過去の回答が探せない</b>回答が別チャットにあり、検索できない</li>
+        <li class="panel"><b>漏れ</b>クーポン適用漏れで取消・再発注。発注締切の回次が分かりにくく、発注漏れも起きる</li>
+        <li class="panel"><b>確認の遅れ</b>ある新製品の問い合わせは 9/11〜10/8 に <em>4 回</em>催促しても未回答</li>
+        <li class="panel"><b>1 人に集中</b>承認や判断がブランド担当 1 人に集中</li>
+        <li class="panel"><b>例外の先例化</b>「本来は NG だが今回だけ」の例外がチャットに埋もれ、先例になる</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" id="split" aria-labelledby="h-split">
+    <div class="rail">
+      <h2 id="h-split">Bot と人の分担</h2>
+      <p class="take">調べる・確かめる・催促する・下書きするは Bot。決めると関わるは人</p>
+    </div>
+    <div class="content">
+      <div class="lanes">
+        <div class="panel lane is-bot">
+          <h3><span class="sw bot"></span>Bot に任せること</h3>
+          <dl>
+            <div><dt>調べる</dt><dd>注文状況、発注締切と回次、取扱可否、在庫、過去の回答</dd></div>
+            <div><dt>確かめる</dt><dd>発注前のクーポン適用と GWP 条件。商品登録・需要回収表・買取申請の掛率、税込／税抜、重複</dd></div>
+            <div><dt>催促する</dt><dd>締切前のリマインド。アンケート・月報・販売実績の未提出者への催促</dd></div>
+            <div><dt><span class="sw prep"></span>下書きする（Bot が作り、人が送る）</dt><dd>取消申請、限定品配分の試算、セラー向けの文面</dd></div>
+          </dl>
+        </div>
+        <div class="panel lane">
+          <h3><span class="sw human"></span>人に残すこと</h3>
+          <dl>
+            <div><dt>決める</dt><dd>価格、キャンペーン条件、限定品の配分、例外の承認</dd></div>
+            <div><dt>関わる</dt><dd>ブランド・セラーとの交渉と関係づくり、座談会・ライブの運営</dd></div>
+          </dl>
+        </div>
+      </div>
+      <p class="guard"><b>Bot の制約</b><span>JAM と受注データは読むだけ。書き込み・発注はしません。WeChat・WeCom のセラーに直接連絡しません。</span></p>
+    </div>
+  </section>
+
+  <section class="sec" id="first" aria-labelledby="h-first">
+    <div class="rail">
+      <h2 id="h-first">最初に作るもの</h2>
+      <p class="take">判断事例の検索</p>
+      <p class="aside">チャット履歴だけで作れるので、JAM や Compass の権限を待たずに始められます。</p>
+    </div>
+    <div class="content">
+      <div class="panel" style="padding: 22px 24px;">
+        <ol class="flow">
+          <li><span class="dot"></span><span><span class="actor">セラー担当・OM</span>グループで「これは OK ですか？」と聞く</span></li>
+          <li class="b"><span class="dot"></span><span><span class="actor">Bot</span>事例台帳から類似事例を探し、前回の判断・理由・元メッセージのリンクを返す</span></li>
+          <li><span class="dot"></span><span><span class="actor">ブランド担当</span>今回の判断をする。<strong>Bot は OK／NG を言わない</strong></span></li>
+          <li class="b"><span class="dot"></span><span><span class="actor">Bot</span>「事例として登録しますか？」と聞き、ボタン 1 つで台帳に追加</span></li>
+        </ol>
+      </div>
+      <dl class="fields">
+        <dt>事例台帳の項目</dt>
+        <dd><span>日付</span><span>ブランド</span><span>セラー</span><span>問い合わせ内容</span><span>判断（OK／NG／条件付き）</span><span>理由</span><span>判断者</span><span>例外かどうか</span><span>状態（回答待ち／判断済み）</span><span>待ち先</span><span>元メッセージ</span></dd>
+      </dl>
+      <ul class="rules">
+        <li>過去分は、2026 年 1 月以降のチャットから AI が抽出します。</li>
+        <li>「今回だけ」の例外は区別し、ルールと混ぜません。</li>
+        <li>更新は追記のみ。判断が変わったら新しい事例を作り、前の事例とつなげます。</li>
+      </ul>
+
+      <h3 class="sub">8 月の Brand Dig との分担</h3>
+      <div class="panel cmp-wrap">
+        <table class="cmp">
+          <thead><tr><th></th><th>Brand Dig</th><th>判断事例の検索</th></tr></thead>
+          <tbody>
+            <tr><th>扱う知識</th><td>戦略・人物・関係性</td><td class="ours">日々の判断</td></tr>
+            <tr><th>集め方</th><td>担当者が GPT の質問に答える</td><td class="ours">Bot がチャットから抽出</td></tr>
+            <tr><th>現状</th><td>ファンケルのみ・知見 53 件・人物 10 人・8/13 以降更新なし</td><td class="ours">本提案</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">扱う知識が違うので、1 つの仕組みにまとめます。Brand Dig から取り入れるのは 3 点：追記のみで上書きしない／事実・発言・仮説・評価を分ける／担当者への質問は矛盾があるときと重要情報が古いときだけ。ファンケルの知見は、ファンケル展開時の初期データにします。</p>
+    </div>
+  </section>
+
+  <section class="sec" id="plan" aria-labelledby="h-plan">
+    <div class="rail">
+      <h2 id="h-plan">実施計画</h2>
+      <p class="take">花王カネボウの 1 グループで試し、判定を満たしたら次へ</p>
+      <p class="aside">期間は目安です。</p>
+    </div>
+    <div class="content">
+      <p class="plan-key"><span><i class="bot"></i>最短の週数</span><span><i class="prep"></i>延びた場合</span></p>
+      <ol class="steps" id="steps"></ol>
+      <dl class="panel cost">
+        <dt>体制</dt><dd>開発は王が担当します。</dd>
+        <dt>費用</dt><dd>既存の AWS 上の BDX Bot を使うため、インフラ費の増加は小さい見込みです。AI API の費用はフェーズ 2 で実測して報告します。</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="sec" id="risk" aria-labelledby="h-risk">
+    <div class="rail">
+      <h2 id="h-risk">リスクと対策</h2>
+      <p class="take">Bot は読むだけ。最終判断はいつも人</p>
+    </div>
+    <div class="content">
+      <ul class="risks" id="risks"></ul>
+    </div>
+  </section>
+
+  <section class="sec" id="ask" aria-labelledby="h-ask">
+    <div class="rail">
+      <h2 id="h-ask">お願い</h2>
+      <p class="take">判断・協力をお願いしたいこと</p>
+      <p class="aside">全 5 件</p>
+    </div>
+    <div class="content">
+      <div class="panel asks-panel">
+          <ol class="asks">
+            <li><span class="t">花王カネボウで、判断事例の検索から試行することの承認<span>約 1 か月。BDX Bot は約 20 グループに参加済みで、新しい基盤は要りません</span></span><span class="who">嶋倉さん</span></li>
+            <li><span class="t">ブランド担当の時間の確保<span>週約 1 時間 × 2 週。抽出した事例の確認に使います</span></span><span class="who">ブランド担当</span></li>
+            <li><span class="t">Brand Dig の GPT のリンクと、以前のデザイン案の共有<span>デザイン案は ChatGPT 上の画面か、Figma などか。保存先を Google Sheets から Lark Base に移すかのご判断も</span></span><span class="who">嶋倉さん</span></li>
+            <li><span class="t">Compass／JAM の読み取り権限を池田さんと調整<span>フェーズ 3 に向けて</span></span><span class="who">嶋倉さん</span></li>
+            <li><span class="t">DECORTÉ と uka のグループに BDX Bot を追加<span>分析のみ。Bot は発言しません</span></span><span class="who">ブランド担当</span></li>
+          </ol>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>AIブランド・セラー担当アシスタント 提案</span>
+    <span>作成 王（開発担当） ・ 2026-10-27</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  // 現状: tasks by role. n = 60-day count (approx.), null = not counted.
+  var tasks = [
+    { t: "発注締切・回次・注文状況・受注報告", n: 35, u: "件", role: "bot" },
+    { t: "商品登録・需要回収表・買取申請チェック", n: 20, u: "件", role: "bot" },
+    { t: "アンケート・入金・販売実績の催促", n: 15, u: "件", role: "bot" },
+    { t: "座談会・ライブ", n: 10, u: "回", role: "bot" },
+    { t: "GWP・クーポン条件確認と承認", n: 30, u: "件", role: "prep" },
+    { t: "月報・ローデータ・見通し", n: 30, u: "件", role: "prep" },
+    { t: "取扱・在庫・掲載", n: 25, u: "件", role: "prep" },
+    { t: "取消・修正・再発注", n: 20, u: "件", role: "prep" },
+    { t: "限定品配分", n: 15, u: "件", role: "prep" },
+    { t: "交渉・契約", n: null, u: "", role: "human" }
+  ];
+  var max = 35, bars = document.getElementById("bars");
+  tasks.forEach(function (r, i) {
+    var li = el("li", i > 0 && tasks[i - 1].role !== r.role ? "gap" : "");
+    var lbl = el("span", "lbl");
+    r.t.split("・").forEach(function (w, j) { if (j) { lbl.appendChild(document.createTextNode("・")); lbl.appendChild(document.createElement("wbr")); } lbl.appendChild(document.createTextNode(w)); });
+    var track = el("span", "track");
+    if (r.n == null) {
+      track.appendChild(el("span", "none", "件数なし・人が担当"));
+    } else {
+      var bar = el("span", "bar " + r.role);
+      bar.style.width = "calc((100% - 5.5em) * " + (r.n / max).toFixed(4) + ")";
+      bar.style.animationDelay = (i * 40) + "ms";
+      track.appendChild(bar);
+      track.appendChild(el("span", "val", "約 " + r.n + " " + r.u));
+    }
+    li.appendChild(lbl); li.appendChild(track); bars.appendChild(li);
+  });
+
+  // 実施計画: weeks min/max; null = undecided.
+  var phases = [
+    { name: "判断事例の台帳化", min: 1, max: 2, what: "2026 年 1 月以降の花王チャットから抽出", gate: "ブランド担当が抽出結果を承認" },
+    { name: "判断事例の検索", min: 2, max: 3, what: "花王グループで類似事例を返す。新しい回答を登録", gate: "過去 60 日の実際の質問で試し、「参考になる」割合を確認" },
+    { name: "注文状況・締切・取扱可否の回答", min: 2, max: 3, what: "締切回次・GWP／クーポン条件を Lark Base に。注文状況と取扱可否は NOVARCA Compass（JAM 受注・商品マスタの読み取り）", gate: "ルール台帳の承認と正答率の確認" },
+    { name: "発注前チェックと催促", min: 4, max: 4, what: "クーポン漏れ、GWP、未提出のアンケート・月報", gate: "取消・再発注が花王 9 月の 4 件より減る" },
+    { name: "他ブランドへ展開", min: null, max: null, what: "ファンケル、DECORTÉ、uka など。台帳はブランドごと", gate: null }
+  ];
+  var steps = document.getElementById("steps");
+  phases.forEach(function (p, i) {
+    var li = el("li", "panel" + (p.min == null ? " open" : ""));
+    var main = el("div", "main"), hd = el("div", "hd");
+    hd.appendChild(el("span", "no", String(i + 1)));
+    hd.appendChild(el("h3", "", p.name));
+    hd.appendChild(el("span", "dur", p.min == null ? "期間未定" : (p.min === p.max ? p.min + " 週" : p.min + "〜" + p.max + " 週")));
+    main.appendChild(hd);
+    var wk = el("div", "wk" + (p.min == null ? " tbd" : ""));
+    wk.setAttribute("aria-hidden", "true");
+    for (var k = 1; k <= 4; k++) wk.appendChild(el("i", p.min == null ? "" : k <= p.min ? "on" : k <= p.max ? "maybe" : ""));
+    main.appendChild(wk);
+    li.appendChild(main);
+    li.appendChild(el("p", "what", p.what));
+    var g = el("div", "gate");
+    g.appendChild(el("span", "", "次へ進む判定"));
+    g.appendChild(el("b", "", p.gate || "未定"));
+    li.appendChild(g);
+    steps.appendChild(li);
+  });
+
+  // リスク
+  var risks = [
+    ["AI が誤った回答をする", "読み取りのみ。根拠を添付。最終確認は人"],
+    ["ルール台帳が古くなる", "更新者をブランド担当にする。AI が更新を提案"],
+    ["セラーとの連絡が Lark の外にある", "Bot は下書きまで"],
+    ["外部の AI にデータを送る", "学習に使われない商用 API を使う"],
+    ["仕事を置き換えられる不安", "アシスタントとして位置づける"],
+    ["「今回だけ」の例外が先例になる", "例外を区別する。Bot は OK／NG を言わない"],
+    ["人物情報・評価が Bot の回答に出る", "Brand Dig の人物・関係性の情報は検索対象外。閲覧はブランド担当と管理者のみ"]
+  ];
+  var ul = document.getElementById("risks");
+  risks.forEach(function (r) {
+    var li = el("li", "panel");
+    li.appendChild(el("span", "r", r[0]));
+    li.appendChild(el("span", "a", r[1]));
+    ul.appendChild(li);
+  });
+})();
+</script>

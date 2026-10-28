@@ -85,3 +85,30 @@ After init writes PRODUCT.md, resume without rerunning `impeccable context`; ini
 **Doctor:** `/impeccable doctor` reports and repairs drift between this project's Impeccable artifacts (PRODUCT.md, DESIGN.md and its sidecar, config, surface briefs, the hook) and what this version reads. Load [reference/doctor.md](reference/doctor.md) when the user invokes it, or when they ask what is out of date, stale, or needs refreshing. A `CONTEXT_STALE` directive in Setup's output is the cheap subset of the same report; act on it there per its own instructions rather than running doctor unasked.
 
 **Never repair drift as a side effect of a design task.** A `CONTEXT_STALE` finding is reported, not acted on, unless the user asks. The one exception is a finding marked `auto`, which the next write to that file performs anyway.
+## Local additions (not upstream)
+
+This block is local. `npx skills update` overwrites the folder, so re-append it from `~/.claude/skill-patches/impeccable.md` after each update.
+
+### Build the world's devices at full strength on the first pass
+
+- **Cause (2026-10-27, celezaishuo 复秤台):** the user said 「没啥设计感，非常平淡」 about the first build. The chosen world had strong devices (brushed steel, enamel plate, receipt paper, a scale), but each one shipped timid: the texture was invisible, the plate was a small white box, the receipt was a generic card, and no object carried the data. The result read as a plain card layout.
+- **Fix:** before the first screenshot round, list the world's 3–5 signature devices and give each one a visible, committed form: a texture you can see at 100% zoom, a hero-scale sign, a material edge (torn paper, printed rule), and one signature data object that shows the core number (here a printed scale dial with the needle at K/n). Keep everything around them quiet. Stay inside the craft floor: printed flat graphics, no bevels, screws or inset-shadow hardware.
+- **Verify:** in the first desktop and mobile screenshots, each listed device is recognisable without the brief. If a device is only visible when you know it is there, it is not done.
+
+### Study real comparable sites before choosing a world
+
+- **Cause (2026-10-27, celezaishuo):** after two directions (my 复秤台 build and a Codex alternative) the user said 「都不咋的，去网站查找类似的网站参考设计」. Both worlds were invented from the brief alone. Neither was checked against what real sites in the same category look like, so neither had a proven device the user could recognise.
+- **Fix:** before proposing any world, screenshot 8–12 real comparable sites (for a fact-check or testing site: fact-checkers, testing labs, evaluation leaderboards, data journalism) at 1440 viewport with `--viewport`, plus 2–3 detail pages and mobile. Write per site what it does well and what to avoid. Each proposed direction names the reference it borrows from and the concrete device it takes (e.g. RTINGS score chips, PolitiFact verdict stamp, The Pudding numbered colour covers).
+- **Verify:** the direction proposal shows the reference screenshots next to each direction, and every direction cites at least one real site and one borrowed device.
+
+### After a rejected round, evolve the incumbent before proposing a rebuild
+
+- **Cause (2026-10-27, celezaishuo):** after the reference board, I offered a new build from the recommended direction. The user answered 「还是在原来的基础上改吧」. The incumbent world (复秤台) already had the identity the user had chosen. Its weakness was missing devices, not the wrong world.
+- **Fix:** when the user rejects a round but has not rejected the world itself, keep the incumbent identity and graft the borrowed devices onto it (here: RTINGS score chips plus a tally strip, a PolitiFact fixed verdict plate, condensed numerals, and one generated hero photo in the world's palette). Offer a full rebuild only when the user says the world is wrong.
+- **Verify:** the next screenshots still show the incumbent's signature devices (sign, receipt, dial), and each borrowed device is named next to the reference it came from.
+
+### Confirm the era before building a physical-metaphor world
+
+- **Cause (2026-10-28, celezaishuo):** after the bolder 复秤台 pass the user said 「太 classical 了，modern，可以参考 apple design」. I had taken the metaphor (a re-weighing counter) literally and rendered it as period material: brushed steel, enamel sign, torn receipt, condensed industrial numerals. The metaphor was fine; the era was wrong. The "evolve the incumbent" lesson then kept me polishing a world whose era the user had never confirmed.
+- **Fix:** when a direction uses a physical metaphor, state its era and finish in the proposal (period material vs. modern product UI) and show one modern rendering of the same metaphor (here: Apple Watch rings for the dial, tinted capsules for the plate, a black result tile for the receipt, a studio product photo for the bench). "Too classical / too old / too 拟物" means the world is wrong: replace it per redesign rules, keep content and function.
+- **Verify:** the direction proposal names the era in one line, and the user has picked it before any material texture ships.
