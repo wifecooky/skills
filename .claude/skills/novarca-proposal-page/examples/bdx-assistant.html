@@ -256,13 +256,13 @@ body {
   <div class="wrap">
     <span class="name">セラー担当アシスタント提案</span>
     <ul>
-      <li><a href="#now">現状</a></li>
       <li><a href="#issue">課題</a></li>
       <li><a href="#split">分担</a></li>
       <li><a href="#first">最初に作るもの</a></li>
       <li><a href="#plan">計画</a></li>
       <li><a href="#risk">リスク</a></li>
       <li><a href="#ask">お願い</a></li>
+      <li><a href="#now">参考</a></li>
     </ul>
   </div>
 </nav>
@@ -273,29 +273,12 @@ body {
     <p class="what">既存の BDX Bot に、<b>過去の判断事例を検索する機能</b>を付けます。セラー担当がブランド担当に同じ確認を繰り返す時間を減らします。</p>
     <p class="meta"><span>宛先<b>BI部 嶋倉さん、ブランド担当</b></span><span>作成<b>王（開発担当）</b></span><span>作成日<b class="num">2026-10-27</b></span></p>
 
-    <dl class="panel figs" aria-label="主要な数字">
-        <div><dd><small class="pre">約</small>1,050<small>件</small></dd><dt><b>見たメッセージ</b><span>2026/8/28〜10/27 の 60 日、5 グループ</span></dt></div>
-        <div><dd>10<small>種類</small></dd><dt><b>繰り返す業務</b><span>同じ確認・催促・集計が繰り返し発生</span></dt></div>
-        <div class="alert"><dd>4<small>件</small></dd><dt><b>クーポン漏れの取消・再発注</b><span>花王カネボウ、9 月だけで</span></dt></div>
+    <dl class="panel figs" aria-label="提案の要点">
+        <div><dd><small class="pre">約</small>1<small>か月</small></dd><dt><b>試行の期間</b><span>花王カネボウの 1 グループで</span></dt></div>
+        <div><dd><small class="pre">約</small>20<small>グループ</small></dd><dt><b>既存の Bot</b><span>BDX Bot が参加済み。新しい基盤は要りません</span></dt></div>
+        <div><dd><small class="pre">週約</small>1<small>時間</small></dd><dt><b>依頼する時間</b><span>ブランド担当に 2 週間。抽出した事例の確認に使います</span></dt></div>
     </dl>
   </header>
-
-  <section class="sec" id="now" aria-labelledby="h-now">
-    <div class="rail">
-      <h2 id="h-now">現状</h2>
-      <p class="take">10&nbsp;種類のうち 9&nbsp;種類は、<wbr>Bot が回答か準備をできる</p>
-      <p class="aside">BDX Bot が参加する 5 グループのチャットを 60 日分見ました。</p>
-    </div>
-    <div class="content">
-      <ul class="legend" aria-label="凡例">
-        <li><span class="sw bot"></span>Bot がやる（4）</li>
-        <li><span class="sw prep"></span>Bot が準備・人が決定（5）</li>
-        <li><span class="sw human"></span>人（1）</li>
-      </ul>
-      <div class="panel chart"><ul class="bars" id="bars" aria-label="業務別の件数（60 日、概数）"></ul></div>
-      <p class="note">出所：BDX Bot が参加する 5 グループ（花王カネボウ、ファンケル、SUQQU、POLA、BI部連携）のチャット、2026/8/28〜10/27。件数は概数。DECORTÉ と uka は Bot 未参加のため、まだ見ていません。</p>
-    </div>
-  </section>
 
   <section class="sec" id="issue" aria-labelledby="h-issue">
     <div class="rail">
@@ -307,7 +290,7 @@ body {
       <ul class="issues">
         <li class="panel"><b>同じ確認の繰り返し</b>セラー担当が注文状況や過去の判断を自分で調べられない。「取扱い可能でしょうか」系だけで 60 日に <em>38 件以上</em></li>
         <li class="panel"><b>過去の回答が探せない</b>回答が別チャットにあり、検索できない</li>
-        <li class="panel"><b>漏れ</b>クーポン適用漏れで取消・再発注。発注締切の回次が分かりにくく、発注漏れも起きる</li>
+        <li class="panel"><b>漏れ</b>クーポン適用漏れで取消・再発注。花王だけで 9 月に <em>4 件</em>。発注締切の回次が分かりにくく、発注漏れも起きる</li>
         <li class="panel"><b>確認の遅れ</b>ある新製品の問い合わせは 9/11〜10/8 に <em>4 回</em>催促しても未回答</li>
         <li class="panel"><b>1 人に集中</b>承認や判断がブランド担当 1 人に集中</li>
         <li class="panel"><b>例外の先例化</b>「本来は NG だが今回だけ」の例外がチャットに埋もれ、先例になる</li>
@@ -421,10 +404,27 @@ body {
             <li><span class="t">花王カネボウで、判断事例の検索から試行することの承認<span>約 1 か月。BDX Bot は約 20 グループに参加済みで、新しい基盤は要りません</span></span><span class="who">嶋倉さん</span></li>
             <li><span class="t">ブランド担当の時間の確保<span>週約 1 時間 × 2 週。抽出した事例の確認に使います</span></span><span class="who">ブランド担当</span></li>
             <li><span class="t">Brand Dig の GPT のリンクと、以前のデザイン案の共有<span>デザイン案は ChatGPT 上の画面か、Figma などか。保存先を Google Sheets から Lark Base に移すかのご判断も</span></span><span class="who">嶋倉さん</span></li>
-            <li><span class="t">Compass／JAM の読み取り権限を池田さんと調整<span>フェーズ 3 に向けて</span></span><span class="who">嶋倉さん</span></li>
+            <li><span class="t">Compass／JAM の読み取り権限を池田さんと調整<span>フェーズ 3 に向けて</span></span><span class="who">BD部内</span></li>
             <li><span class="t">DECORTÉ と uka のグループに BDX Bot を追加<span>分析のみ。Bot は発言しません</span></span><span class="who">ブランド担当</span></li>
           </ol>
       </div>
+    </div>
+  </section>
+
+  <section class="sec" id="now" aria-labelledby="h-now">
+    <div class="rail">
+      <h2 id="h-now">参考：チャットの分析</h2>
+      <p class="take">10&nbsp;種類のうち 9&nbsp;種類は、<wbr>Bot が回答か準備をできる</p>
+      <p class="aside">提案のヒントを探すため、BDX Bot が参加する 5 グループのチャットを 60 日分見ました。</p>
+    </div>
+    <div class="content">
+      <ul class="legend" aria-label="凡例">
+        <li><span class="sw bot"></span>Bot がやる（4）</li>
+        <li><span class="sw prep"></span>Bot が準備・人が決定（5）</li>
+        <li><span class="sw human"></span>人（1）</li>
+      </ul>
+      <div class="panel chart"><ul class="bars" id="bars" aria-label="業務別の件数（60 日、概数）"></ul></div>
+      <p class="note">出所：BDX Bot が参加する 5 グループ（花王カネボウ、ファンケル、SUQQU、POLA、BI部連携）のチャット、2026/8/28〜10/27。件数は概数。DECORTÉ と uka は Bot 未参加のため、まだ見ていません。</p>
     </div>
   </section>
 

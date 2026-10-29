@@ -36,7 +36,9 @@ Set `"intro": false` after `"theme"`. The first scene carries `"title": true`: t
 3. Irony: the viewer now knows; the characters act on the wrong meaning.
 4. 家康 dry one-liner names what went wrong. Keep it: the card talks to the viewer, so a character needs an in-story trigger to learn the word.
 5. Callback: 信長 "learns" it and over-applies or reverses it → final gag + stamp.
-Outro (theme pack): title フォローしてね！ + badge 「毎回ひとつ、漢字のワナ」 (the subscribe reason). Check the total in build.py output: ≤ 40 s, card start ≤ ~10 s.
+Outro (theme pack): title フォローしてね！ + badge 「毎回ひとつ、漢字のワナ」 (the subscribe reason). 
+6. Next-episode teaser (ep19–20, H14 variant; user 2026-10-28): one last scene before the outro. 家康 says 「次回、「<next word>」は中国語で……？」 over the stamp panel (copy its image to the teaser id, so `panels.py` skips it: no image cost). Lock the next topic first; no locked topic → skip the teaser. It counts toward the 40 s. 家康 is not in that panel, so give the line `"focus": [50,45], "zoom": 1.0` (full frame, no push); without it `check_episode.py` fails "on-screen speaker has no focus", and `"os": true` is wrong (it renders a thought bubble). Budget: ep19 hit 44.9 s with the teaser; keep 家康's one-liner ≤ ~4 s and tail the teaser at 0.1 (ep19: 39.93 s).
+Check the total in build.py output: ≤ 40 s, card start ≤ ~10 s.
 
 Put one reusable example sentence in `"lesson": {"examples": [{"zh","py","tr"}]}`; it must equal the card's example.
 
@@ -61,6 +63,7 @@ Before `voice.py`: `python3 $SK/vo_check.py --text` (no audio, free); fix every 
 - Store `<S>`: `~/git/sengoku-chinese/videos/_metrics/sengoku`
 - Public sources for `fetch`: every `published.youtube` link in `~/git/sengoku-chinese/content/*/episodes/*.json`, plus `https://www.tiktok.com/@sengoku_chugokugo`
 - No dashboards.
+- Weekly scout (Mondays, or the first run of the week): YouTube search 「中国語 ショート」「中国語 勉強」「同じ漢字 中国語」, filter Shorts, this month. Look for small channels (≤ ~5K subscribers) whose video has views ≥ 10× their subscriber count. Copy title, hook (first line) and format into topics.md 「Scout」 with the URL and date. Ideas only: never copy art, script or a word list. Big channels don't count (their views come from the subscribers).
 
 ## Publish
 Japanese copy, rules in `publish-copy.md`. Never publish without an explicit go per platform (`pipeline.md` step 11).

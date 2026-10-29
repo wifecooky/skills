@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;700&display=swap">
 <style>
-/* Layout: modern product doc. Sticky section nav; hero = asks panel + key figures; each section = left rail (heading + takeaway) / right content. Stacks on phones. */
+/* Layout: modern product doc. Sticky section nav; hero = title + key figures; asks are the last section; each section = left rail (heading + takeaway) / right content. Stacks on phones. */
 :root {
   --bg: #f4f5f7;
   --surface: #ffffff;
@@ -40,6 +40,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
+  word-break: auto-phrase;
   margin: 0;
   background: var(--bg);
   color: var(--ink);
@@ -71,7 +72,7 @@ body {
 
 /* ---- Hero ---- */
 .hero { padding-block: 48px 40px; }
-.hero h1, .rail .take, .steps h3 { word-break: auto-phrase; }
+.nw { white-space: nowrap; }
 .hero h1 { margin: 0; font-size: var(--fs-2xl); line-height: 1.25; font-weight: 700; letter-spacing: -.02em; text-wrap: balance; }
 .hero .what { margin: 14px 0 0; font-size: var(--fs-l); font-weight: 500; max-width: 40em; text-wrap: pretty; }
 .hero .what b { color: var(--accent); font-weight: 700; }
@@ -92,9 +93,9 @@ body {
 .who { font-size: var(--fs-xs); color: var(--ink-2); background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; white-space: nowrap; margin-top: 2px; }
 
 .figs { margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.figs div { padding: 20px 24px; border-left: 1px solid var(--line); }
+.figs div { padding: 20px 24px; border-left: 1px solid var(--line); display: flex; flex-direction: column; }
 .figs div:first-child { border-left: 0; }
-.figs dd { margin: 0; font-size: var(--fs-2xl); line-height: 1.05; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.figs dd { order: -1; margin: 0; font-size: var(--fs-2xl); line-height: 1.05; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .figs dd small { font-size: var(--fs-m); font-weight: 500; letter-spacing: 0; margin-left: 4px; color: var(--ink-2); }
 .figs dd small.pre { margin: 0 4px 0 0; }
 .figs dt { margin-top: 6px; font-size: var(--fs-s); color: var(--ink-2); line-height: 1.5; }
@@ -145,7 +146,7 @@ body {
 .guard b { color: var(--alert); white-space: nowrap; }
 
 /* flow */
-.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; counter-reset: st; }
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0; counter-reset: st; }
 .flow li { position: relative; padding: 0 16px 0 0; counter-increment: st; font-size: var(--fs-s); line-height: 1.6; }
 .flow .dot { display: flex; align-items: center; gap: 0; margin-bottom: 12px; }
 .flow .dot::before { content: counter(st); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 700; font-size: var(--fs-s); flex: none; background: var(--surface); color: var(--ink); border: 1.5px solid var(--ink-2); }
@@ -236,7 +237,7 @@ body {
   .issues, .lanes, .risks { grid-template-columns: 1fr; }
   .steps li { grid-template-columns: 1fr; padding: 16px; }
   .gate { padding: 10px 0 0; border-left: 0; border-top: 1px solid var(--line); }
-  .flow { grid-template-columns: 1fr; gap: 14px; }
+  .flow { grid-auto-flow: row; grid-template-columns: 1fr; gap: 14px; }
   .flow li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; padding: 0; }
   .flow .dot { margin: 0; }
   .flow li:not(:last-child) .dot::after { display: none; }
@@ -254,15 +255,15 @@ body {
 
 <nav class="nav" lang="ja" aria-label="目次">
   <div class="wrap">
-    <span class="name">〔短いタイトル〕</span>
+    <span class="name">〔タイトル。14 字を超えるなら「提案」などを削る〕</span>
     <ul>
-      <li><a href="#now">現状</a></li>
       <li><a href="#issue">課題</a></li>
       <li><a href="#split">分担</a></li>
       <li><a href="#first">最初に作るもの</a></li>
       <li><a href="#plan">計画</a></li>
       <li><a href="#risk">リスク</a></li>
       <li><a href="#ask">お願い</a></li>
+      <li><a href="#now">参考</a></li>
     </ul>
   </div>
 </nav>
@@ -274,31 +275,13 @@ body {
     <p class="what">〔何に何を付けるか〕、<b>〔提案の核になる機能〕</b>を〔する〕。〔誰のどんな時間・手間を減らすか〕。</p>
     <p class="meta"><span>宛先<b>〔部署 氏名さん〕</b></span><span>作成<b>〔氏名（役割）〕</b></span><span>作成日<b class="num">〔YYYY-MM-DD〕</b></span></p>
 
-    <!-- 数字は 3 つだけ。概数は small.pre に「約」。悪い数字（漏れ・失敗）は div.alert -->
-    <dl class="panel figs" aria-label="主要な数字">
-        <div><dd><small class="pre">約</small>〔数字〕<small>〔単位〕</small></dd><dt><b>〔何の数か〕</b><span>〔期間・対象〕</span></dt></div>
-        <div><dd>〔数字〕<small>〔単位〕</small></dd><dt><b>〔何の数か〕</b><span>〔補足〕</span></dt></div>
-        <div class="alert"><dd>〔数字〕<small>〔単位〕</small></dd><dt><b>〔起きている問題〕</b><span>〔どこで・いつ〕</span></dt></div>
+    <!-- 提案の要点 3 つ：試す範囲と期間 / 既存のもので足りる根拠 / 相手に頼む負担。分析の数字は使わない（参考の節へ） -->
+    <dl class="panel figs" aria-label="提案の要点">
+        <div><dt><b>試行の期間</b><span>〔どこで試すか〕</span></dt><dd><small class="pre">約</small>〔数字〕<small>〔単位〕</small></dd></div>
+        <div><dt><b>〔既存のもので足りる根拠〕</b><span>〔補足〕</span></dt><dd>〔数字〕<small>〔単位〕</small></dd></div>
+        <div><dt><b>〔相手に頼む負担〕</b><span>〔期間・用途〕</span></dt><dd>〔数字〕<small>〔単位〕</small></dd></div>
     </dl>
   </header>
-
-  <!-- 現状：業務別の件数。色＝誰がやるか（bot / prep / human）。データは下の script の tasks -->
-  <section class="sec" id="now" aria-labelledby="h-now">
-    <div class="rail">
-      <h2 id="h-now">現状</h2>
-      <p class="take">〔現状の結論 1 文。数字と単位は &amp;nbsp; でつなぐ〕</p>
-      <p class="aside">〔何をどれだけ見たか〕</p>
-    </div>
-    <div class="content">
-      <ul class="legend" aria-label="凡例">
-        <li><span class="sw bot"></span>Bot がやる（〔n〕）</li>
-        <li><span class="sw prep"></span>Bot が準備・人が決定（〔n〕）</li>
-        <li><span class="sw human"></span>人（〔n〕）</li>
-      </ul>
-      <div class="panel chart"><ul class="bars" id="bars" aria-label="業務別の件数"></ul></div>
-      <p class="note">出所：〔データの出所・期間〕。件数は概数。〔まだ見ていない範囲〕</p>
-    </div>
-  </section>
 
   <!-- 課題：カード 4〜6 枚。b＝短い見出し、本文 1〜2 行、目立たせる数字は em -->
   <section class="sec" id="issue" aria-labelledby="h-issue">
@@ -367,6 +350,7 @@ body {
 
       <!-- 既存の取り組みとの比較があるときだけ。ないなら h3.sub から p.note まで削除 -->
       <h3 class="sub">〔既存の取り組み〕との分担</h3>
+      <p class="note">〔既存の取り組みとは何か、1 文〕</p>
       <div class="panel cmp-wrap">
         <table class="cmp">
           <thead><tr><th></th><th>〔既存〕</th><th>〔本提案〕</th></tr></thead>
@@ -375,7 +359,10 @@ body {
           </tbody>
         </table>
       </div>
-      <p class="note">〔どうまとめるか、何を取り入れるか〕</p>
+      <p class="note">〔どうまとめるか、1 文〕</p>
+      <ul class="rules">
+        <li>〔既存から取り入れること〕</li>
+      </ul>
     </div>
   </section>
 
@@ -417,10 +404,28 @@ body {
     <div class="content">
       <div class="panel asks-panel">
           <ol class="asks">
-            <li><span class="t">〔何の承認〕<span>〔期間・規模・新しく要るもの〕</span></span><span class="who">〔誰に〕</span></li>
+            <li><span class="t">〔何の承認〕<span>〔期間・規模・新しく要るもの〕</span></span><span class="who">〔誰に。素材になければ span ごと消す〕</span></li>
             <li><span class="t">〔協力内容〕<span>〔量と用途〕</span></span><span class="who">〔誰に〕</span></li>
           </ol>
       </div>
+    </div>
+  </section>
+
+  <!-- 参考：提案のもとになった分析。お願いの後の付録。業務別の件数。色＝誰がやるか（bot / prep / human）。データは下の script の tasks -->
+  <section class="sec" id="now" aria-labelledby="h-now">
+    <div class="rail">
+      <h2 id="h-now">参考：〔分析の名前〕</h2>
+      <p class="take">〔現状の結論 1 文。数字＋単位は span.nw で包む〕</p>
+      <p class="aside">〔何のために、何をどれだけ見たか〕</p>
+    </div>
+    <div class="content">
+      <ul class="legend" aria-label="凡例">
+        <li><span class="sw bot"></span>Bot がやる（〔n〕）</li>
+        <li><span class="sw prep"></span>Bot が準備・人が決定（〔n〕）</li>
+        <li><span class="sw human"></span>人（〔n〕）</li>
+      </ul>
+      <div class="panel chart"><ul class="bars" id="bars" aria-label="業務別の件数"></ul></div>
+      <p class="note">出所：〔データの出所・期間〕。件数は概数。〔まだ見ていない範囲〕</p>
     </div>
   </section>
 
@@ -465,7 +470,7 @@ body {
     { name: "〔フェーズ名〕", min: 4, max: 4, what: "〔内容〕", gate: "〔判定〕" },
     { name: "〔展開〕", min: null, max: null, what: "〔対象〕", gate: null }
   ];
-  var steps = document.getElementById("steps");
+  var weeks = Math.max.apply(null, phases.map(function (p) { return p.max || 0; })), steps = document.getElementById("steps");
   phases.forEach(function (p, i) {
     var li = el("li", "panel" + (p.min == null ? " open" : ""));
     var main = el("div", "main"), hd = el("div", "hd");
@@ -475,7 +480,8 @@ body {
     main.appendChild(hd);
     var wk = el("div", "wk" + (p.min == null ? " tbd" : ""));
     wk.setAttribute("aria-hidden", "true");
-    for (var k = 1; k <= 4; k++) wk.appendChild(el("i", p.min == null ? "" : k <= p.min ? "on" : k <= p.max ? "maybe" : ""));
+    wk.style.gridTemplateColumns = "repeat(" + weeks + ", 1fr)";
+    for (var k = 1; k <= weeks; k++) wk.appendChild(el("i", p.min == null ? "" : k <= p.min ? "on" : k <= p.max ? "maybe" : ""));
     main.appendChild(wk);
     li.appendChild(main);
     li.appendChild(el("p", "what", p.what));
