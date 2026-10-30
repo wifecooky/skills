@@ -1,0 +1,19 @@
+#!/bin/sh
+# Every commit says what changed (the subject), how it was verified, and how to undo it.
+#   Verify: <the check you ran and its result>
+#   Rollback: <how to undo; "git revert" is enough when nothing outside git changed>
+# Merge, revert, fixup! and squash! commits are exempt.
+msg=$(grep -v '^#' "$1")
+first=$(printf '%s\n' "$msg" | head -n 1)
+case "$first" in
+  Merge\ *|Revert\ *|fixup!\ *|squash!\ *|amend!\ *) exit 0 ;;
+esac
+miss=""
+printf '%s\n' "$msg" | grep -Eq '^Verify: *[^ ]' || miss="$miss Verify:"
+printf '%s\n' "$msg" | grep -Eq '^Rollback: *[^ ]' || miss="$miss Rollback:"
+[ -z "$miss" ] && exit 0
+echo "✗ commit message lacks:$miss"
+echo "  Add after the body, e.g."
+echo "    Verify: scripts/gate.sh exits 0"
+echo "    Rollback: git revert"
+exit 1

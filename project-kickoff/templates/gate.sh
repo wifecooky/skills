@@ -9,6 +9,7 @@ if [ -f .githooks/pre-push ]; then
   [ -x .githooks/pre-push ] || { echo "✗ .githooks/pre-push is not executable"; exit 1; }
   grep -q 'scripts/gate.sh' .githooks/pre-push || { echo "✗ .githooks/pre-push does not call scripts/gate.sh"; exit 1; }
 fi
+[ ! -f .githooks/commit-msg ] || [ -x .githooks/commit-msg ] || { echo "✗ .githooks/commit-msg is not executable"; exit 1; }
 
 node scripts/check-rules.mjs
 

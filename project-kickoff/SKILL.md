@@ -43,7 +43,7 @@ Raise the tier when a project outlives its plan. jam-bo started as a prototype. 
    - Local hooks die silently. jam-bo renamed `src/` to `frontend/` (36912c3) and missed one path in `prepare`. Its pre-commit then did nothing for 5 months, and ~25 lint errors reached main.
    - Three things watch the gate:
      - CI on every push.
-     - `gate.sh`'s self-check: the hook exists and calls the gate.
+     - `gate.sh`'s self-check: the pre-push hook exists and calls the gate; the commit-msg hook is executable.
      - The kickoff-gate hook: it warns when a repo ships git hooks that git does not run.
 
 4. **Write rules as scripts, not prose.**
@@ -67,6 +67,8 @@ Raise the tier when a project outlives its plan. jam-bo started as a prototype. 
 
 6. **Keep commits small.**
    - Make one change per commit. Git history then becomes context, and a revert is cheap.
+   - Each message says what changed (the subject), how it was verified (`Verify:`) and how to undo it (`Rollback:`). The `commit-msg` hook rejects a message without both lines. Merge, revert, fixup! and squash! commits are exempt.
+   - `Rollback:` matters most when the change reaches outside git: a deploy, a migration, a DNS or bucket change. Write the real undo step there, not just `git revert`.
    - jam-bo's 4 reverts were all big changes, undone within minutes. One was a 223-line redesign (6aef797).
    - For the long-lived tier, every pack rule keeps the commit it would have caught. Replaying those commits is the eval for the rules and the skills.
 
@@ -78,8 +80,9 @@ Raise the tier when a project outlives its plan. jam-bo started as a prototype. 
    - `scripts/gate.sh`
    - `scripts/check-rules.mjs`
    - `.githooks/pre-push`
+   - `.githooks/commit-msg`
    - `.github/workflows/gate.yml`
-3. Make the scripts executable: `chmod +x scripts/gate.sh .githooks/pre-push`.
+3. Make the scripts executable: `chmod +x scripts/gate.sh .githooks/pre-push .githooks/commit-msg`.
 4. Wire the local hook: `git config core.hooksPath .githooks`.
 5. Copy the stack pack's day-1 rules into `check-rules.mjs` (and into the lint config for Next.js).
 6. Prove each rule fails once. Break one thing, run `scripts/gate.sh`, see exit 1.
@@ -97,7 +100,7 @@ A site where a push deploys (GitHub Pages) uses the pre-push hook. A site with a
 
 ## Files
 
-- `templates/`: `FEATURES.md`, `gate.sh`, `check-rules.mjs`, `pre-push`, `gate.yml`.
+- `templates/`: `FEATURES.md`, `gate.sh`, `check-rules.mjs`, `pre-push`, `commit-msg`, `gate.yml`.
 - `packs/static-site.md`: rules from the 4 static sites, each with where it came from.
 - `packs/nextjs.md`: rules from jam-bo's fix history, each with the commit it would have caught.
 - `evals/`: cases for the skill-eval skill. A rule case replays a pack rule against its evidence commit; an agent case checks a step of the flow. Run `node ../skill-eval/run.mjs . --rules-only` after every pack edit.
