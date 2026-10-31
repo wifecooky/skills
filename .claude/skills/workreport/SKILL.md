@@ -32,6 +32,12 @@ description: Use when the user asks for a work report — 報告 / 週報 / 作�
    コミットメッセージ中の略語(例: sycm)から製品名や API 名を推測で補完しない —
    過去に「sycm 方式」を「千牛 API」と誤記した実例あり。実際は鯨芽自体の webapi だった。
 3. コミットをテーマ別に分類し、下の Output format で報告を書く。
+4. **報告は毎回保存する**(年末総結のため。月報・週報・その他の期間すべて):ユーザーが完全版を確定したら(または網页化したら)、
+   月報は `~/Documents/work-reports/YYYY-MM.md`、週報は `~/Documents/work-reports/weekly/YYYY-Www.md`(ISO 週番号)、
+   それ以外の期間は `~/Documents/work-reports/YYYY-MM-DD_YYYY-MM-DD.md` に最終版を保存する。
+   frontmatter に期間 / page(Artifact URL があれば)/ sources を書く。網页版があれば同名の `.html` も同じフォルダにコピーする。
+   後からユーザーが直した点(削除・数値追加)も反映して上書きする。
+5. **年末総結**を頼まれたら、まず `~/Documents/work-reports/` の月報(足りない月は weekly/ の週報)を読んで月ごとの事実を集める。足りない月だけ git を見る。
 
 ## Output format
 
@@ -73,11 +79,16 @@ description: Use when the user asks for a work report — 報告 / 週報 / 作�
 | ~/orca/projects/ppt-translater(= novarca/ppt-translater) | PPT翻訳ツール |
 | ~/Documents/git/セラー向け電子カタログ(= novarca/NOVARCA-Palette) | セラー向け電子カタログ(NOVARCA Palette) |
 | ~/Documents/git/douyin(remote なし) | 抖店運営自動化ツール(試作画面) |
-| ~/Documents/git/価格モニタリング(remote なし) | 価格モニタリング(試作) |
+| ~/Documents/git/taobao-price-monitoring(= novarca/taobao-price-monitoring。旧 ~/Documents/git/価格モニタリング) | 価格モニタリング(試作) |
+| ~/Documents/git/bdx-bot(= novarca/bdx-bot) | CI Bot(BDX Lark ボット) |
+| ~/Documents/git/dingtalk-ai-watch(remote なし、調査メモのみ) | DingTalk 取引先チャットの AI 見張り(HS本部からの相談・技術調査) |
 | ~/orca/projects/ppt-translater-wifecooky | (PPT翻訳ツールの個人ミラー。重複なので報告対象外) |
 
 注: remote なし・wifecooky 作者でも仕事リポジトリのことがある(douyin・価格モニタリング)。remote の有無で私用と決めつけず、README/docs で業務か確認する。
 注: 作業後にまとめて commit することがある(価格モニタリング・華僑PF は 9 月の作業を 10/12 に commit)。期間外 commit しかないリポジトリも、ファイル更新日時(`ls -laT`)で期間内の作業を拾う。
+注: BDX Lark ボットは、BD 部門の部内タスク表(Lark Base app SOLObUncCaRa5jspQdAlZ72TgWb / table tblnWsDV6CFSuMPc、プロジェクト「CI Bot」、担当 王)を一次ソースにする。タスク名・完了日・実績工数(h)が揃っている。読み取りは ~/Documents/git/bdx-bot/.env の LARK_APP_ID/SECRET で tenant token を取り、open.larksuite.com の bitable records API を使う(読むだけ)。コミットは補助に使う。
+注: jam-bo(JAM Retail)は自分のメールで commit があっても、ユーザー本人の作業とは限らない(2026-10 の pre-commit フック復旧・色クラス修正 87c51aa は「私が改めたものではない」と指摘された)。jam-bo の commit は報告に入れる前に本人に確認する。
+注: CI Bot の節には毎回「**経緯**:BD 部のタスク管理と業務改善のために、自ら提案して始めた。その動きを見た CI 本部から依頼を受け、本部へ拡張した。」を一文で入れる(ユーザー提供、2026-10-30)。
 注: ~/Documents/git/ 以外に ~/orca/projects/ にも仕事リポジトリがある。スキャン時は両方見る。
 
 スキャンで新しいリポジトリを発見したら、報告後にこの表へ追記する。
